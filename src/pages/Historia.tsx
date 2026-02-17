@@ -1,9 +1,10 @@
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import wallpaper from '../assets/wallpaper_2.JPEG';
 
 const Historia = () => {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col">
       <Navbar />
       {/* Hero Section com Wallpaper */}
       <section className="relative h-[40vh] flex items-center justify-center overflow-hidden">
@@ -25,7 +26,7 @@ const Historia = () => {
       {/* Conteúdo da História */}
       <section className="py-20 px-4 bg-white">
         <div className="max-w-4xl mx-auto">
-          <p className="text-center text-gray-600 text-lg mb-12">
+          <p className="text-center text-gray-600 text-lg mb-12" style={{ fontFamily: '"Playfair Display", serif' }}>
             Nossa jornada de amor...
           </p>
           <div className="space-y-12">
@@ -34,18 +35,19 @@ const Historia = () => {
                 <span className="text-3xl">💕</span>
               </div>
               <h3 className="text-2xl font-semibold text-gray-800 mb-2" style={{ fontFamily: '"Playfair Display", serif' }}>O Primeiro Encontro</h3>
-              <p className="text-gray-600">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+              <p className="text-gray-600 text-justify" style={{ fontFamily: '"Playfair Display", serif' }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
             </div>
             <div className="text-center">
               <div className="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-3xl">💍</span>
               </div>
               <h3 className="text-2xl font-semibold text-gray-800 mb-2" style={{ fontFamily: '"Playfair Display", serif' }}>O Pedido</h3>
-              <p className="text-gray-600">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+              <p className="text-gray-600 text-justify" style={{ fontFamily: '"Playfair Display", serif' }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
             </div>
           </div>
         </div>
       </section>
+      <Footer />
     </div>
   );
 };

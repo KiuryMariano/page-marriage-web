@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import wallpaper from '../assets/wallpaper_2.JPEG';
 
 const Confirmar = () => {
@@ -17,7 +18,7 @@ const Confirmar = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col">
       <Navbar />
       {/* Hero Section com Wallpaper */}
       <section className="relative h-[40vh] flex items-center justify-center overflow-hidden">
@@ -96,6 +97,7 @@ const Confirmar = () => {
           </form>
         </div>
       </section>
+      <Footer />
     </div>
   );
 };
