@@ -1,6 +1,6 @@
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
-import Story from '../components/Story';
+import StorySection from '../components/StorySection';
 import Footer from '../components/Footer';
 
 const Home = () => {
@@ -9,7 +9,7 @@ const Home = () => {
       <Navbar />
       <main>
         <Hero />
-        <Story />
+        <StorySection />
       </main>
       <Footer />
     </div>
