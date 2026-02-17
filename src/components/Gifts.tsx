@@ -39,7 +39,7 @@ const Gifts = () => {
   ];
 
   const handleGiftSelect = (giftId: number) => {
-    setSelectedGift(giftId === selectedGift ? null : giftId.toString());
+    setSelectedGift(selectedGift === giftId.toString() ? null : giftId.toString());
   };
 
   return (

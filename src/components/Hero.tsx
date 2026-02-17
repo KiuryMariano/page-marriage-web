@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import wallpaper from '../assets/wallpaper_2.JPEG';
 
 const Hero = () => {
@@ -6,7 +6,7 @@ const Hero = () => {
 
   const calculateTimeRemaining = () => {
     const now = new Date();
-    const difference = weddingDate - now;
+    const difference = weddingDate.getTime() - now.getTime();
 
     if (difference <= 0) {
       return { days: 0, hours: 0, minutes: 0, seconds: 0 };
