@@ -7,8 +7,10 @@ const Home = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <Hero />
-      <Story />
+      <main>
+        <Hero />
+        <Story />
+      </main>
       <Footer />
     </div>
   );

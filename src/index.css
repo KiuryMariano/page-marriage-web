@@ -22,3 +22,19 @@ body {
 body {
   font-family: 'Inter', sans-serif;
 }
+
+/* Padding extra para mobile com navbar fixa inferior */
+@media (max-width: 768px) {
+  main {
+    padding-bottom: 5rem;
+  }
+}
+
+/* Suporte para safe area do iOS (iPhone com notch) */
+@supports (padding: env(safe-area-inset-bottom)) {
+  @media (max-width: 768px) {
+    .safe-area-bottom {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+  }
+}

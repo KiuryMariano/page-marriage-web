@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
-import Historia from './pages/Historia';
+import Story from './components/Story';
 import Presentes from './pages/Presentes';
 import Galeria from './pages/Galeria';
 import Confirmar from './pages/Confirmar';
@@ -11,7 +11,7 @@ function App() {
     <BrowserRouter basename="/page-marriage-web">
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/historia" element={<Historia />} />
+        <Route path="/historia" element={<Story />} />
         <Route path="/presentes" element={<Presentes />} />
         <Route path="/galeria" element={<Galeria />} />
         <Route path="/confirmar" element={<Confirmar />} />
