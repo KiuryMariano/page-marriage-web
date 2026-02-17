@@ -46,11 +46,11 @@ const Hero = () => {
       <div className="relative z-10 text-center text-white px-4 flex flex-col justify-between h-full py-12">
         {/* Top Content */}
         <div className="flex-1 flex flex-col md:justify-center justify-start pt-20 md:pt-0">
-          <p className="text-lg md:text-xl mb-4 tracking-[0.3em] uppercase text-white/90 font-medium" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.8), 0 0 40px rgba(0,0,0,0.6)' }}>Estamos Casando</p>
-          <h1 className="text-4xl md:text-7xl lg:text-9xl mb-6 text-white whitespace-nowrap" style={{ fontFamily: '"Great Vibes", cursive', textShadow: '0 4px 30px rgba(0,0,0,0.8), 0 0 60px rgba(0,0,0,0.6)' }}>
+          <p className="text-sm md:text-xl mb-2 md:mb-4 tracking-[0.3em] uppercase text-white/90 font-medium" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.8), 0 0 40px rgba(0,0,0,0.6)' }}>Estamos Casando</p>
+          <h1 className="text-5xl md:text-7xl lg:text-9xl mb-6 text-white whitespace-nowrap" style={{ fontFamily: '"Great Vibes", cursive', textShadow: '0 4px 30px rgba(0,0,0,0.8), 0 0 60px rgba(0,0,0,0.6)' }}>
             Letícia <span className="text-gold-400 mx-2 md:mx-3">&</span> Kiury
           </h1>
-          <p className="text-xl md:text-2xl font-light text-white/95 tracking-wide" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.8), 0 0 40px rgba(0,0,0,0.6)' }}>09 . 01 . 2027</p>
+          <p className="text-lg md:text-2xl font-light text-white/95 tracking-wide" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.8), 0 0 40px rgba(0,0,0,0.6)' }}>09 . 01 . 2027</p>
         </div>
 
         {/* Countdown - Near Bottom */}

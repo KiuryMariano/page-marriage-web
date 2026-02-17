@@ -190,7 +190,7 @@ const Presentes = () => {
   return (
     <div className="min-h-screen flex flex-col relative bg-white overflow-hidden">
       {/* Animated Background Effects */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+      <div className="fixed left-0 right-0 top-0 bottom-[120px] pointer-events-none overflow-hidden z-0">
         {/* Floating Money Signs */}
         <div className="absolute inset-0">
           {[...Array(15)].map((_, i) => (
@@ -199,7 +199,7 @@ const Presentes = () => {
               className="absolute text-green-600/70 animate-float-money font-bold"
               style={{
                 left: `${5 + i * 7}%`,
-                bottom: `-50px`,
+                bottom: `-100px`,
                 animationDelay: `${i * 4}s`,
                 animationDuration: `${18 + Math.random() * 8}s`,
                 fontSize: `${30 + Math.random() * 36}px`,
@@ -267,10 +267,11 @@ const Presentes = () => {
 
       <Navbar />
 
-      {/* Floating Cart Button */}
+      <main>
+        {/* Floating Cart Button - ajustado para mobile com navbar inferior */}
       <button
         onClick={() => setIsCartOpen(true)}
-        className="fixed bottom-6 right-6 z-40 bg-amber-500 hover:bg-amber-600 text-white rounded-full p-4 shadow-lg transition-all hover:scale-110"
+        className="fixed bottom-24 md:bottom-6 right-6 z-40 bg-amber-500 hover:bg-amber-600 text-white rounded-full p-4 shadow-lg transition-all hover:scale-110"
       >
         <svg
           className="w-6 h-6"
@@ -613,6 +614,7 @@ const Presentes = () => {
           </div>
         </div>
       </section>
+      </main>
       <Footer />
     </div>
   );

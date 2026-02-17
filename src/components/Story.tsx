@@ -1,3 +1,6 @@
+import Navbar from './Navbar';
+import Footer from './Footer';
+
 const Story = () => {
   const events = [
     {
@@ -8,7 +11,7 @@ const Story = () => {
     {
       date: 'Outubro/24',
       title: 'Eu Te Amo',
-      description: 'No dia 6 de outubro disse que a amava. Poucas semanas depois, no dia 14, conheci seus pais - um momento muito especial na nossa jornada.',
+      description: 'No dia 6 de outubro disse que a amava. Poucas semanas depois, no dia 14, conheci seus pais - um momento muito especial na nossa jornada. No dia 27, ela conheceu meus pais, marcando o início de uma nova fase em nossas vidas, onde nossas famílias começaram a se unir.',
     },
     {
       date: 'Dezembro/24',
@@ -43,63 +46,69 @@ const Story = () => {
   ];
 
   return (
-    <section className="py-24 px-4 bg-stone-50">
-      <div className="max-w-3xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-20">
-          <p className="text-amber-600 uppercase tracking-[0.3em] text-xs mb-4">Nossa Jornada</p>
-          <h2 className="text-6xl md:text-7xl text-gray-800" style={{ fontFamily: '"Great Vibes", cursive' }}>
-            Nossa História
-          </h2>
-        </div>
-
-        {/* Events List */}
-        <div className="space-y-16">
-          {events.map((event, index) => (
-            <div
-              key={index}
-              className="relative"
-            >
-              {/* Date */}
-              <p className="text-amber-600 uppercase tracking-widest text-xs mb-2">
-                {event.date}
-              </p>
-
-              {/* Title */}
-              <h3 className="text-3xl text-gray-800 mb-4" style={{ fontFamily: '"Great Vibes", cursive' }}>
-                {event.title}
-              </h3>
-
-              {/* Description */}
-              <p className="text-gray-600 leading-relaxed text-lg">
-                {event.description}
-              </p>
-
-              {/* Divider - except for last item */}
-              {index < events.length - 1 && (
-                <div className="mt-12 flex items-center gap-4">
-                  <div className="flex-1 h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent"></div>
-                  <span className="text-amber-400 text-xl">◆</span>
-                  <div className="flex-1 h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent"></div>
-                </div>
-              )}
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
+      <main>
+        <section className="py-24 px-4 bg-stone-50">
+          <div className="max-w-3xl mx-auto">
+            {/* Header */}
+            <div className="text-center mb-20">
+              <p className="text-amber-600 uppercase tracking-[0.3em] text-xs mb-4">Nossa Jornada</p>
+              <h2 className="text-6xl md:text-7xl text-gray-800" style={{ fontFamily: '"Great Vibes", cursive' }}>
+                Nossa História
+              </h2>
             </div>
-          ))}
-        </div>
 
-        {/* Final Quote */}
-        <div className="mt-24 text-center">
-          <div className="border-l-2 border-amber-400 pl-8 inline-block">
-            <blockquote className="text-2xl md:text-3xl text-gray-700 leading-relaxed" style={{ fontFamily: '"Great Vibes", cursive' }}>
-              Sempre soubemos o que queríamos e o que éramos um para o outro
-            </blockquote>
-            <p className="text-amber-600 uppercase tracking-widest text-xs mt-4">
-              Letícia & Kiury
-            </p>
+            {/* Events List */}
+            <div className="space-y-16">
+              {events.map((event, index) => (
+                <div
+                  key={index}
+                  className="relative"
+                >
+                  {/* Date */}
+                  <p className="text-amber-600 uppercase tracking-widest text-xs mb-2">
+                    {event.date}
+                  </p>
+
+                  {/* Title */}
+                  <h3 className="text-3xl text-gray-800 mb-4" style={{ fontFamily: '"Great Vibes", cursive' }}>
+                    {event.title}
+                  </h3>
+
+                  {/* Description */}
+                  <p className="text-gray-600 leading-relaxed text-lg">
+                    {event.description}
+                  </p>
+
+                  {/* Divider - except for last item */}
+                  {index < events.length - 1 && (
+                    <div className="mt-12 flex items-center gap-4">
+                      <div className="flex-1 h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent"></div>
+                      <span className="text-amber-400 text-xl">◆</span>
+                      <div className="flex-1 h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent"></div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Final Quote */}
+            <div className="mt-24 text-center">
+              <div className="border-l-2 border-amber-400 pl-8 inline-block">
+                <blockquote className="text-2xl md:text-3xl text-gray-700 leading-relaxed" style={{ fontFamily: '"Great Vibes", cursive' }}>
+                  Sempre soubemos o que queríamos e o que éramos um para o outro
+                </blockquote>
+                <p className="text-amber-600 uppercase tracking-widest text-xs mt-4">
+                  Letícia & Kiury
+                </p>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </section>
+        </section>
+      </main>
+      <Footer />
+    </div>
   );
 };
 
