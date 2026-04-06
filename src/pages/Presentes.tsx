@@ -146,6 +146,7 @@ const formatPrice = (value: number) => {
 const Presentes = () => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isPresenceModalOpen, setIsPresenceModalOpen] = useState(true);
 
   const addToCart = (gift: Gift) => {
     setCart((prevCart) => {
@@ -267,6 +268,138 @@ const Presentes = () => {
 
       <Navbar />
 
+      {/* Modal de Importância da Presença */}
+      {isPresenceModalOpen && (
+        <>
+          <div
+            className="fixed inset-0 bg-black/60 z-50 backdrop-blur-sm"
+            onClick={() => setIsPresenceModalOpen(false)}
+          />
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl md:rounded-3xl shadow-2xl max-w-lg w-full p-5 md:p-8 relative transform transition-all">
+              {/* Botão de fechar */}
+              <button
+                onClick={() => setIsPresenceModalOpen(false)}
+                className="absolute top-3 right-3 md:top-4 md:right-4 text-gray-400 hover:text-gray-600 transition-colors p-1"
+              >
+                <svg
+                  className="w-5 h-5 md:w-6 md:h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+
+              {/* Conteúdo do modal */}
+              <div className="text-center">
+                {/* Alerta pulsante */}
+                <div className="flex justify-center mb-4 md:mb-5">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-red-500 rounded-full animate-ping opacity-75"></div>
+                    <div className="relative bg-red-500 text-white rounded-full w-14 h-14 md:w-16 md:h-16 flex items-center justify-center shadow-lg">
+                      <svg
+                        className="w-7 h-7 md:w-8 md:h-8"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                <h2
+                  className="text-2xl md:text-3xl font-bold text-gray-800 mb-4 md:mb-5"
+                  style={{ fontFamily: '"Playfair Display", serif' }}
+                >
+                  Um Aviso Importante!
+                </h2>
+
+                <div className="space-y-3 md:space-y-4 text-gray-700">
+                  <div className="bg-gradient-to-r from-amber-50 to-amber-100 rounded-xl p-4 md:p-5 border-l-4 border-amber-500 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-amber-400/20 to-amber-600/20 rounded-full -mr-10 -mt-10"></div>
+                    <p className="text-base md:text-lg font-bold text-amber-700 flex items-center justify-center gap-3 relative z-10">
+                      <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-amber-600 rounded-lg flex items-center justify-center shadow-md">
+                        <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      Sua presença é nosso maior presente!
+                    </p>
+                  </div>
+
+                  <div className="bg-blue-50 rounded-xl p-4 md:p-5 border-l-4 border-blue-400 text-left relative overflow-hidden">
+                    <div className="absolute bottom-0 right-0 w-16 h-16 bg-gradient-to-br from-blue-400/15 to-blue-600/15 rounded-full -mr-8 -mb-8"></div>
+                    <p className="text-sm md:text-base leading-relaxed text-gray-700 relative z-10">
+                      <span className="font-semibold text-blue-700 flex items-center gap-2 mb-2">
+                        <div className="w-6 h-6 bg-gradient-to-br from-blue-400 to-blue-600 rounded-md flex items-center justify-center">
+                          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                          </svg>
+                        </div>
+                        O que mais valorizamos
+                      </span>
+                      Ter você conosco neste dia especial já nos deixa imensamente felizes. Sua presença é o presente mais precioso que podemos receber.
+                    </p>
+                  </div>
+
+                  <div className="bg-green-50 rounded-xl p-4 md:p-5 border-l-4 border-green-400 text-left relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-14 h-14 bg-gradient-to-br from-green-400/15 to-green-600/15 rounded-full -ml-7 -mt-7"></div>
+                    <p className="text-sm md:text-base leading-relaxed text-gray-700 relative z-10">
+                      <span className="font-semibold text-green-700 flex items-center gap-2 mb-2">
+                        <div className="w-6 h-6 bg-gradient-to-br from-green-400 to-green-600 rounded-md flex items-center justify-center">
+                          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a1 1 0 100-2 1 1 0 000 2z" />
+                          </svg>
+                        </div>
+                        Quer nos presentear?
+                      </span>
+                      Se você quiser nos dar um presente extra, separamos algumas opções digitais especiais abaixo. Qualquer valor será muito bem-vindo!
+                    </p>
+                  </div>
+
+                  <div className="bg-purple-50 rounded-xl p-4 border-l-4 border-purple-400 text-left relative overflow-hidden">
+                    <div className="absolute top-1/2 right-2 w-10 h-10 bg-gradient-to-br from-purple-400/20 to-purple-600/20 rounded-full transform -translate-y-1/2"></div>
+                    <p className="text-xs md:text-sm text-gray-600 leading-relaxed flex items-start gap-3 relative z-10">
+                      <div className="w-5 h-5 bg-gradient-to-br from-purple-400 to-purple-600 rounded-md flex items-center justify-center shrink-0 mt-0.5">
+                        <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <span>Graças a Deus já temos nossa casa mobiliada, então o presente digital é a melhor opção para nós.</span>
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setIsPresenceModalOpen(false)}
+                  className="mt-5 md:mt-6 w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold py-3 px-6 rounded-lg transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+                  style={{ fontFamily: '"Playfair Display", serif' }}
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  Entendido
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
       <main>
         {/* Floating Cart Button - ajustado para mobile com navbar inferior */}
       <button
@@ -344,8 +477,11 @@ const Presentes = () => {
                   />
                 </svg>
                 <p className="text-lg">Seu carrinho está vazio</p>
-                <p className="text-sm mt-2">
-                  Adicione presentes para nos agradar! ❤️
+                <p className="text-sm mt-2 flex items-center gap-2">
+                  Adicione presentes para nos agradar!
+                  <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                  </svg>
                 </p>
               </div>
             ) : (
@@ -441,7 +577,7 @@ const Presentes = () => {
       )}
 
       {/* Hero Section com Wallpaper */}
-      <section className="relative min-h-[55vh] flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[50vh] md:min-h-[55vh] lg:min-h-[60vh] flex items-center justify-center overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0">
           <img
@@ -453,9 +589,9 @@ const Presentes = () => {
         </div>
 
         {/* Content */}
-        <div className="relative z-10 text-center text-white px-4">
+        <div className="relative z-10 text-center text-white px-4 py-12 md:py-16">
           <h1
-            className="text-4xl md:text-7xl lg:text-8xl px-4"
+            className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl px-4 md:px-8"
             style={{
               fontFamily: '"Great Vibes", cursive',
               textShadow:
@@ -467,133 +603,200 @@ const Presentes = () => {
         </div>
       </section>
 
-      {/* Textos de introdução */}
-      <section className="py-12 md:py-16 px-4 relative overflow-hidden">
-        <div className="max-w-3xl mx-auto text-center relative">
-          {/* Alerta pulsante */}
-          <div className="absolute -top-3 -right-3 md:-top-4 md:-right-4 z-10">
-            <div className="relative">
-              <div className="absolute inset-0 bg-red-500 rounded-full animate-ping opacity-75"></div>
-              <div className="relative bg-red-500 text-white rounded-full w-10 h-10 md:w-12 md:h-12 flex items-center justify-center shadow-lg">
-                <svg
-                  className="w-5 h-5 md:w-6 md:h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-amber-50/80 backdrop-blur-sm rounded-2xl md:rounded-3xl p-6 md:p-12 shadow-lg border border-amber-200/50">
-            <p className="text-base md:text-lg lg:text-xl mb-3 md:mb-4 tracking-[0.1em] md:tracking-[0.15em] text-gray-800 font-medium">
-              Sua presença é nosso maior presente!
-            </p>
-            <p className="text-sm md:text-lg lg:text-xl text-gray-700 leading-relaxed tracking-[0.1em] md:tracking-[0.15em] font-medium mb-3 md:mb-4">
-              Mas se você quiser nos presentear com carinho, separamos algumas
-              opções especiais que nos deixariam muito felizes.
-            </p>
-            <p className="text-xs md:text-base lg:text-lg text-gray-600 leading-relaxed tracking-[0.1em] md:tracking-[0.15em]">
-              Graças a Deus já temos nossa casa mobiliada, então o presente
-              digital é a melhor coisa para nós.
-            </p>
-          </div>
-        </div>
-      </section>
-
       {/* Tutorial Como Funciona */}
-      <section className="pb-8 md:pb-12 px-4">
+      <section className="py-10 md:py-16 px-4 md:px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="bg-amber-50/60 rounded-2xl p-4 md:p-6 mb-8 md:mb-12 border border-amber-200/50 backdrop-blur-sm">
-            <h3
-              className="text-lg md:text-xl font-semibold text-amber-800 mb-3 md:mb-4 flex items-center gap-2"
-              style={{ fontFamily: '"Playfair Display", serif' }}
-            >
-              <span>💡</span> Como funciona?
-            </h3>
-            <div className="grid md:grid-cols-3 gap-4 md:gap-6">
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 bg-amber-500 text-white rounded-full flex items-center justify-center font-bold text-lg shrink-0">
-                  1
+          <div className="relative mb-12 md:mb-16">
+            {/* Elemento decorativo superior */}
+            <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 w-24 md:w-32 h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent"></div>
+
+            <div className="text-center mb-8 md:mb-10">
+              <div className="inline-flex items-center gap-3 md:gap-4 mb-4 md:mb-5">
+                <div className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+                  <svg className="w-7 h-7 md:w-8 md:h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
+                  </svg>
                 </div>
-                <div>
-                  <h4 className="font-semibold text-gray-800 mb-1">
-                    Escolha os presentes
-                  </h4>
-                  <p className="text-gray-700 text-sm">
-                    Clique em <strong>"Adicionar"</strong> nos cards para
-                    colocar os itens no carrinho. Você pode adicionar quantos
-                    quiser!
+                <h3
+                  className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-800"
+                  style={{ fontFamily: '"Playfair Display", serif' }}
+                >
+                  Como Presentear?
+                </h3>
+              </div>
+              <div className="w-32 md:w-40 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent mx-auto"></div>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-5 md:gap-7">
+              <div className="bg-white rounded-xl p-5 md:p-6 shadow-md border-l-4 border-amber-500 hover:shadow-xl transition-all hover:-translate-y-1">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-14 h-14 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center font-bold text-xl text-white shadow-lg">
+                    1
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="font-bold text-gray-800 text-base md:text-lg">
+                      Escolha os Presentes
+                    </h4>
+                  </div>
+                </div>
+                <div className="space-y-3 text-sm text-gray-700">
+                  <p className="flex items-start gap-3">
+                    <div className="w-5 h-5 bg-amber-100 rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                      <svg className="w-3 h-3 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <span>Navegue pelos cards e escolha os itens</span>
+                  </p>
+                  <p className="flex items-start gap-3">
+                    <div className="w-5 h-5 bg-amber-100 rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                      <svg className="w-3 h-3 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <span>Clique em <strong>"Adicionar"</strong></span>
+                  </p>
+                  <p className="flex items-start gap-3">
+                    <div className="w-5 h-5 bg-amber-100 rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                      <svg className="w-3 h-3 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <span>Adicione quantos quiser</span>
                   </p>
                 </div>
               </div>
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 bg-amber-500 text-white rounded-full flex items-center justify-center font-bold text-lg shrink-0">
-                  2
+
+              <div className="bg-white rounded-xl p-5 shadow-md border-l-4 border-blue-500 hover:shadow-xl transition-all hover:-translate-y-1">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-14 h-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center font-bold text-xl text-white shadow-lg">
+                    2
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="font-bold text-gray-800 text-base md:text-lg">
+                      Revise o Carrinho
+                    </h4>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="font-semibold text-gray-800 mb-1">
-                    Revise seu carrinho
-                  </h4>
-                  <p className="text-gray-700 text-sm">
-                    Clique no ícone <strong>🛒</strong> no canto inferior
-                    direito. Ajuste as quantidades ou remova itens se precisar.
+                <div className="space-y-3 text-sm text-gray-700">
+                  <p className="flex items-start gap-3">
+                    <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                      <svg className="w-3 h-3 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <span>Clique no ícone do carrinho</span>
+                  </p>
+                  <p className="flex items-start gap-3">
+                    <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                      <svg className="w-3 h-3 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <span>Ajuste quantidades ou remova itens</span>
+                  </p>
+                  <p className="flex items-start gap-3">
+                    <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                      <svg className="w-3 h-3 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <span>Confira o total antes de finalizar</span>
                   </p>
                 </div>
               </div>
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center font-bold text-lg shrink-0">
-                  3
+
+              <div className="bg-white rounded-xl p-5 shadow-md border-l-4 border-green-500 hover:shadow-xl transition-all hover:-translate-y-1">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-14 h-14 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center font-bold text-xl text-white shadow-lg">
+                    3
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="font-bold text-gray-800 text-base md:text-lg">
+                      Finalize o Presente
+                    </h4>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="font-semibold text-gray-800 mb-1">
-                    Finalize a compra
-                  </h4>
-                  <p className="text-gray-700 text-sm">
-                    Clique em <strong>"Finalizar Compra"</strong> e escolha como
-                    quer pagar: PIX, PicPay ou Mercado Pago.
+                <div className="space-y-3 text-sm text-gray-700">
+                  <p className="flex items-start gap-3">
+                    <div className="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                      <svg className="w-3 h-3 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <span>Clique em <strong>"Finalizar Compra"</strong></span>
+                  </p>
+                  <p className="flex items-start gap-3">
+                    <div className="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                      <svg className="w-3 h-3 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <span>Escolha o método de pagamento</span>
+                  </p>
+                  <p className="flex items-start gap-3">
+                    <div className="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                      <svg className="w-3 h-3 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <span>Pronto! Muito obrigado!</span>
                   </p>
                 </div>
               </div>
             </div>
+
+            {/* Elemento decorativo inferior */}
+            <div className="absolute -bottom-8 md:-bottom-10 left-1/2 transform -translate-x-1/2 w-24 md:w-32 h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent"></div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
+          {/* Seção de Formas de Pagamento separada */}
+          <div className="mt-10 md:mt-12 text-center">
+            <h4 className="font-bold text-gray-800 mb-4 text-base md:text-lg">Formas de Pagamento</h4>
+            <div className="flex flex-wrap justify-center gap-3 md:gap-4">
+              <div className="bg-gray-100 rounded-lg px-4 py-2 text-sm md:text-base text-gray-700">
+                PIX
+              </div>
+              <div className="bg-gray-100 rounded-lg px-4 py-2 text-sm md:text-base text-gray-700">
+                PicPay
+              </div>
+              <div className="bg-gray-100 rounded-lg px-4 py-2 text-sm md:text-base text-gray-700">
+                Mercado Pago
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-5 mt-10 md:mt-12">
             {gifts.map((gift) => (
               <div
                 key={gift.id}
-                className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow flex flex-col border border-amber-200/50 relative z-10"
+                className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all hover:-translate-y-1 flex flex-col border-l-4 border-amber-500 relative z-10 overflow-hidden"
               >
                 <div
-                  className={`h-24 sm:h-32 bg-gradient-to-br ${gift.gradient} flex items-center justify-center`}
+                  className={`h-24 sm:h-28 md:h-32 bg-gradient-to-br ${gift.gradient} flex items-center justify-center`}
                 >
-                  <span className="text-4xl sm:text-5xl">{gift.emoji}</span>
+                  <span className="text-4xl sm:text-5xl md:text-6xl">{gift.emoji}</span>
                 </div>
-                <div className="p-3 sm:p-4 flex-1 flex flex-col">
+                <div className="p-4 md:p-5 flex-1 flex flex-col">
                   <h3
-                    className="text-base sm:text-lg font-semibold text-gray-800 mb-2"
+                    className="text-base md:text-lg font-bold text-gray-800 mb-2 md:mb-3"
                     style={{ fontFamily: '"Playfair Display", serif' }}
                   >
                     {gift.title}
                   </h3>
-                  <p className="text-lg sm:text-xl font-bold text-amber-600 mb-3 sm:mb-4">
-                    {gift.price}
-                  </p>
+                  <div className="flex items-center justify-between mb-3 md:mb-4">
+                    <p className="text-lg md:text-xl font-bold text-amber-600">
+                      {gift.price}
+                    </p>
+                  </div>
                   <div className="mt-auto">
                     <button
                       onClick={() => addToCart(gift)}
-                      className="w-full bg-amber-500 hover:bg-amber-600 text-white font-medium py-2 px-3 sm:px-4 rounded-lg transition-colors text-xs sm:text-sm flex items-center justify-center gap-2"
+                      className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold py-2.5 md:py-3 px-4 rounded-lg transition-all hover:shadow-md active:scale-95 text-sm md:text-base flex items-center justify-center gap-2"
                       style={{ fontFamily: '"Playfair Display", serif' }}
                     >
                       <svg
-                        className="w-3 h-3 sm:w-4 sm:h-4"
+                        className="w-4 h-4 md:w-5 md:h-5"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -615,6 +818,7 @@ const Presentes = () => {
         </div>
       </section>
       </main>
+
       <Footer />
     </div>
   );
