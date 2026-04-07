@@ -2,6 +2,7 @@ import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import wallpaper from "../assets/wallpaper_2.JPEG";
+import { colors } from "../theme";
 
 interface FormData {
   nome: string;
@@ -69,7 +70,11 @@ const Confirmar = () => {
           {[...Array(12)].map((_, i) => (
             <div
               key={`icon-${i}`}
-              className="absolute text-green-500/50 animate-float-icon font-bold"
+              className="absolute animate-float-icon font-bold"
+              style={{
+                color: colors.success.light,
+                opacity: 0.5,
+              }}
               style={{
                 left: `${5 + i * 8}%`,
                 bottom: `-100px`,
@@ -90,10 +95,10 @@ const Confirmar = () => {
         >
           <defs>
             <linearGradient id="rsvpLine" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#059669" stopOpacity="0" />
-              <stop offset="5%" stopColor="#059669" stopOpacity="0.3" />
-              <stop offset="95%" stopColor="#059669" stopOpacity="0.3" />
-              <stop offset="100%" stopColor="#059669" stopOpacity="0" />
+              <stop offset="0%" stopColor={colors.success.dark} stopOpacity="0" />
+              <stop offset="5%" stopColor={colors.success.dark} stopOpacity="0.3" />
+              <stop offset="95%" stopColor={colors.success.dark} stopOpacity="0.3" />
+              <stop offset="100%" stopColor={colors.success.dark} stopOpacity="0" />
             </linearGradient>
           </defs>
           {[...Array(20)].map((_, i) => (
@@ -173,8 +178,8 @@ const Confirmar = () => {
             {/* Alerta pulsante */}
             <div className="absolute -top-3 -right-3 md:-top-4 md:-right-4 z-10">
               <div className="relative">
-                <div className="absolute inset-0 bg-green-500 rounded-full animate-ping opacity-75"></div>
-                <div className="relative bg-green-500 text-white rounded-full w-10 h-10 md:w-12 md:h-12 flex items-center justify-center shadow-lg">
+                <div className="absolute inset-0 rounded-full animate-ping opacity-75" style={{ backgroundColor: colors.success.DEFAULT }}></div>
+                <div className="relative text-white rounded-full w-10 h-10 md:w-12 md:h-12 flex items-center justify-center shadow-lg" style={{ backgroundColor: colors.success.DEFAULT }}>
                   <svg
                     className="w-5 h-5 md:w-6 md:h-6"
                     fill="none"
@@ -192,7 +197,10 @@ const Confirmar = () => {
               </div>
             </div>
 
-            <div className="bg-green-50/80 backdrop-blur-sm rounded-2xl md:rounded-3xl p-6 md:p-12 shadow-lg border border-green-200/50">
+            <div className="backdrop-blur-sm rounded-2xl md:rounded-3xl p-6 md:p-12 shadow-lg border" style={{
+              backgroundColor: `${colors.success.light}20`,
+              borderColor: `${colors.success.DEFAULT}40`,
+            }}>
               <p className="text-base md:text-lg lg:text-xl mb-3 md:mb-4 tracking-[0.1em] md:tracking-[0.15em] text-gray-800 font-medium">
                 Sua presença é nosso maior presente!
               </p>
@@ -211,16 +219,22 @@ const Confirmar = () => {
         {/* Informações do Evento */}
         <section className="pb-8 md:pb-12 px-4">
           <div className="max-w-6xl mx-auto">
-            <div className="bg-green-50/60 rounded-2xl p-4 md:p-6 mb-8 md:mb-12 border border-green-200/50 backdrop-blur-sm">
+            <div className="rounded-2xl p-4 md:p-6 mb-8 md:mb-12 border backdrop-blur-sm" style={{
+              backgroundColor: `${colors.success.light}30`,
+              borderColor: `${colors.success.DEFAULT}50`,
+            }}>
               <h3
-                className="text-lg md:text-xl font-semibold text-green-800 mb-3 md:mb-4 flex items-center gap-2"
-                style={{ fontFamily: '"Playfair Display", serif' }}
+                className="text-lg md:text-xl font-semibold mb-3 md:mb-4 flex items-center gap-2"
+                style={{
+                  fontFamily: '"Playfair Display", serif',
+                  color: colors.success.dark,
+                }}
               >
                 <span>📅</span> Informações do Evento
               </h3>
               <div className="grid md:grid-cols-2 gap-4 md:gap-6">
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center shrink-0">
+                  <div className="w-10 h-10 text-white rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: colors.success.DEFAULT }}>
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -242,7 +256,7 @@ const Confirmar = () => {
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center shrink-0">
+                  <div className="w-10 h-10 text-white rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: colors.success.DEFAULT }}>
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -274,7 +288,7 @@ const Confirmar = () => {
 
             {/* Formulário */}
             <div className="max-w-2xl mx-auto relative z-10">
-              <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-green-200/50">
+              <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 border" style={{ borderColor: `${colors.success.DEFAULT}50` }}>
                 <h3
                   className="text-2xl md:text-3xl font-semibold text-gray-800 mb-6 text-center"
                   style={{ fontFamily: '"Playfair Display", serif' }}
@@ -283,7 +297,11 @@ const Confirmar = () => {
                 </h3>
 
                 {submitted && (
-                  <div className="mb-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg">
+                  <div className="mb-6 border px-4 py-3 rounded-lg" style={{
+                    backgroundColor: `${colors.success.light}40`,
+                    borderColor: colors.success.DEFAULT,
+                    color: colors.success.dark,
+                  }}>
                     <p className="font-medium">✅ Redirecionando para WhatsApp...</p>
                   </div>
                 )}
@@ -304,9 +322,10 @@ const Confirmar = () => {
                           key={option.value}
                           className={`flex-1 cursor-pointer ${
                             formData.confirmacao === option.value
-                              ? "ring-2 ring-green-500"
+                              ? "ring-2"
                               : ""
                           }`}
+                          style={formData.confirmacao === option.value ? { ringColor: colors.success.DEFAULT } : {}}
                         >
                           <input
                             type="radio"
@@ -324,9 +343,17 @@ const Confirmar = () => {
                           <div
                             className={`p-3 md:p-4 rounded-lg border-2 text-center transition-all ${
                               formData.confirmacao === option.value
-                                ? "bg-green-100 border-green-500"
-                                : "bg-gray-50 border-gray-200 hover:border-green-300"
+                                ? "border-opacity-100"
+                                : "bg-gray-50 border-gray-200"
                             }`}
+                            style={{
+                              backgroundColor: formData.confirmacao === option.value
+                                ? `${colors.success.light}40`
+                                : undefined,
+                              borderColor: formData.confirmacao === option.value
+                                ? colors.success.DEFAULT
+                                : undefined,
+                            }}
                           >
                             <span className="text-2xl md:text-3xl block mb-1">
                               {option.emoji}
@@ -348,7 +375,16 @@ const Confirmar = () => {
                     <input
                       type="text"
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg transition-all focus:border-opacity-100"
+                      style={{'--focus-ring': colors.success.DEFAULT} as React.CSSProperties}
+                      onFocus={(e) => {
+                        e.currentTarget.style.boxShadow = `0 0 0 2px ${colors.success.light}40, 0 0 0 4px ${colors.success.DEFAULT}20`
+                        e.currentTarget.style.borderColor = colors.success.DEFAULT
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.boxShadow = 'none'
+                        e.currentTarget.style.borderColor = '#d1d5db'
+                      }}
                       placeholder="Seu nome completo"
                       value={formData.nome}
                       onChange={(e) =>
@@ -365,7 +401,16 @@ const Confirmar = () => {
                     <input
                       type="email"
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg transition-all focus:border-opacity-100"
+                      style={{'--focus-ring': colors.success.DEFAULT} as React.CSSProperties}
+                      onFocus={(e) => {
+                        e.currentTarget.style.boxShadow = `0 0 0 2px ${colors.success.light}40, 0 0 0 4px ${colors.success.DEFAULT}20`
+                        e.currentTarget.style.borderColor = colors.success.DEFAULT
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.boxShadow = 'none'
+                        e.currentTarget.style.borderColor = '#d1d5db'
+                      }}
                       placeholder="seu@email.com"
                       value={formData.email}
                       onChange={(e) =>
@@ -382,7 +427,16 @@ const Confirmar = () => {
                     <input
                       type="tel"
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg transition-all focus:border-opacity-100"
+                      style={{'--focus-ring': colors.success.DEFAULT} as React.CSSProperties}
+                      onFocus={(e) => {
+                        e.currentTarget.style.boxShadow = `0 0 0 2px ${colors.success.light}40, 0 0 0 4px ${colors.success.DEFAULT}20`
+                        e.currentTarget.style.borderColor = colors.success.DEFAULT
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.boxShadow = 'none'
+                        e.currentTarget.style.borderColor = '#d1d5db'
+                      }}
                       placeholder="(00) 00000-0000"
                       value={formData.telefone}
                       onChange={(e) =>
@@ -397,7 +451,16 @@ const Confirmar = () => {
                       Número de Acompanhantes (além de você)
                     </label>
                     <select
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg transition-all focus:border-opacity-100"
+                      style={{'--focus-ring': colors.success.DEFAULT} as React.CSSProperties}
+                      onFocus={(e) => {
+                        e.currentTarget.style.boxShadow = `0 0 0 2px ${colors.success.light}40, 0 0 0 4px ${colors.success.DEFAULT}20`
+                        e.currentTarget.style.borderColor = colors.success.DEFAULT
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.boxShadow = 'none'
+                        e.currentTarget.style.borderColor = '#d1d5db'
+                      }}
                       value={formData.acompanhantes}
                       onChange={(e) =>
                         setFormData({
@@ -433,8 +496,13 @@ const Confirmar = () => {
                   {/* Botão Submit */}
                   <button
                     type="submit"
-                    className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-6 rounded-lg transition-all text-lg md:text-xl flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98]"
-                    style={{ fontFamily: '"Playfair Display", serif' }}
+                    className="w-full text-white font-bold py-4 px-6 rounded-lg transition-all text-lg md:text-xl flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98]"
+                    style={{
+                      fontFamily: '"Playfair Display", serif',
+                      backgroundColor: colors.success.DEFAULT,
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.success.dark}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.success.DEFAULT}
                   >
                     <svg
                       className="w-6 h-6"

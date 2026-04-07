@@ -2,6 +2,7 @@ import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import wallpaper from "../assets/wallpaper_2.JPEG";
+import { colors } from "../theme";
 
 interface Photo {
   id: number;
@@ -80,7 +81,11 @@ const Galeria = () => {
           {[...Array(15)].map((_, i) => (
             <div
               key={`heart-${i}`}
-              className="absolute text-pink-400/50 animate-float-heart"
+              className="absolute animate-float-heart"
+              style={{
+                color: colors.primary[400],
+                opacity: 0.5,
+              }}
               style={{
                 left: `${5 + i * 7}%`,
                 bottom: `-100px`,
@@ -101,10 +106,10 @@ const Galeria = () => {
         >
           <defs>
             <linearGradient id="galleryLine" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#ec4899" stopOpacity="0" />
-              <stop offset="5%" stopColor="#ec4899" stopOpacity="0.3" />
-              <stop offset="95%" stopColor="#ec4899" stopOpacity="0.3" />
-              <stop offset="100%" stopColor="#ec4899" stopOpacity="0" />
+              <stop offset="0%" stopColor={colors.primary[600]} stopOpacity="0" />
+              <stop offset="5%" stopColor={colors.primary[600]} stopOpacity="0.3" />
+              <stop offset="95%" stopColor={colors.primary[600]} stopOpacity="0.3" />
+              <stop offset="100%" stopColor={colors.primary[600]} stopOpacity="0" />
             </linearGradient>
           </defs>
           {[...Array(20)].map((_, i) => (
@@ -184,8 +189,8 @@ const Galeria = () => {
             {/* Alerta pulsante */}
             <div className="absolute -top-3 -right-3 md:-top-4 md:-right-4 z-10">
               <div className="relative">
-                <div className="absolute inset-0 bg-pink-500 rounded-full animate-ping opacity-75"></div>
-                <div className="relative bg-pink-500 text-white rounded-full w-10 h-10 md:w-12 md:h-12 flex items-center justify-center shadow-lg">
+                <div className="absolute inset-0 rounded-full animate-ping opacity-75" style={{ backgroundColor: colors.primary[500] }}></div>
+                <div className="relative text-white rounded-full w-10 h-10 md:w-12 md:h-12 flex items-center justify-center shadow-lg" style={{ backgroundColor: colors.primary[500] }}>
                   <svg
                     className="w-5 h-5 md:w-6 md:h-6"
                     fill="none"
@@ -209,7 +214,10 @@ const Galeria = () => {
               </div>
             </div>
 
-            <div className="bg-pink-50/80 backdrop-blur-sm rounded-2xl md:rounded-3xl p-6 md:p-12 shadow-lg border border-pink-200/50">
+            <div className="backdrop-blur-sm rounded-2xl md:rounded-3xl p-6 md:p-12 shadow-lg border" style={{
+              backgroundColor: `${colors.primary[50]}80`,
+              borderColor: `${colors.primary[200]}80`,
+            }}>
               <p className="text-base md:text-lg lg:text-xl mb-3 md:mb-4 tracking-[0.1em] md:tracking-[0.15em] text-gray-800 font-medium">
                 Nossos momentos mais especiais!
               </p>
@@ -226,10 +234,16 @@ const Galeria = () => {
         {/* Categorias */}
         <section className="pb-8 md:pb-12 px-4">
           <div className="max-w-6xl mx-auto">
-            <div className="bg-pink-50/60 rounded-2xl p-4 md:p-6 mb-8 md:mb-12 border border-pink-200/50 backdrop-blur-sm relative z-10">
+            <div className="rounded-2xl p-4 md:p-6 mb-8 md:mb-12 border backdrop-blur-sm relative z-10" style={{
+              backgroundColor: `${colors.primary[50]}60`,
+              borderColor: `${colors.primary[200]}50`,
+            }}>
               <h3
-                className="text-lg md:text-xl font-semibold text-pink-800 mb-3 md:mb-4 flex items-center gap-2"
-                style={{ fontFamily: '"Playfair Display", serif' }}
+                className="text-lg md:text-xl font-semibold mb-3 md:mb-4 flex items-center gap-2"
+                style={{
+                  fontFamily: '"Playfair Display", serif',
+                  color: colors.primary[800],
+                }}
               >
                 <span>📷</span> Filtros
               </h3>
@@ -240,9 +254,17 @@ const Galeria = () => {
                     onClick={() => setSelectedCategory(category)}
                     className={`px-4 py-2 rounded-full font-medium transition-all text-sm md:text-base ${
                       selectedCategory === category
-                        ? 'bg-pink-500 text-white shadow-md'
-                        : 'bg-white text-gray-700 hover:bg-pink-100 border border-pink-200'
+                        ? 'text-white shadow-md'
+                        : 'bg-white text-gray-700 border'
                     }`}
+                    style={{
+                      backgroundColor: selectedCategory === category
+                        ? colors.primary[500]
+                        : undefined,
+                      borderColor: selectedCategory === category
+                        ? colors.primary[500]
+                        : colors.primary[200],
+                    }}
                     style={{ fontFamily: '"Playfair Display", serif' }}
                   >
                     {category}
@@ -271,7 +293,7 @@ const Galeria = () => {
                       <p className="text-white text-sm md:text-base font-medium">
                         {photo.alt}
                       </p>
-                      <p className="text-pink-300 text-xs">
+                      <p className="text-xs" style={{ color: colors.primary[300] }}>
                         {photo.category}
                       </p>
                     </div>
@@ -339,7 +361,7 @@ const Galeria = () => {
               <p className="text-white text-center mt-4 text-lg">
                 {selectedPhoto.alt}
               </p>
-              <p className="text-pink-400 text-center text-sm">
+              <p className="text-center text-sm" style={{ color: colors.primary[400] }}>
                 {selectedPhoto.category}
               </p>
             </div>
