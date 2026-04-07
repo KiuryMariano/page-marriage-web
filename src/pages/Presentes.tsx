@@ -328,58 +328,23 @@ const Presentes = () => {
                   Um Aviso Importante!
                 </h2>
 
-                <div className="space-y-3 md:space-y-4 text-gray-700">
-                  <div className="bg-gradient-to-r from-amber-50 to-amber-100 rounded-xl p-4 md:p-5 border-l-4 border-amber-500 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-amber-400/20 to-amber-600/20 rounded-full -mr-10 -mt-10"></div>
-                    <p className="text-base md:text-lg font-bold text-amber-700 flex items-center justify-center gap-3 relative z-10">
-                      <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-amber-600 rounded-lg flex items-center justify-center shadow-md">
-                        <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                      Sua presença é nosso maior presente!
-                    </p>
-                  </div>
+                <div className="space-y-4 text-gray-700 text-center text-base md:text-lg leading-relaxed">
+                  <p className="font-bold text-amber-600">
+                    Sua presença é nosso maior presente!
+                  </p>
 
-                  <div className="bg-blue-50 rounded-xl p-4 md:p-5 border-l-4 border-blue-400 text-left relative overflow-hidden">
-                    <div className="absolute bottom-0 right-0 w-16 h-16 bg-gradient-to-br from-blue-400/15 to-blue-600/15 rounded-full -mr-8 -mb-8"></div>
-                    <p className="text-sm md:text-base leading-relaxed text-gray-700 relative z-10">
-                      <span className="font-semibold text-blue-700 flex items-center gap-2 mb-2">
-                        <div className="w-6 h-6 bg-gradient-to-br from-blue-400 to-blue-600 rounded-md flex items-center justify-center">
-                          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                          </svg>
-                        </div>
-                        O que mais valorizamos
-                      </span>
-                      Ter você conosco neste dia especial já nos deixa imensamente felizes. Sua presença é o presente mais precioso que podemos receber.
-                    </p>
-                  </div>
+                  <p className="text-sm md:text-base">
+                    Ter você conosco neste dia especial já nos deixa imensamente felizes. É isso que mais <span className="font-bold text-blue-600">valorizamos</span>.
+                  </p>
 
-                  <div className="bg-green-50 rounded-xl p-4 md:p-5 border-l-4 border-green-400 text-left relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-14 h-14 bg-gradient-to-br from-green-400/15 to-green-600/15 rounded-full -ml-7 -mt-7"></div>
-                    <p className="text-sm md:text-base leading-relaxed text-gray-700 relative z-10">
-                      <span className="font-semibold text-green-700 flex items-center gap-2 mb-2">
-                        <div className="w-6 h-6 bg-gradient-to-br from-green-400 to-green-600 rounded-md flex items-center justify-center">
-                          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a1 1 0 100-2 1 1 0 000 2z" />
-                          </svg>
-                        </div>
-                        Quer nos presentear?
-                      </span>
-                      Se você quiser nos dar um presente extra, separamos algumas opções digitais especiais abaixo. Qualquer valor será muito bem-vindo!
-                    </p>
-                  </div>
+                  <p className="text-sm md:text-base">
+                    Se você quiser nos presentear, separamos algumas opções digitais especiais abaixo. Qualquer valor será <span className="font-bold text-green-600">muito bem-vindo</span>!
+                  </p>
 
-                  <div className="bg-purple-50 rounded-xl p-4 border-l-4 border-purple-400 text-left relative overflow-hidden">
-                    <div className="absolute top-1/2 right-2 w-10 h-10 bg-gradient-to-br from-purple-400/20 to-purple-600/20 rounded-full transform -translate-y-1/2"></div>
-                    <p className="text-xs md:text-sm text-gray-600 leading-relaxed flex items-start gap-3 relative z-10">
-                      <div className="w-5 h-5 bg-gradient-to-br from-purple-400 to-purple-600 rounded-md flex items-center justify-center shrink-0 mt-0.5">
-                        <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                      <span>Graças a Deus já temos nossa casa mobiliada, então o presente digital é a melhor opção para nós.</span>
+                  <div className="relative pt-2">
+                    <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
+                    <p className="pt-2 text-sm md:text-base text-gray-600 italic">
+                      Graças a Deus já temos nossa casa mobiliada, então o presente digital é a melhor opção para nós.
                     </p>
                   </div>
                 </div>
