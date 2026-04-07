@@ -2,6 +2,7 @@ import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import wallpaper from "../assets/wallpaper_1.JPEG";
+import { colors, gradients } from "../theme";
 
 interface Gift {
   id: number;
@@ -10,6 +11,7 @@ interface Gift {
   price: string;
   priceNumber: number;
   gradient: string;
+  image?: string;
 }
 
 interface CartItem extends Gift {
@@ -19,123 +21,183 @@ interface CartItem extends Gift {
 const gifts: Gift[] = [
   {
     id: 1,
-    emoji: "🍽️",
-    title: "Jantar Romântico",
-    price: "R$ 300,00",
-    priceNumber: 300,
-    gradient: "from-amber-100 to-amber-200",
+    emoji: "💒",
+    title: "Parcela da Festa de Casamento",
+    price: "R$ 500,00",
+    priceNumber: 500,
+    gradient: "from-blue-900 to-blue-800",
+    image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=300&fit=crop",
   },
   {
     id: 2,
-    emoji: "💐",
-    title: "Buquê de Flores",
-    price: "R$ 150,00",
-    priceNumber: 150,
-    gradient: "from-pink-100 to-pink-200",
+    emoji: "🫧",
+    title: "Coberta para Noiva (sempre coberta de razão)",
+    price: "R$ 0,01",
+    priceNumber: 0.01,
+    gradient: "from-blue-800 to-blue-700",
+    image: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=400&h=300&fit=crop",
   },
   {
     id: 3,
-    emoji: "✈️",
-    title: "Lua de Mel",
-    price: "R$ 500,00",
-    priceNumber: 500,
-    gradient: "from-blue-100 to-blue-200",
+    emoji: "🎮",
+    title: "PS5 para o Noivo",
+    price: "R$ 400,00",
+    priceNumber: 400,
+    gradient: "from-slate-800 to-slate-700",
+    image: "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=400&h=300&fit=crop",
   },
   {
     id: 4,
-    emoji: "🏠",
-    title: "Casa Nova",
-    price: "R$ 200,00",
-    priceNumber: 200,
-    gradient: "from-green-100 to-green-200",
+    emoji: "🚗",
+    title: "Parcela do Kit Turbo",
+    price: "R$ 300,00",
+    priceNumber: 300,
+    gradient: "from-blue-900 to-slate-800",
+    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop",
   },
   {
     id: 5,
-    emoji: "🍷",
-    title: "Vinho Especial",
-    price: "R$ 100,00",
-    priceNumber: 100,
-    gradient: "from-purple-100 to-purple-200",
+    emoji: "❄️",
+    title: "Geladeira",
+    price: "R$ 250,00",
+    priceNumber: 250,
+    gradient: "from-blue-700 to-cyan-700",
+    image: "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=400&h=300&fit=crop",
   },
   {
     id: 6,
-    emoji: "🛏️",
-    title: "Coberta pro Noivo",
-    price: "R$ 50,00",
-    priceNumber: 50,
-    gradient: "from-blue-100 to-indigo-200",
+    emoji: "🍿",
+    title: "Microondas",
+    price: "R$ 200,00",
+    priceNumber: 200,
+    gradient: "from-slate-700 to-gray-700",
+    image: "https://images.unsplash.com/photo-1574201635302-388dd92a4c3f?w=400&h=300&fit=crop",
   },
   {
     id: 7,
-    emoji: "💍",
-    title: "Anel de Noivado",
-    price: "R$ 2.000,00",
-    priceNumber: 2000,
-    gradient: "from-yellow-100 to-yellow-200",
+    emoji: "☕",
+    title: "Cafeteira",
+    price: "R$ 150,00",
+    priceNumber: 150,
+    gradient: "from-amber-900 to-yellow-800",
+    image: "https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?w=400&h=300&fit=crop",
   },
   {
     id: 8,
-    emoji: "📸",
-    title: "Ensaio de Casamento",
-    price: "R$ 400,00",
-    priceNumber: 400,
-    gradient: "from-rose-100 to-rose-200",
+    emoji: "🍿",
+    title: "Pipoqueira",
+    price: "R$ 80,00",
+    priceNumber: 80,
+    gradient: "from-blue-800 to-indigo-800",
+    image: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400&h=300&fit=crop",
   },
   {
     id: 9,
-    emoji: "🎂",
-    title: "Bolo de Casamento",
-    price: "R$ 250,00",
-    priceNumber: 250,
-    gradient: "from-orange-100 to-orange-200",
+    emoji: "🫖",
+    title: "Chaleira Elétrica",
+    price: "R$ 60,00",
+    priceNumber: 60,
+    gradient: "from-slate-800 to-slate-700",
+    image: "https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=400&h=300&fit=crop",
   },
   {
     id: 10,
-    emoji: "🧺",
-    title: "Cesta de Café",
-    price: "R$ 120,00",
-    priceNumber: 120,
-    gradient: "from-yellow-100 to-amber-200",
+    emoji: "👗",
+    title: "Vestido da Noiva",
+    price: "R$ 350,00",
+    priceNumber: 350,
+    gradient: "from-blue-900 to-indigo-900",
+    image: "https://images.unsplash.com/photo-1594552072238-b8a33785b261?w=400&h=300&fit=crop",
   },
   {
     id: 11,
-    emoji: "🫧",
-    title: "Coberta pra Noiva",
-    price: "R$ 0,01",
-    priceNumber: 0.01,
-    gradient: "from-pink-100 to-fuchsia-200",
+    emoji: "💇",
+    title: "Corte de Cabelo do Noivo",
+    price: "R$ 50,00",
+    priceNumber: 50,
+    gradient: "from-blue-800 to-blue-700",
+    image: "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=400&h=300&fit=crop",
   },
   {
     id: 12,
-    emoji: "🧹",
-    title: "Faxina Mensal",
-    price: "R$ 150,00",
-    priceNumber: 150,
-    gradient: "from-teal-100 to-teal-200",
+    emoji: "💅",
+    title: "Dia da Noiva",
+    price: "R$ 200,00",
+    priceNumber: 200,
+    gradient: "from-rose-900 to-pink-800",
+    image: "https://images.unsplash.com/photo-1560750588-73207b1ef5b8?w=400&h=300&fit=crop",
   },
   {
     id: 13,
-    emoji: "🍔",
-    title: "Janta do BK",
-    price: "R$ 40,00",
-    priceNumber: 40,
-    gradient: "from-red-100 to-red-200",
+    emoji: "😤",
+    title: "Fundo Emergencial para TPM",
+    price: "R$ 100,00",
+    priceNumber: 100,
+    gradient: "from-red-900 to-rose-800",
+    image: "https://images.unsplash.com/photo-1481391319762-47dff72954d9?w=400&h=300&fit=crop",
   },
   {
     id: 14,
-    emoji: "😤",
-    title: "Direito de Reclamar",
-    price: "R$ 999,00",
-    priceNumber: 999,
-    gradient: "from-slate-100 to-slate-200",
+    emoji: "🧖",
+    title: "Vale SPA para 'Paz Pós-Briga'",
+    price: "R$ 300,00",
+    priceNumber: 300,
+    gradient: "from-purple-900 to-violet-800",
+    image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&h=300&fit=crop",
   },
   {
     id: 15,
-    emoji: "🤫",
-    title: "Mandar Calar a Boca",
-    price: "R$ 1.999,00",
-    priceNumber: 1999,
-    gradient: "from-zinc-100 to-zinc-200",
+    emoji: "💆",
+    title: "Massagem para o Noivo (depois de ver a conta)",
+    price: "R$ 150,00",
+    priceNumber: 150,
+    gradient: "from-emerald-900 to-teal-800",
+    image: "https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?w=400&h=300&fit=crop",
+  },
+  {
+    id: 16,
+    emoji: "😷",
+    title: "Máscara de Gás (fraldas do futuro filho)",
+    price: "R$ 30,00",
+    priceNumber: 30,
+    gradient: "from-slate-800 to-gray-700",
+    image: "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=400&h=300&fit=crop",
+  },
+  {
+    id: 17,
+    emoji: "🏋️",
+    title: "Academia (recuperação pós-lua de mel)",
+    price: "R$ 120,00",
+    priceNumber: 120,
+    gradient: "from-blue-900 to-cyan-800",
+    image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&h=300&fit=crop",
+  },
+  {
+    id: 18,
+    emoji: "👨‍🍳",
+    title: "Avental 'Chef por Amor' & 'Ajudante por Obrigação'",
+    price: "R$ 40,00",
+    priceNumber: 40,
+    gradient: "from-amber-800 to-orange-800",
+    image: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=400&h=300&fit=crop",
+  },
+  {
+    id: 19,
+    emoji: "🧂",
+    title: "Sal Grosso (espantar mau-olhado)",
+    price: "R$ 10,00",
+    priceNumber: 10,
+    gradient: "from-stone-700 to-stone-600",
+    image: "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=400&h=300&fit=crop",
+  },
+  {
+    id: 20,
+    emoji: "🍝",
+    title: "Rolo de Macarrão (para quando necessário)",
+    price: "R$ 5,00",
+    priceNumber: 5,
+    gradient: "from-yellow-800 to-amber-800",
+    image: "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=400&h=300&fit=crop",
   },
 ];
 
@@ -197,7 +259,7 @@ const Presentes = () => {
           {[...Array(15)].map((_, i) => (
             <div
               key={`money-${i}`}
-              className="absolute text-green-600/70 animate-float-money font-bold"
+              className="absolute animate-float-money font-bold"
               style={{
                 left: `${5 + i * 7}%`,
                 bottom: `-100px`,
@@ -205,6 +267,8 @@ const Presentes = () => {
                 animationDuration: `${18 + Math.random() * 8}s`,
                 fontSize: `${30 + Math.random() * 36}px`,
                 fontFamily: "Arial, sans-serif",
+                color: colors.primary[500],
+                opacity: 0.5,
               }}
             >
               $
@@ -219,10 +283,10 @@ const Presentes = () => {
         >
           <defs>
             <linearGradient id="notebookLine" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#b45309" stopOpacity="0" />
-              <stop offset="5%" stopColor="#b45309" stopOpacity="0.3" />
-              <stop offset="95%" stopColor="#b45309" stopOpacity="0.3" />
-              <stop offset="100%" stopColor="#b45309" stopOpacity="0" />
+              <stop offset="0%" stopColor="#1e3a8a" stopOpacity="0" />
+              <stop offset="5%" stopColor="#1e3a8a" stopOpacity="0.3" />
+              <stop offset="95%" stopColor="#1e3a8a" stopOpacity="0.3" />
+              <stop offset="100%" stopColor="#1e3a8a" stopOpacity="0" />
             </linearGradient>
           </defs>
           {[...Array(20)].map((_, i) => (
@@ -329,20 +393,25 @@ const Presentes = () => {
                 </h2>
 
                 <div className="space-y-4 text-gray-700 text-center text-base md:text-lg leading-relaxed">
-                  <p className="font-bold text-amber-600">
+                  <p className="font-bold" style={{ color: colors.primary[600] }}>
                     Sua presença é nosso maior presente!
                   </p>
 
                   <p className="text-sm md:text-base">
-                    Ter você conosco neste dia especial já nos deixa imensamente felizes. É isso que mais <span className="font-bold text-blue-600">valorizamos</span>.
+                    Ter você conosco neste dia especial já nos deixa imensamente felizes. É isso que mais <span className="font-bold" style={{ color: "#1e40af" }}>valorizamos</span>.
                   </p>
 
                   <p className="text-sm md:text-base">
-                    Se você quiser nos presentear, separamos algumas opções digitais especiais abaixo. Qualquer valor será <span className="font-bold text-green-600">muito bem-vindo</span>!
+                    Se você quiser nos presentear, separamos algumas opções digitais especiais abaixo. Qualquer valor será <span className="font-bold" style={{ color: "#059669" }}>muito bem-vindo</span>!
                   </p>
 
                   <div className="relative pt-2">
-                    <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
+                    <div
+                      className="absolute top-0 left-1/2 transform -translate-x-1/2 w-16 h-1"
+                      style={{
+                        background: gradients.horizontal.primaryLight,
+                      }}
+                    ></div>
                     <p className="pt-2 text-sm md:text-base text-gray-600 italic">
                       Graças a Deus já temos nossa casa mobiliada, então o presente digital é a melhor opção para nós.
                     </p>
@@ -351,8 +420,11 @@ const Presentes = () => {
 
                 <button
                   onClick={() => setIsPresenceModalOpen(false)}
-                  className="mt-5 md:mt-6 w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold py-3 px-6 rounded-lg transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2"
-                  style={{ fontFamily: '"Playfair Display", serif' }}
+                  className="mt-5 md:mt-6 w-full text-white font-bold py-3 px-6 rounded-lg transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+                  style={{
+                    fontFamily: '"Playfair Display", serif',
+                    background: gradients.primary,
+                  }}
                 >
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -369,7 +441,10 @@ const Presentes = () => {
         {/* Floating Cart Button - ajustado para mobile com navbar inferior */}
       <button
         onClick={() => setIsCartOpen(true)}
-        className="fixed bottom-24 md:bottom-6 right-6 z-40 bg-amber-500 hover:bg-amber-600 text-white rounded-full p-4 shadow-lg transition-all hover:scale-110"
+        className="fixed bottom-24 md:bottom-6 right-6 z-40 text-white rounded-full p-4 shadow-lg transition-all hover:scale-110"
+        style={{
+          background: gradients.primary,
+        }}
       >
         <svg
           className="w-6 h-6"
@@ -471,7 +546,10 @@ const Presentes = () => {
                         >
                           {item.title}
                         </h3>
-                        <p className="text-amber-600 font-bold text-sm md:text-base">
+                        <p
+                          className="font-bold text-sm md:text-base"
+                          style={{ color: colors.primary[600] }}
+                        >
                           {item.price}
                         </p>
                         <div className="flex items-center gap-1 md:gap-2 mt-2">
@@ -523,14 +601,20 @@ const Presentes = () => {
                     <span className="text-base md:text-lg text-gray-600">
                       Total:
                     </span>
-                    <span className="text-2xl md:text-3xl font-bold text-amber-600">
+                    <span
+                      className="text-2xl md:text-3xl font-bold"
+                      style={{ color: colors.primary[600] }}
+                    >
                       {formatPrice(cartTotal)}
                     </span>
                   </div>
                   <button
                     onClick={handleCheckout}
-                    className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 md:py-4 px-4 md:px-6 rounded-lg transition-colors text-base md:text-lg"
-                    style={{ fontFamily: '"Playfair Display", serif' }}
+                    className="w-full text-white font-bold py-3 md:py-4 px-4 md:px-6 rounded-lg transition-colors text-base md:text-lg"
+                    style={{
+                      fontFamily: '"Playfair Display", serif',
+                      background: gradients.primary,
+                    }}
                   >
                     Finalizar Compra
                   </button>
@@ -573,12 +657,22 @@ const Presentes = () => {
         <div className="max-w-6xl mx-auto">
           <div className="relative mb-12 md:mb-16">
             {/* Elemento decorativo superior */}
-            <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 w-24 md:w-32 h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent"></div>
+            <div
+              className="absolute -top-8 left-1/2 transform -translate-x-1/2 w-24 md:w-32 h-1"
+              style={{
+                background: gradients.horizontal.primary,
+              }}
+            ></div>
 
             <div className="text-center mb-8 md:mb-10">
               <div className="inline-flex items-center gap-3 md:gap-4 mb-4 md:mb-5">
-                <div className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
-                  <svg className="w-7 h-7 md:w-8 md:h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <div
+                  className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center shadow-lg text-white"
+                  style={{
+                    background: gradients.primary,
+                  }}
+                >
+                  <svg className="w-7 h-7 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
                   </svg>
                 </div>
@@ -589,13 +683,26 @@ const Presentes = () => {
                   Como Presentear?
                 </h3>
               </div>
-              <div className="w-32 md:w-40 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent mx-auto"></div>
+              <div
+                className="w-32 md:w-40 h-1 mx-auto"
+                style={{
+                  background: gradients.horizontal.primaryLight,
+                }}
+              ></div>
             </div>
 
             <div className="grid md:grid-cols-3 gap-5 md:gap-7">
-              <div className="bg-white rounded-xl p-5 md:p-6 shadow-md border-l-4 border-amber-500 hover:shadow-xl transition-all hover:-translate-y-1">
+              <div
+                className="bg-white rounded-xl p-5 md:p-6 shadow-md border-l-4 hover:shadow-xl transition-all hover:-translate-y-1"
+                style={{ borderLeftColor: colors.primary[500] }}
+              >
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-14 h-14 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center font-bold text-xl text-white shadow-lg">
+                  <div
+                    className="w-14 h-14 rounded-xl flex items-center justify-center font-bold text-xl text-white shadow-lg"
+                    style={{
+                      background: gradients.secondary,
+                    }}
+                  >
                     1
                   </div>
                   <div className="flex-1">
@@ -606,24 +713,33 @@ const Presentes = () => {
                 </div>
                 <div className="space-y-3 text-sm text-gray-700">
                   <p className="flex items-start gap-3">
-                    <div className="w-5 h-5 bg-amber-100 rounded-full flex items-center justify-center shrink-0 mt-0.5">
-                      <svg className="w-3 h-3 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+                    <div
+                      className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+                      style={{ backgroundColor: colors.primary[100] }}
+                    >
+                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20" style={{ color: colors.primary[600] }}>
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     </div>
                     <span>Navegue pelos cards e escolha os itens</span>
                   </p>
                   <p className="flex items-start gap-3">
-                    <div className="w-5 h-5 bg-amber-100 rounded-full flex items-center justify-center shrink-0 mt-0.5">
-                      <svg className="w-3 h-3 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+                    <div
+                      className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+                      style={{ backgroundColor: colors.primary[100] }}
+                    >
+                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20" style={{ color: colors.primary[600] }}>
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     </div>
                     <span>Clique em <strong>"Adicionar"</strong></span>
                   </p>
                   <p className="flex items-start gap-3">
-                    <div className="w-5 h-5 bg-amber-100 rounded-full flex items-center justify-center shrink-0 mt-0.5">
-                      <svg className="w-3 h-3 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+                    <div
+                      className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+                      style={{ backgroundColor: colors.primary[100] }}
+                    >
+                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20" style={{ color: colors.primary[600] }}>
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     </div>
@@ -632,9 +748,17 @@ const Presentes = () => {
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl p-5 shadow-md border-l-4 border-blue-500 hover:shadow-xl transition-all hover:-translate-y-1">
+              <div
+                className="bg-white rounded-xl p-5 shadow-md border-l-4 hover:shadow-xl transition-all hover:-translate-y-1"
+                style={{ borderLeftColor: "#f59e0b" }}
+              >
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-14 h-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center font-bold text-xl text-white shadow-lg">
+                  <div
+                    className="w-14 h-14 rounded-xl flex items-center justify-center font-bold text-xl text-white shadow-lg"
+                    style={{
+                      background: "linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%)",
+                    }}
+                  >
                     2
                   </div>
                   <div className="flex-1">
@@ -645,24 +769,33 @@ const Presentes = () => {
                 </div>
                 <div className="space-y-3 text-sm text-gray-700">
                   <p className="flex items-start gap-3">
-                    <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center shrink-0 mt-0.5">
-                      <svg className="w-3 h-3 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <div
+                      className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+                      style={{ backgroundColor: colors.primary[100] }}
+                    >
+                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20" style={{ color: colors.primary[600] }}>
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     </div>
                     <span>Clique no ícone do carrinho</span>
                   </p>
                   <p className="flex items-start gap-3">
-                    <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center shrink-0 mt-0.5">
-                      <svg className="w-3 h-3 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <div
+                      className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+                      style={{ backgroundColor: colors.primary[100] }}
+                    >
+                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20" style={{ color: colors.primary[600] }}>
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     </div>
                     <span>Ajuste quantidades ou remova itens</span>
                   </p>
                   <p className="flex items-start gap-3">
-                    <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center shrink-0 mt-0.5">
-                      <svg className="w-3 h-3 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <div
+                      className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+                      style={{ backgroundColor: colors.primary[100] }}
+                    >
+                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20" style={{ color: colors.primary[600] }}>
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     </div>
@@ -671,9 +804,17 @@ const Presentes = () => {
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl p-5 shadow-md border-l-4 border-green-500 hover:shadow-xl transition-all hover:-translate-y-1">
+              <div
+                className="bg-white rounded-xl p-5 shadow-md border-l-4 hover:shadow-xl transition-all hover:-translate-y-1"
+                style={{ borderLeftColor: "#f59e0b" }}
+              >
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-14 h-14 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center font-bold text-xl text-white shadow-lg">
+                  <div
+                    className="w-14 h-14 rounded-xl flex items-center justify-center font-bold text-xl text-white shadow-lg"
+                    style={{
+                      background: "linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%)",
+                    }}
+                  >
                     3
                   </div>
                   <div className="flex-1">
@@ -684,24 +825,33 @@ const Presentes = () => {
                 </div>
                 <div className="space-y-3 text-sm text-gray-700">
                   <p className="flex items-start gap-3">
-                    <div className="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center shrink-0 mt-0.5">
-                      <svg className="w-3 h-3 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                    <div
+                      className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+                      style={{ backgroundColor: colors.primary[100] }}
+                    >
+                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20" style={{ color: colors.primary[600] }}>
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     </div>
                     <span>Clique em <strong>"Finalizar Compra"</strong></span>
                   </p>
                   <p className="flex items-start gap-3">
-                    <div className="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center shrink-0 mt-0.5">
-                      <svg className="w-3 h-3 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                    <div
+                      className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+                      style={{ backgroundColor: colors.primary[100] }}
+                    >
+                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20" style={{ color: colors.primary[600] }}>
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     </div>
                     <span>Escolha o método de pagamento</span>
                   </p>
                   <p className="flex items-start gap-3">
-                    <div className="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center shrink-0 mt-0.5">
-                      <svg className="w-3 h-3 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                    <div
+                      className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+                      style={{ backgroundColor: colors.primary[100] }}
+                    >
+                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20" style={{ color: colors.primary[600] }}>
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     </div>
@@ -712,7 +862,12 @@ const Presentes = () => {
             </div>
 
             {/* Elemento decorativo inferior */}
-            <div className="absolute -bottom-8 md:-bottom-10 left-1/2 transform -translate-x-1/2 w-24 md:w-32 h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent"></div>
+            <div
+              className="absolute -bottom-8 md:-bottom-10 left-1/2 transform -translate-x-1/2 w-24 md:w-32 h-1"
+              style={{
+                background: gradients.horizontal.primary,
+              }}
+            ></div>
           </div>
 
           {/* Seção de Formas de Pagamento separada */}
@@ -735,12 +890,21 @@ const Presentes = () => {
             {gifts.map((gift) => (
               <div
                 key={gift.id}
-                className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all hover:-translate-y-1 flex flex-col border-l-4 border-amber-500 relative z-10 overflow-hidden"
+                className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all hover:-translate-y-1 flex flex-col border-l-4 relative z-10 overflow-hidden"
+                style={{ borderLeftColor: colors.primary[500] }}
               >
                 <div
-                  className={`h-24 sm:h-28 md:h-32 bg-gradient-to-br ${gift.gradient} flex items-center justify-center`}
+                  className={`h-24 sm:h-28 md:h-32 bg-gradient-to-br ${gift.gradient} flex items-center justify-center overflow-hidden`}
                 >
-                  <span className="text-4xl sm:text-5xl md:text-6xl">{gift.emoji}</span>
+                  {gift.image ? (
+                    <img
+                      src={gift.image}
+                      alt={gift.title}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-4xl sm:text-5xl md:text-6xl">{gift.emoji}</span>
+                  )}
                 </div>
                 <div className="p-4 md:p-5 flex-1 flex flex-col">
                   <h3
@@ -750,15 +914,21 @@ const Presentes = () => {
                     {gift.title}
                   </h3>
                   <div className="flex items-center justify-between mb-3 md:mb-4">
-                    <p className="text-lg md:text-xl font-bold text-amber-600">
+                    <p
+                      className="text-lg md:text-xl font-bold"
+                      style={{ color: colors.primary[600] }}
+                    >
                       {gift.price}
                     </p>
                   </div>
                   <div className="mt-auto">
                     <button
                       onClick={() => addToCart(gift)}
-                      className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold py-2.5 md:py-3 px-4 rounded-lg transition-all hover:shadow-md active:scale-95 text-sm md:text-base flex items-center justify-center gap-2"
-                      style={{ fontFamily: '"Playfair Display", serif' }}
+                      className="w-full text-white font-semibold py-2.5 md:py-3 px-4 rounded-lg transition-all hover:shadow-md active:scale-95 text-sm md:text-base flex items-center justify-center gap-2"
+                      style={{
+                        fontFamily: '"Playfair Display", serif',
+                        background: gradients.primary,
+                      }}
                     >
                       <svg
                         className="w-4 h-4 md:w-5 md:h-5"

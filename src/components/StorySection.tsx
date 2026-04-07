@@ -1,3 +1,5 @@
+import { colors } from '../theme';
+
 const StorySection = () => {
   const events = [
     {
@@ -47,7 +49,7 @@ const StorySection = () => {
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="text-center mb-20">
-          <p className="text-amber-600 uppercase tracking-[0.3em] text-xs mb-4">Nossa Jornada</p>
+          <p className="uppercase tracking-[0.3em] text-xs mb-4" style={{ color: colors.primary[600] }}>Nossa Jornada</p>
           <h2 className="text-6xl md:text-7xl text-gray-800" style={{ fontFamily: '"Great Vibes", cursive' }}>
             Nossa História
           </h2>
@@ -61,7 +63,7 @@ const StorySection = () => {
               className="relative"
             >
               {/* Date */}
-              <p className="text-amber-600 uppercase tracking-widest text-xs mb-2">
+              <p className="uppercase tracking-widest text-xs mb-2" style={{ color: colors.primary[600] }}>
                 {event.date}
               </p>
 
@@ -78,9 +80,9 @@ const StorySection = () => {
               {/* Divider - except for last item */}
               {index < events.length - 1 && (
                 <div className="mt-12 flex items-center gap-4">
-                  <div className="flex-1 h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent"></div>
-                  <span className="text-amber-400 text-xl">◆</span>
-                  <div className="flex-1 h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent"></div>
+                  <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, transparent 0%, #fcd34d 50%, transparent 100%)' }}></div>
+                  <span className="text-xl" style={{ color: colors.primary[400] }}>◆</span>
+                  <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, transparent 0%, #fcd34d 50%, transparent 100%)' }}></div>
                 </div>
               )}
             </div>
@@ -89,11 +91,11 @@ const StorySection = () => {
 
         {/* Final Quote */}
         <div className="mt-24 text-center">
-          <div className="border-l-2 border-amber-400 pl-8 inline-block">
+          <div className="pl-8 inline-block" style={{ borderLeft: '2px solid ' + colors.primary[400] }}>
             <blockquote className="text-2xl md:text-3xl text-gray-700 leading-relaxed" style={{ fontFamily: '"Great Vibes", cursive' }}>
               Sempre soubemos o que queríamos e o que éramos um para o outro
             </blockquote>
-            <p className="text-amber-600 uppercase tracking-widest text-xs mt-4">
+            <p className="uppercase tracking-widest text-xs mt-4" style={{ color: colors.primary[600] }}>
               Letícia & Kiury
             </p>
           </div>

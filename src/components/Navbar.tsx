@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import iniciais from '../assets/iniciais_white.png';
+import { colors } from '../theme';
 
 const Navbar = () => {
   const location = useLocation();
@@ -66,6 +67,7 @@ const Navbar = () => {
                 className={`flex flex-col items-center justify-center w-full h-full transition-all duration-300 ${
                   isActive ? 'text-amber-400' : 'text-gray-400 hover:text-white'
                 }`}
+                style={isActive ? { color: colors.primary[400] } : undefined}
               >
                 <div className={`transition-transform duration-300 ${isActive ? 'scale-110' : 'scale-100'}`}>
                   {item.icon}
