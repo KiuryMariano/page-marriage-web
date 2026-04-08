@@ -3,11 +3,13 @@ import Home from './pages/Home';
 import Presentes from './pages/Presentes';
 import Galeria from './pages/Galeria';
 import Confirmar from './pages/Confirmar';
+import ScrollToTop from './components/ScrollToTop';
 import './index.css';
 
 function App() {
   return (
     <BrowserRouter basename="/page-marriage-web">
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/presentes" element={<Presentes />} />
