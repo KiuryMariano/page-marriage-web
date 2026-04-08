@@ -8,97 +8,220 @@ interface Photo {
   id: number;
   url: string;
   alt: string;
-  category: string;
+  date: string;
 }
 
-const photos: Photo[] = [
-  {
-    id: 1,
-    url: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=600&h=800&fit=crop',
-    alt: 'Casal feliz',
-    category: 'Noivado',
-  },
-  {
-    id: 2,
-    url: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&h=800&fit=crop',
-    alt: 'Momento especial',
-    category: 'Noivado',
-  },
-  {
-    id: 3,
-    url: 'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=600&h=800&fit=crop',
-    alt: 'Casal apaixonado',
-    category: 'Ensaio',
-  },
-  {
-    id: 4,
-    url: 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=600&h=800&fit=crop',
-    alt: 'Noivos',
-    category: 'Ensaio',
-  },
-  {
-    id: 5,
-    url: 'https://images.unsplash.com/photo-1529636798458-92182e662485?w=600&h=800&fit=crop',
-    alt: 'Amor eterno',
-    category: 'Casamento',
-  },
-  {
-    id: 6,
-    url: 'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=600&h=800&fit=crop',
-    alt: 'Momento único',
-    category: 'Casamento',
-  },
-  {
-    id: 7,
-    url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=800&fit=crop',
-    alt: 'Casal juntos',
-    category: 'Noivado',
-  },
-  {
-    id: 8,
-    url: 'https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=600&h=800&fit=crop',
-    alt: 'Felicidade',
-    category: 'Ensaio',
-  },
-];
+// Importando todas as fotos da galeria
+const photoImports = import.meta.glob('../assets/galery/*.{JPEG,jpeg,JPG,jpg,PNG,png}', { eager: true }) as Record<string, { default: string }>;
 
-const categories = ['Todos', 'Noivado', 'Ensaio', 'Casamento'];
+// Função para extrair data do nome do arquivo e formatar
+const extractDateFromFilename = (filename: string): string => {
+  const match = filename.match(/(\d{1,2}-\d{1,2}-\d{2,4})/);
+  if (match) {
+    const [day, month, year] = match[1].split('-');
+    return `${day}/${month}/${year.length === 2 ? '20' + year : year}`;
+  }
+  return '';
+};
+
+// Criar array de fotos com datas extraídas dos nomes e configuração de layout
+interface PhotoWithLayout extends Photo {
+  position?: number;
+  colSpan?: number;
+  rowSpan?: number;
+}
+
+const createPhotosArray = (): PhotoWithLayout[] => {
+  const photos: PhotoWithLayout[] = [];
+  let id = 1;
+
+  // Separar fotos por tipo
+  const horizontalPhotos: PhotoWithLayout[] = [];
+  const normalPhotos: PhotoWithLayout[] = [];
+
+  for (const [path, module] of Object.entries(photoImports)) {
+    const filename = path.split('/').pop() || '';
+    const date = extractDateFromFilename(filename);
+    const isHorizontal = filename.startsWith('h-');
+
+    const photo: PhotoWithLayout = {
+      id: id++,
+      url: module.default,
+      alt: 'Letícia e Kiury',
+      date: date,
+      colSpan: 1,
+      rowSpan: 1,
+    };
+
+    if (isHorizontal) {
+      photo.colSpan = 2;
+      horizontalPhotos.push(photo);
+    } else {
+      normalPhotos.push(photo);
+    }
+  }
+
+  // Ordenar por data (mais recentes primeiro)
+  [...horizontalPhotos, ...normalPhotos].forEach(photo => {
+    if (photo.date) {
+      photo.date = photo.date;
+    }
+  });
+
+  horizontalPhotos.sort((a, b) => {
+    if (!a.date) return 1;
+    if (!b.date) return -1;
+    const [dayA, monthA, yearA] = a.date.split('/').map(Number);
+    const [dayB, monthB, yearB] = b.date.split('/').map(Number);
+    return new Date(yearB, monthB - 1, dayB).getTime() - new Date(yearA, monthA - 1, dayA).getTime();
+  });
+
+  normalPhotos.sort((a, b) => {
+    if (!a.date) return 1;
+    if (!b.date) return -1;
+    const [dayA, monthA, yearA] = a.date.split('/').map(Number);
+    const [dayB, monthB, yearB] = b.date.split('/').map(Number);
+    return new Date(yearB, monthB - 1, dayB).getTime() - new Date(yearA, monthA - 1, dayA).getTime();
+  });
+
+  // Layout planejado para exatamente 42 fotos
+  // 8 horizontais (H), 6 verticais (V), 28 normais (N)
+  const layoutPattern = [
+    'H', 'H',           // 2
+    'V', 'N', 'V', 'N', // 4
+    'N', 'N', 'N', 'N', // 4
+    'H', 'H',           // 2
+    'V', 'N', 'V', 'N', // 4
+    'N', 'N', 'N', 'N', // 4
+    'H', 'H',           // 2
+    'V', 'N', 'V', 'N', // 4
+    'N', 'N', 'N', 'N', // 4
+    'H', 'H',           // 2
+    'N', 'N', 'V',      // 3
+    'N', 'N', 'N', 'H',  // 4
+    'N', 'N', 'N',      // 3
+  ];
+
+  let hIndex = 0;
+  let nIndex = 0;
+  let position = 1;
+
+  layoutPattern.forEach((type) => {
+    let photo: PhotoWithLayout | undefined;
+
+    if (type === 'H') {
+      // Usar foto horizontal se disponível, senão usar normal
+      if (hIndex < horizontalPhotos.length) {
+        photo = { ...horizontalPhotos[hIndex++] };
+      } else if (nIndex < normalPhotos.length) {
+        photo = { ...normalPhotos[nIndex++], colSpan: 2 };
+      }
+      if (photo) {
+        photo.colSpan = 2;
+        photo.rowSpan = 1;
+      }
+    } else if (type === 'V') {
+      if (nIndex < normalPhotos.length) {
+        photo = { ...normalPhotos[nIndex++] };
+        photo.colSpan = 1;
+        photo.rowSpan = 2;
+      }
+    } else {
+      if (nIndex < normalPhotos.length) {
+        photo = normalPhotos[nIndex++];
+        photo.colSpan = 1;
+        photo.rowSpan = 1;
+      }
+    }
+
+    if (photo) {
+      photo.position = position++;
+      photos.push(photo);
+    }
+  });
+
+  // Trocas manuais de posição [posição1, posição2]
+  const trocas = [
+    [2, 11],  // troca posição 2 com 11
+    [33, 35], // troca posição 33 com 35
+    [4, 19],  // troca posição 4 com 19
+    [5, 28],  // troca posição 5 com 28
+    [9, 15],  // troca posição 9 com 15
+    [28, 25], // troca posição 28 com 25
+    [30, 33], // troca posição 30 com 33
+    [40, 34], // troca posição 40 com 34
+    [24, 9],  // troca posição 24 com 9
+    [18, 13], // troca posição 18 com 13
+    [13, 26], // troca posição 13 com 26
+  ];
+
+  // Trocas cíclicas (3 posições)
+  const trocasCiclicas = [
+    [14, 13, 18], // 14 → 13, 13 → 18, 18 → 14
+  ];
+
+  // Aplicar as trocas cíclicas primeiro
+  trocasCiclicas.forEach(([pos1, pos2, pos3]) => {
+    const index1 = photos.findIndex(p => p.position === pos1);
+    const index2 = photos.findIndex(p => p.position === pos2);
+    const index3 = photos.findIndex(p => p.position === pos3);
+
+    if (index1 !== -1 && index2 !== -1 && index3 !== -1) {
+      // Salvar foto da posição 1
+      const foto1 = photos[index1];
+
+      // 18 → 14
+      photos[index1] = { ...photos[index3] };
+      photos[index1].position = pos1;
+
+      // 13 → 18
+      photos[index3] = { ...photos[index2] };
+      photos[index3].position = pos3;
+
+      // 14 → 13
+      photos[index2] = foto1;
+      photos[index2].position = pos2;
+
+    }
+  });
+
+  // Aplicar as trocas
+  trocas.forEach(([pos1, pos2]) => {
+    const index1 = photos.findIndex(p => p.position === pos1);
+    const index2 = photos.findIndex(p => p.position === pos2);
+
+    if (index1 !== -1 && index2 !== -1) {
+      // Trocar as posições
+      const temp = photos[index1].position;
+      photos[index1].position = photos[index2].position;
+      photos[index2].position = temp;
+
+      // Trocar os layouts (colSpan e rowSpan)
+      const tempColSpan = photos[index1].colSpan;
+      const tempRowSpan = photos[index1].rowSpan;
+      photos[index1].colSpan = photos[index2].colSpan;
+      photos[index1].rowSpan = photos[index2].rowSpan;
+      photos[index2].colSpan = tempColSpan;
+      photos[index2].rowSpan = tempRowSpan;
+
+    }
+  });
+
+  // Reordenar o array pela posição
+  photos.sort((a, b) => (a.position || 0) - (b.position || 0));
+
+  return photos;
+};
+
+const photos = createPhotosArray();
 
 const Galeria = () => {
-  const [selectedCategory, setSelectedCategory] = useState('Todos');
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
-
-  const filteredPhotos = selectedCategory === 'Todos'
-    ? photos
-    : photos.filter(photo => photo.category === selectedCategory);
 
   return (
     <div className="min-h-screen flex flex-col relative bg-white overflow-hidden">
       {/* Animated Background Effects */}
       <div className="fixed left-0 right-0 top-0 bottom-[120px] pointer-events-none overflow-hidden z-0">
-        {/* Floating Hearts */}
-        <div className="absolute inset-0">
-          {[...Array(15)].map((_, i) => (
-            <div
-              key={`heart-${i}`}
-              className="absolute animate-float-heart"
-              style={{
-                color: colors.primary[400],
-                opacity: 0.5,
-              }}
-              style={{
-                left: `${5 + i * 7}%`,
-                bottom: `-100px`,
-                animationDelay: `${i * 4}s`,
-                animationDuration: `${18 + Math.random() * 8}s`,
-                fontSize: `${20 + Math.random() * 24}px`,
-              }}
-            >
-              ❤️
-            </div>
-          ))}
-        </div>
-
         {/* Notebook Lines (subtle) */}
         <svg
           className="absolute inset-0 w-full h-full opacity-10"
@@ -125,33 +248,6 @@ const Galeria = () => {
           ))}
         </svg>
       </div>
-
-      {/* Custom animations via style tag */}
-      <style>{`
-        @keyframes float-heart {
-          0% {
-            transform: translateY(0) translateX(0) rotate(-15deg) scale(1);
-            opacity: 0;
-          }
-          10% {
-            opacity: 0.3;
-          }
-          50% {
-            transform: translateY(-50vh) translateX(15px) rotate(15deg) scale(1.2);
-          }
-          90% {
-            opacity: 0.15;
-          }
-          100% {
-            transform: translateY(-120vh) translateX(-15px) rotate(-10deg) scale(0.8);
-            opacity: 0;
-          }
-        }
-
-        .animate-float-heart {
-          animation: float-heart linear infinite;
-        }
-      `}</style>
 
       <Navbar />
 
@@ -184,15 +280,36 @@ const Galeria = () => {
         </section>
 
         {/* Textos de introdução */}
-        <section className="py-12 md:py-16 px-4 relative overflow-hidden">
-          <div className="max-w-3xl mx-auto text-center relative">
-            {/* Alerta pulsante */}
-            <div className="absolute -top-3 -right-3 md:-top-4 md:-right-4 z-10">
-              <div className="relative">
-                <div className="absolute inset-0 rounded-full animate-ping opacity-75" style={{ backgroundColor: colors.primary[500] }}></div>
-                <div className="relative text-white rounded-full w-10 h-10 md:w-12 md:h-12 flex items-center justify-center shadow-lg" style={{ backgroundColor: colors.primary[500] }}>
+        <section className="py-8 md:py-10 px-4 relative overflow-hidden">
+          <div className="max-w-4xl mx-auto">
+            {/* Card de destaque */}
+            <div className="bg-white rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-2xl border-l-8 relative overflow-hidden" style={{ borderLeftColor: colors.primary[500] }}>
+              {/* Background decorativo */}
+              <div className="absolute top-0 right-0 w-32 md:w-40 h-32 md:h-40 opacity-5">
+                <svg viewBox="0 0 100 100" className="w-full h-full" style={{ color: colors.primary[600] }}>
+                  <path fill="currentColor" d="M50 0 L100 50 L50 100 L0 50 Z" />
+                </svg>
+              </div>
+
+              <div className="relative z-10 text-center">
+                <p
+                  className="text-lg md:text-xl lg:text-2xl text-gray-800 leading-relaxed font-medium mb-3"
+                  style={{ fontFamily: '"Playfair Display", serif' }}
+                >
+                  Bem-vindos à nossa galeria de momentos!
+                </p>
+                <p
+                  className="text-sm md:text-base lg:text-lg text-gray-600 leading-relaxed mb-4"
+                  style={{ fontFamily: '"Playfair Display", serif' }}
+                >
+                  Role para ver nossas fotos
+                </p>
+
+                {/* Seta animada para baixo */}
+                <div className="flex justify-center animate-bounce">
                   <svg
-                    className="w-5 h-5 md:w-6 md:h-6"
+                    className="w-6 h-6 md:w-7 md:h-7"
+                    style={{ color: colors.primary[500] }}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -201,86 +318,28 @@ const Galeria = () => {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                      d="M19 14l-7 7m0 0l-7-7m7 7V3"
                     />
                   </svg>
                 </div>
               </div>
             </div>
-
-            <div className="backdrop-blur-sm rounded-2xl md:rounded-3xl p-6 md:p-12 shadow-lg border" style={{
-              backgroundColor: `${colors.primary[50]}80`,
-              borderColor: `${colors.primary[200]}80`,
-            }}>
-              <p className="text-base md:text-lg lg:text-xl mb-3 md:mb-4 tracking-[0.1em] md:tracking-[0.15em] text-gray-800 font-medium">
-                Nossos momentos mais especiais!
-              </p>
-              <p className="text-sm md:text-lg lg:text-xl text-gray-700 leading-relaxed tracking-[0.1em] md:tracking-[0.15em] font-medium mb-3 md:mb-4">
-                Cada foto conta uma parte da nossa história de amor.
-              </p>
-              <p className="text-xs md:text-base lg:text-lg text-gray-600 leading-relaxed tracking-[0.1em] md:tracking-[0.15em]">
-                Em breve, adicionaremos nossas fotos reais aqui! 📸
-              </p>
-            </div>
           </div>
         </section>
 
-        {/* Categorias */}
+        {/* Galeria de fotos */}
         <section className="pb-8 md:pb-12 px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="rounded-2xl p-4 md:p-6 mb-8 md:mb-12 border backdrop-blur-sm relative z-10" style={{
-              backgroundColor: `${colors.primary[50]}60`,
-              borderColor: `${colors.primary[200]}50`,
-            }}>
-              <h3
-                className="text-lg md:text-xl font-semibold mb-3 md:mb-4 flex items-center gap-2"
-                style={{
-                  fontFamily: '"Playfair Display", serif',
-                  color: colors.primary[800],
-                }}
-              >
-                <span>📷</span> Filtros
-              </h3>
-              <div className="flex flex-wrap gap-2 md:gap-3">
-                {categories.map((category) => (
-                  <button
-                    key={category}
-                    onClick={() => setSelectedCategory(category)}
-                    className={`px-4 py-2 rounded-full font-medium transition-all text-sm md:text-base ${
-                      selectedCategory === category
-                        ? 'text-white shadow-md'
-                        : 'bg-white text-gray-700 border'
-                    }`}
-                    style={{
-                      backgroundColor: selectedCategory === category
-                        ? colors.primary[500]
-                        : undefined,
-                      borderColor: selectedCategory === category
-                        ? colors.primary[500]
-                        : colors.primary[200],
-                    }}
-                    style={{ fontFamily: '"Playfair Display", serif' }}
-                  >
-                    {category}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Grid de fotos */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 relative z-10">
-              {filteredPhotos.map((photo, index) => (
+          <div className="max-w-7xl mx-auto">
+            {/* Grid de fotos - Mosaico organizado */}
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-2 md:gap-3 auto-rows-[320px] md:auto-rows-[325px] relative z-10">
+              {photos.map((photo) => (
                 <div
                   key={photo.id}
-                  className={`relative overflow-hidden rounded-xl shadow-lg cursor-pointer group ${
-                    index === 0 ? 'col-span-2 row-span-2' : ''
-                  }`}
+                  className={`
+                    relative overflow-hidden rounded-lg md:rounded-xl shadow-lg cursor-pointer group
+                    ${photo.colSpan === 2 ? 'col-span-2' : 'col-span-1'}
+                    ${photo.rowSpan === 2 ? 'row-span-2' : 'row-span-1'}
+                  `}
                   onClick={() => setSelectedPhoto(photo)}
                 >
                   <img
@@ -288,19 +347,20 @@ const Galeria = () => {
                     alt={photo.alt}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
-                      <p className="text-white text-sm md:text-base font-medium">
-                        {photo.alt}
-                      </p>
-                      <p className="text-xs" style={{ color: colors.primary[300] }}>
-                        {photo.category}
+
+                  {/* Data no canto inferior */}
+                  {photo.date && (
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-1.5 md:p-2">
+                      <p className="text-white text-[10px] md:text-xs font-medium">
+                        {photo.date}
                       </p>
                     </div>
-                  </div>
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
+                  )}
+
+                  {/* Overlay ao passar o mouse */}
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
                     <svg
-                      className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      className="w-8 h-8 md:w-10 md:h-10 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 drop-shadow-lg"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -316,13 +376,6 @@ const Galeria = () => {
                 </div>
               ))}
             </div>
-
-            {/* Empty state */}
-            {filteredPhotos.length === 0 && (
-              <div className="text-center py-20 relative z-10">
-                <p className="text-gray-500 text-lg">Nenhuma foto encontrada nesta categoria.</p>
-              </div>
-            )}
           </div>
         </section>
       </main>
@@ -358,12 +411,13 @@ const Galeria = () => {
                 alt={selectedPhoto.alt}
                 className="max-w-full max-h-[85vh] object-contain rounded-lg"
               />
-              <p className="text-white text-center mt-4 text-lg">
-                {selectedPhoto.alt}
-              </p>
-              <p className="text-center text-sm" style={{ color: colors.primary[400] }}>
-                {selectedPhoto.category}
-              </p>
+              <div className="text-center mt-4">
+                {selectedPhoto.date && (
+                  <p className="text-white text-lg">
+                    {selectedPhoto.date}
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         </>
