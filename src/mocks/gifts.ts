@@ -192,7 +192,7 @@ export const gifts: Gift[] = [
       "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiBnFnR8aqSvks_7ChxS8DpmbG-kamxd65MEX6myWky7CCCf8IaoG6rHIOwJHfKyyIIpeFpNwylKDLjZR_ACMqP7gNCfOD9hxULCfnvLZLXjiHIV2teqCqQjdGaodeJUq7WDMq8x-87rX2n/s1600/F3EED0B8-E08F-47F4-8EB3-C0F7CBA91323.jpeg",
     cotas: 1,
   },
-   {
+  {
     id: 21,
     title: "Sanduicheira/Grill Elétrica",
     price: 99,
@@ -200,5 +200,4 @@ export const gifts: Gift[] = [
       "https://m.media-amazon.com/images/S/aplus-media-library-service-media/687a71ae-d12a-404c-80f0-4a9e6bccc0aa.__CR0,1,970,600_PT0_SX970_V1___.png",
     cotas: 1,
   },
-  
 ];

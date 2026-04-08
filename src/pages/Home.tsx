@@ -1,7 +1,7 @@
-import Navbar from '../components/Navbar';
-import Hero from '../components/Hero';
-import StorySection from '../components/StorySection';
-import Footer from '../components/Footer';
+import Navbar from "../components/Navbar";
+import Hero from "../components/Hero";
+import StorySection from "../components/StorySection";
+import Footer from "../components/Footer";
 
 const Home = () => {
   return (
