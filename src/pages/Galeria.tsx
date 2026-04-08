@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import wallpaper from "../assets/wallpaper_2.JPEG";
 import { colors } from "../theme";
+import { layoutPattern } from "../mocks";
 
 interface Photo {
   id: number;
@@ -84,24 +85,6 @@ const createPhotosArray = (): PhotoWithLayout[] => {
     return new Date(yearB, monthB - 1, dayB).getTime() - new Date(yearA, monthA - 1, dayA).getTime();
   });
 
-  // Layout planejado para exatamente 42 fotos
-  // 8 horizontais (H), 6 verticais (V), 28 normais (N)
-  const layoutPattern = [
-    'H', 'H',           // 2
-    'V', 'N', 'V', 'N', // 4
-    'N', 'N', 'N', 'N', // 4
-    'H', 'H',           // 2
-    'V', 'N', 'V', 'N', // 4
-    'N', 'N', 'N', 'N', // 4
-    'H', 'H',           // 2
-    'V', 'N', 'V', 'N', // 4
-    'N', 'N', 'N', 'N', // 4
-    'H', 'H',           // 2
-    'N', 'N', 'V',      // 3
-    'N', 'N', 'N', 'H',  // 4
-    'N', 'N', 'N',      // 3
-  ];
-
   let hIndex = 0;
   let nIndex = 0;
   let position = 1;
@@ -137,73 +120,6 @@ const createPhotosArray = (): PhotoWithLayout[] => {
     if (photo) {
       photo.position = position++;
       photos.push(photo);
-    }
-  });
-
-  // Trocas manuais de posição [posição1, posição2]
-  const trocas = [
-    [2, 11],  // troca posição 2 com 11
-    [33, 35], // troca posição 33 com 35
-    [4, 19],  // troca posição 4 com 19
-    [5, 28],  // troca posição 5 com 28
-    [9, 15],  // troca posição 9 com 15
-    [28, 25], // troca posição 28 com 25
-    [30, 33], // troca posição 30 com 33
-    [40, 34], // troca posição 40 com 34
-    [24, 9],  // troca posição 24 com 9
-    [18, 13], // troca posição 18 com 13
-    [13, 26], // troca posição 13 com 26
-  ];
-
-  // Trocas cíclicas (3 posições)
-  const trocasCiclicas = [
-    [14, 13, 18], // 14 → 13, 13 → 18, 18 → 14
-  ];
-
-  // Aplicar as trocas cíclicas primeiro
-  trocasCiclicas.forEach(([pos1, pos2, pos3]) => {
-    const index1 = photos.findIndex(p => p.position === pos1);
-    const index2 = photos.findIndex(p => p.position === pos2);
-    const index3 = photos.findIndex(p => p.position === pos3);
-
-    if (index1 !== -1 && index2 !== -1 && index3 !== -1) {
-      // Salvar foto da posição 1
-      const foto1 = photos[index1];
-
-      // 18 → 14
-      photos[index1] = { ...photos[index3] };
-      photos[index1].position = pos1;
-
-      // 13 → 18
-      photos[index3] = { ...photos[index2] };
-      photos[index3].position = pos3;
-
-      // 14 → 13
-      photos[index2] = foto1;
-      photos[index2].position = pos2;
-
-    }
-  });
-
-  // Aplicar as trocas
-  trocas.forEach(([pos1, pos2]) => {
-    const index1 = photos.findIndex(p => p.position === pos1);
-    const index2 = photos.findIndex(p => p.position === pos2);
-
-    if (index1 !== -1 && index2 !== -1) {
-      // Trocar as posições
-      const temp = photos[index1].position;
-      photos[index1].position = photos[index2].position;
-      photos[index2].position = temp;
-
-      // Trocar os layouts (colSpan e rowSpan)
-      const tempColSpan = photos[index1].colSpan;
-      const tempRowSpan = photos[index1].rowSpan;
-      photos[index1].colSpan = photos[index2].colSpan;
-      photos[index1].rowSpan = photos[index2].rowSpan;
-      photos[index2].colSpan = tempColSpan;
-      photos[index2].rowSpan = tempRowSpan;
-
     }
   });
 
