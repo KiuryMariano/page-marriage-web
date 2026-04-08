@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import wallpaper from "../assets/wallpaper_2.JPEG";
 import { colors } from "../theme";
-import { layoutPattern } from "../mocks";
+import { layoutPattern, trocas, trocasCiclicas } from "../mocks";
 
 interface Photo {
   id: number;
@@ -129,6 +129,53 @@ const createPhotosArray = (): PhotoWithLayout[] => {
     if (photo) {
       photo.position = position++;
       photos.push(photo);
+    }
+  });
+
+  // Aplicar as trocas cíclicas primeiro
+  trocasCiclicas.forEach(([pos1, pos2, pos3]) => {
+    const index1 = photos.findIndex(p => p.position === pos1);
+    const index2 = photos.findIndex(p => p.position === pos2);
+    const index3 = photos.findIndex(p => p.position === pos3);
+
+    if (index1 !== -1 && index2 !== -1 && index3 !== -1) {
+      // Salvar foto da posição 1
+      const foto1 = photos[index1];
+
+      // 18 → 14
+      photos[index1] = { ...photos[index3] };
+      photos[index1].position = pos1;
+
+      // 13 → 18
+      photos[index3] = { ...photos[index2] };
+      photos[index3].position = pos3;
+
+      // 14 → 13
+      photos[index2] = foto1;
+      photos[index2].position = pos2;
+
+    }
+  });
+
+  // Aplicar as trocas
+  trocas.forEach(([pos1, pos2]) => {
+    const index1 = photos.findIndex(p => p.position === pos1);
+    const index2 = photos.findIndex(p => p.position === pos2);
+
+    if (index1 !== -1 && index2 !== -1) {
+      // Trocar as posições
+      const temp = photos[index1].position;
+      photos[index1].position = photos[index2].position;
+      photos[index2].position = temp;
+
+      // Trocar os layouts (colSpan e rowSpan)
+      const tempColSpan = photos[index1].colSpan;
+      const tempRowSpan = photos[index1].rowSpan;
+      photos[index1].colSpan = photos[index2].colSpan;
+      photos[index1].rowSpan = photos[index2].rowSpan;
+      photos[index2].colSpan = tempColSpan;
+      photos[index2].rowSpan = tempRowSpan;
+
     }
   });
 
