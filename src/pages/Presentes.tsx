@@ -712,7 +712,7 @@ const Presentes = () => {
                   </div>
                 </div>
                 <div className="space-y-3 text-sm text-gray-700">
-                  <p className="flex items-start gap-3">
+                  <div className="flex items-start gap-3">
                     <div
                       className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
                       style={{ backgroundColor: colors.primary[100] }}
@@ -722,8 +722,8 @@ const Presentes = () => {
                       </svg>
                     </div>
                     <span>Navegue pelos cards e escolha os itens</span>
-                  </p>
-                  <p className="flex items-start gap-3">
+                  </div>
+                  <div className="flex items-start gap-3">
                     <div
                       className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
                       style={{ backgroundColor: colors.primary[100] }}
@@ -733,8 +733,8 @@ const Presentes = () => {
                       </svg>
                     </div>
                     <span>Clique em <strong>"Adicionar"</strong></span>
-                  </p>
-                  <p className="flex items-start gap-3">
+                  </div>
+                  <div className="flex items-start gap-3">
                     <div
                       className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
                       style={{ backgroundColor: colors.primary[100] }}
@@ -744,7 +744,7 @@ const Presentes = () => {
                       </svg>
                     </div>
                     <span>Adicione quantos quiser</span>
-                  </p>
+                  </div>
                 </div>
               </div>
 
@@ -768,7 +768,7 @@ const Presentes = () => {
                   </div>
                 </div>
                 <div className="space-y-3 text-sm text-gray-700">
-                  <p className="flex items-start gap-3">
+                  <div className="flex items-start gap-3">
                     <div
                       className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
                       style={{ backgroundColor: colors.primary[100] }}
@@ -778,8 +778,8 @@ const Presentes = () => {
                       </svg>
                     </div>
                     <span>Clique no ícone do carrinho</span>
-                  </p>
-                  <p className="flex items-start gap-3">
+                  </div>
+                  <div className="flex items-start gap-3">
                     <div
                       className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
                       style={{ backgroundColor: colors.primary[100] }}
@@ -789,8 +789,8 @@ const Presentes = () => {
                       </svg>
                     </div>
                     <span>Ajuste quantidades ou remova itens</span>
-                  </p>
-                  <p className="flex items-start gap-3">
+                  </div>
+                  <div className="flex items-start gap-3">
                     <div
                       className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
                       style={{ backgroundColor: colors.primary[100] }}
@@ -800,7 +800,7 @@ const Presentes = () => {
                       </svg>
                     </div>
                     <span>Confira o total antes de finalizar</span>
-                  </p>
+                  </div>
                 </div>
               </div>
 
@@ -824,7 +824,7 @@ const Presentes = () => {
                   </div>
                 </div>
                 <div className="space-y-3 text-sm text-gray-700">
-                  <p className="flex items-start gap-3">
+                  <div className="flex items-start gap-3">
                     <div
                       className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
                       style={{ backgroundColor: colors.primary[100] }}
@@ -834,8 +834,8 @@ const Presentes = () => {
                       </svg>
                     </div>
                     <span>Clique em <strong>"Finalizar Compra"</strong></span>
-                  </p>
-                  <p className="flex items-start gap-3">
+                  </div>
+                  <div className="flex items-start gap-3">
                     <div
                       className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
                       style={{ backgroundColor: colors.primary[100] }}
@@ -845,8 +845,8 @@ const Presentes = () => {
                       </svg>
                     </div>
                     <span>Escolha o método de pagamento</span>
-                  </p>
-                  <p className="flex items-start gap-3">
+                  </div>
+                  <div className="flex items-start gap-3">
                     <div
                       className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
                       style={{ backgroundColor: colors.primary[100] }}
@@ -856,7 +856,7 @@ const Presentes = () => {
                       </svg>
                     </div>
                     <span>Pronto! Muito obrigado!</span>
-                  </p>
+                  </div>
                 </div>
               </div>
             </div>

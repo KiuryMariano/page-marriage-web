@@ -331,7 +331,7 @@ const Galeria = () => {
         <section className="pb-8 md:pb-12 px-4">
           <div className="max-w-7xl mx-auto">
             {/* Grid de fotos - Mosaico organizado */}
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-2 md:gap-3 auto-rows-[320px] md:auto-rows-[325px] relative z-10">
+            <div className="grid grid-cols-4 gap-1 md:gap-2 lg:gap-3 auto-rows-[100px] md:auto-rows-[280px] lg:auto-rows-[325px] relative z-10">
               {photos.map((photo) => (
                 <div
                   key={photo.id}
@@ -351,7 +351,7 @@ const Galeria = () => {
                   {/* Data no canto inferior */}
                   {photo.date && (
                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-1.5 md:p-2">
-                      <p className="text-white text-[10px] md:text-xs font-medium">
+                      <p className="text-white text-[8px] md:text-xs font-medium">
                         {photo.date}
                       </p>
                     </div>
