@@ -74,8 +74,6 @@ const Confirmar = () => {
               style={{
                 color: colors.success.light,
                 opacity: 0.5,
-              }}
-              style={{
                 left: `${5 + i * 8}%`,
                 bottom: `-100px`,
                 animationDelay: `${i * 4.5}s`,
@@ -325,7 +323,9 @@ const Confirmar = () => {
                               ? "ring-2"
                               : ""
                           }`}
-                          style={formData.confirmacao === option.value ? { ringColor: colors.success.DEFAULT } : {}}
+                          style={formData.confirmacao === option.value ? {
+                            "--tw-ring-color": colors.success.DEFAULT
+                          } as React.CSSProperties : {}}
                         >
                           <input
                             type="radio"

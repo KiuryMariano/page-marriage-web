@@ -3,6 +3,8 @@
  * Letícia & Kiury
  */
 
+import { colors } from './colors';
+
 export { default } from './colors';
 export { colors, gradients, componentColors } from './colors';
 
