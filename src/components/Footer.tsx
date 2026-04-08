@@ -8,7 +8,7 @@ const Footer = () => {
     const weddingDate = new Date("2027-01-09");
     const today = new Date();
     const diffTime = weddingDate.getTime() - today.getTime();
-    const diffDays = (Math.ceil(diffTime / (1000 * 60 * 60 * 24))-1);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) - 1;
     setDaysRemaining(diffDays > 0 ? diffDays : 0);
   }, []);
 

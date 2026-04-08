@@ -13,16 +13,19 @@ interface Photo {
 }
 
 // Importando todas as fotos da galeria
-const photoImports = import.meta.glob('../assets/galery/*.{JPEG,jpeg,JPG,jpg,PNG,png}', { eager: true }) as Record<string, { default: string }>;
+const photoImports = import.meta.glob(
+  "../assets/galery/*.{JPEG,jpeg,JPG,jpg,PNG,png}",
+  { eager: true },
+) as Record<string, { default: string }>;
 
 // Função para extrair data do nome do arquivo e formatar
 const extractDateFromFilename = (filename: string): string => {
   const match = filename.match(/(\d{1,2}-\d{1,2}-\d{2,4})/);
   if (match) {
-    const [day, month, year] = match[1].split('-');
-    return `${day}/${month}/${year.length === 2 ? '20' + year : year}`;
+    const [day, month, year] = match[1].split("-");
+    return `${day}/${month}/${year.length === 2 ? "20" + year : year}`;
   }
-  return '';
+  return "";
 };
 
 // Criar array de fotos com datas extraídas dos nomes e configuração de layout
@@ -41,14 +44,14 @@ const createPhotosArray = (): PhotoWithLayout[] => {
   const normalPhotos: PhotoWithLayout[] = [];
 
   for (const [path, module] of Object.entries(photoImports)) {
-    const filename = path.split('/').pop() || '';
+    const filename = path.split("/").pop() || "";
     const date = extractDateFromFilename(filename);
-    const isHorizontal = filename.startsWith('h-');
+    const isHorizontal = filename.startsWith("h-");
 
     const photo: PhotoWithLayout = {
       id: id++,
       url: module.default,
-      alt: 'Letícia e Kiury',
+      alt: "Letícia e Kiury",
       date: date,
       colSpan: 1,
       rowSpan: 1,
@@ -63,7 +66,7 @@ const createPhotosArray = (): PhotoWithLayout[] => {
   }
 
   // Ordenar por data (mais recentes primeiro)
-  [...horizontalPhotos, ...normalPhotos].forEach(photo => {
+  [...horizontalPhotos, ...normalPhotos].forEach((photo) => {
     if (photo.date) {
       photo.date = photo.date;
     }
@@ -72,17 +75,23 @@ const createPhotosArray = (): PhotoWithLayout[] => {
   horizontalPhotos.sort((a, b) => {
     if (!a.date) return 1;
     if (!b.date) return -1;
-    const [dayA, monthA, yearA] = a.date.split('/').map(Number);
-    const [dayB, monthB, yearB] = b.date.split('/').map(Number);
-    return new Date(yearB, monthB - 1, dayB).getTime() - new Date(yearA, monthA - 1, dayA).getTime();
+    const [dayA, monthA, yearA] = a.date.split("/").map(Number);
+    const [dayB, monthB, yearB] = b.date.split("/").map(Number);
+    return (
+      new Date(yearB, monthB - 1, dayB).getTime() -
+      new Date(yearA, monthA - 1, dayA).getTime()
+    );
   });
 
   normalPhotos.sort((a, b) => {
     if (!a.date) return 1;
     if (!b.date) return -1;
-    const [dayA, monthA, yearA] = a.date.split('/').map(Number);
-    const [dayB, monthB, yearB] = b.date.split('/').map(Number);
-    return new Date(yearB, monthB - 1, dayB).getTime() - new Date(yearA, monthA - 1, dayA).getTime();
+    const [dayA, monthA, yearA] = a.date.split("/").map(Number);
+    const [dayB, monthB, yearB] = b.date.split("/").map(Number);
+    return (
+      new Date(yearB, monthB - 1, dayB).getTime() -
+      new Date(yearA, monthA - 1, dayA).getTime()
+    );
   });
 
   let hIndex = 0;
@@ -92,7 +101,7 @@ const createPhotosArray = (): PhotoWithLayout[] => {
   layoutPattern.forEach((type) => {
     let photo: PhotoWithLayout | undefined;
 
-    if (type === 'H') {
+    if (type === "H") {
       // Usar foto horizontal se disponível, senão usar normal
       if (hIndex < horizontalPhotos.length) {
         photo = { ...horizontalPhotos[hIndex++] };
@@ -103,7 +112,7 @@ const createPhotosArray = (): PhotoWithLayout[] => {
         photo.colSpan = 2;
         photo.rowSpan = 1;
       }
-    } else if (type === 'V') {
+    } else if (type === "V") {
       if (nIndex < normalPhotos.length) {
         photo = { ...normalPhotos[nIndex++] };
         photo.colSpan = 1;
@@ -145,10 +154,26 @@ const Galeria = () => {
         >
           <defs>
             <linearGradient id="galleryLine" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor={colors.primary[600]} stopOpacity="0" />
-              <stop offset="5%" stopColor={colors.primary[600]} stopOpacity="0.3" />
-              <stop offset="95%" stopColor={colors.primary[600]} stopOpacity="0.3" />
-              <stop offset="100%" stopColor={colors.primary[600]} stopOpacity="0" />
+              <stop
+                offset="0%"
+                stopColor={colors.primary[600]}
+                stopOpacity="0"
+              />
+              <stop
+                offset="5%"
+                stopColor={colors.primary[600]}
+                stopOpacity="0.3"
+              />
+              <stop
+                offset="95%"
+                stopColor={colors.primary[600]}
+                stopOpacity="0.3"
+              />
+              <stop
+                offset="100%"
+                stopColor={colors.primary[600]}
+                stopOpacity="0"
+              />
             </linearGradient>
           </defs>
           {[...Array(20)].map((_, i) => (
@@ -199,10 +224,17 @@ const Galeria = () => {
         <section className="py-8 md:py-10 px-4 relative overflow-hidden">
           <div className="max-w-4xl mx-auto">
             {/* Card de destaque */}
-            <div className="bg-white rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-2xl border-l-8 relative overflow-hidden" style={{ borderLeftColor: colors.primary[500] }}>
+            <div
+              className="bg-white rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-2xl border-l-8 relative overflow-hidden"
+              style={{ borderLeftColor: colors.primary[500] }}
+            >
               {/* Background decorativo */}
               <div className="absolute top-0 right-0 w-32 md:w-40 h-32 md:h-40 opacity-5">
-                <svg viewBox="0 0 100 100" className="w-full h-full" style={{ color: colors.primary[600] }}>
+                <svg
+                  viewBox="0 0 100 100"
+                  className="w-full h-full"
+                  style={{ color: colors.primary[600] }}
+                >
                   <path fill="currentColor" d="M50 0 L100 50 L50 100 L0 50 Z" />
                 </svg>
               </div>
@@ -253,8 +285,8 @@ const Galeria = () => {
                   key={photo.id}
                   className={`
                     relative overflow-hidden rounded-lg md:rounded-xl shadow-lg cursor-pointer group
-                    ${photo.colSpan === 2 ? 'col-span-2' : 'col-span-1'}
-                    ${photo.rowSpan === 2 ? 'row-span-2' : 'row-span-1'}
+                    ${photo.colSpan === 2 ? "col-span-2" : "col-span-1"}
+                    ${photo.rowSpan === 2 ? "row-span-2" : "row-span-1"}
                   `}
                   onClick={() => setSelectedPhoto(photo)}
                 >
@@ -329,9 +361,7 @@ const Galeria = () => {
               />
               <div className="text-center mt-4">
                 {selectedPhoto.date && (
-                  <p className="text-white text-lg">
-                    {selectedPhoto.date}
-                  </p>
+                  <p className="text-white text-lg">{selectedPhoto.date}</p>
                 )}
               </div>
             </div>
