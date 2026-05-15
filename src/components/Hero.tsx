@@ -68,7 +68,7 @@ const Hero = () => {
                 "0 4px 30px rgba(0,0,0,0.8), 0 0 60px rgba(0,0,0,0.6)",
             }}
           >
-            Letícia <span className="text-gold-400 mx-2 md:mx-3">&</span> Kiury
+            Kiury <span className="text-gold-400 mx-2 md:mx-3">&</span> Letícia
           </h1>
           <p
             className="text-lg md:text-2xl font-light text-white/95 tracking-wide"
