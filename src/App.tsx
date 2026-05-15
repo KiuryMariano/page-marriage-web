@@ -8,7 +8,7 @@ import './index.css';
 
 function App() {
   return (
-    <BrowserRouter basename="/page-marriage-web">
+    <BrowserRouter basename="/">
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
