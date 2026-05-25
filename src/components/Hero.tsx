@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
-import wallpaper from "../assets/wallpaper_2.JPEG";
+import wallpaperWebpFull from "../assets/wallpaper_2.webp";
+import wallpaperWebpTablet from "../assets/wallpaper_2_tablet.webp";
+import wallpaperWebpMobile from "../assets/wallpaper_2_mobile.webp";
+import wallpaperJpeg from "../assets/wallpaper_2.JPEG";
 
 const Hero = () => {
   const weddingDate = new Date("2027-01-09T00:00:00");
@@ -39,11 +42,23 @@ const Hero = () => {
     >
       {/* Background Image */}
       <div className="absolute inset-0">
-        <img
-          src={wallpaper}
-          alt="Letícia e Kiury"
-          className="w-full h-full object-cover"
-        />
+        <picture>
+          <source
+            srcSet={`${wallpaperWebpMobile} 800w, ${wallpaperWebpTablet} 1400w, ${wallpaperWebpFull} 6182w`}
+            sizes="100vw"
+            type="image/webp"
+          />
+          <img
+            src={wallpaperJpeg}
+            alt="Letícia e Kiury"
+            srcSet={`${wallpaperWebpMobile} 800w, ${wallpaperWebpTablet} 1400w, ${wallpaperWebpFull} 6182w`}
+            sizes="100vw"
+            className="w-full h-full object-cover"
+            fetchPriority="high"
+            loading="eager"
+            decoding="sync"
+          />
+        </picture>
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent via-[95%] to-white"></div>
       </div>
 

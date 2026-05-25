@@ -7,30 +7,30 @@ export interface Gift {
 }
 
 // Import all gift images from assets
-import gift1 from "../assets/gifts/1-cota-festa.jpg";
-import gift2 from "../assets/gifts/2-coberta-noiva.jpg";
-import gift3 from "../assets/gifts/3-ps5-noivo.jpg";
-import gift4 from "../assets/gifts/4-kit-turbo.jpg";
-import gift5 from "../assets/gifts/5-geladeira.jpg";
-import gift6 from "../assets/gifts/6-microondas.jpg";
-import gift7 from "../assets/gifts/7-cafeteira.jpg";
-import gift8 from "../assets/gifts/8-pipoqueira.jpg";
-import gift9 from "../assets/gifts/9-chaleira.jpg";
-import gift10 from "../assets/gifts/10-vestido-noiva.jpg";
-import gift11 from "../assets/gifts/11-corte-cabelo.jpg";
-import gift12 from "../assets/gifts/12-dia-noiva.jpg";
-import gift13 from "../assets/gifts/13-fundo-emergencial.jpg";
-import gift14 from "../assets/gifts/14-spa.jpg";
-import gift15 from "../assets/gifts/15-calmante.jpg";
-import gift16 from "../assets/gifts/16-mascaras-gas.jpg";
-import gift17 from "../assets/gifts/17-academia.jpg";
-import gift18 from "../assets/gifts/18-avental.jpg";
-import gift19 from "../assets/gifts/19-sal-grosso.jpg";
-import gift20 from "../assets/gifts/20-rolo-macarrao.jpg";
-import gift21 from "../assets/gifts/21-fogao.jpg";
-import gift22 from "../assets/gifts/22-panelas.jpg";
-import gift23 from "../assets/gifts/23-colorex.jpg";
-import gift24 from "../assets/gifts/24-sanduicheira.jpg";
+import gift1 from "../assets/gifts/1-cota-festa.webp";
+import gift2 from "../assets/gifts/2-coberta-noiva.webp";
+import gift3 from "../assets/gifts/3-ps5-noivo.webp";
+import gift4 from "../assets/gifts/4-kit-turbo.webp";
+import gift5 from "../assets/gifts/5-geladeira.webp";
+import gift6 from "../assets/gifts/6-microondas.webp";
+import gift7 from "../assets/gifts/7-cafeteira.webp";
+import gift8 from "../assets/gifts/8-pipoqueira.webp";
+import gift9 from "../assets/gifts/9-chaleira.webp";
+import gift10 from "../assets/gifts/10-vestido-noiva.webp";
+import gift11 from "../assets/gifts/11-corte-cabelo.webp";
+import gift12 from "../assets/gifts/12-dia-noiva.webp";
+import gift13 from "../assets/gifts/13-fundo-emergencial.webp";
+import gift14 from "../assets/gifts/14-spa.webp";
+import gift15 from "../assets/gifts/15-calmante.webp";
+import gift16 from "../assets/gifts/16-mascaras-gas.webp";
+import gift17 from "../assets/gifts/17-academia.webp";
+import gift18 from "../assets/gifts/18-avental.webp";
+import gift19 from "../assets/gifts/19-sal-grosso.webp";
+import gift20 from "../assets/gifts/20-rolo-macarrao.webp";
+import gift21 from "../assets/gifts/21-fogao.webp";
+import gift22 from "../assets/gifts/22-panelas.webp";
+import gift23 from "../assets/gifts/23-colorex.webp";
+import gift24 from "../assets/gifts/24-sanduicheira.webp";
 
 const giftImages: Record<number, string> = {
   1: gift1,

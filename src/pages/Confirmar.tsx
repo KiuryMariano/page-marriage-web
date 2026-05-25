@@ -1,7 +1,10 @@
 import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import wallpaper from "../assets/wallpaper_2.JPEG";
+import wallpaperWebpFull from "../assets/wallpaper_2.webp";
+import wallpaperWebpTablet from "../assets/wallpaper_2_tablet.webp";
+import wallpaperWebpMobile from "../assets/wallpaper_2_mobile.webp";
+import wallpaperJpeg from "../assets/wallpaper_2.JPEG";
 import { colors } from "../theme";
 
 const whatsappNumber = "554599830461";
@@ -41,12 +44,25 @@ const Confirmar = () => {
         {/* Hero Section com Wallpaper */}
         <section className="relative min-h-[55vh] flex items-center justify-center overflow-hidden">
           {/* Background Image */}
-          <div className="absolute inset-0">
-            <img
-              src={wallpaper}
-              alt="Letícia e Kiury"
-              className="w-full h-full object-cover"
-            />
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-900 via-emerald-800 to-green-900">
+            <picture>
+              <source
+                srcSet={`${wallpaperWebpMobile} 800w, ${wallpaperWebpTablet} 1400w, ${wallpaperWebpFull} 6182w`}
+                sizes="100vw"
+                type="image/webp"
+              />
+              <img
+                src={wallpaperJpeg}
+                alt="Letícia e Kiury"
+                srcSet={`${wallpaperWebpMobile} 800w, ${wallpaperWebpTablet} 1400w, ${wallpaperWebpFull} 6182w`}
+                sizes="100vw"
+                className="w-full h-full object-cover"
+                fetchPriority="high"
+                loading="eager"
+                decoding="sync"
+                style={{ minHeight: '100%' }}
+              />
+            </picture>
             <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-white"></div>
           </div>
 

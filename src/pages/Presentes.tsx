@@ -1,7 +1,10 @@
 import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import wallpaper from "../assets/wallpaper_1.JPEG";
+import wallpaperWebpFull from "../assets/wallpaper_1.webp";
+import wallpaperWebpTablet from "../assets/wallpaper_1_tablet.webp";
+import wallpaperWebpMobile from "../assets/wallpaper_1_mobile.webp";
+import wallpaperJpeg from "../assets/wallpaper_1.JPEG";
 import { colors, gradients } from "../theme";
 import { gifts, type Gift } from "../mocks";
 
@@ -479,11 +482,23 @@ const Presentes = () => {
         <section className="relative min-h-[50vh] md:min-h-[55vh] lg:min-h-[60vh] flex items-center justify-center overflow-hidden">
           {/* Background Image */}
           <div className="absolute inset-0">
-            <img
-              src={wallpaper}
-              alt="Letícia e Kiury"
-              className="w-full h-full object-cover"
-            />
+            <picture>
+              <source
+                srcSet={`${wallpaperWebpMobile} 800w, ${wallpaperWebpTablet} 1400w, ${wallpaperWebpFull} 6182w`}
+                sizes="100vw"
+                type="image/webp"
+              />
+              <img
+                src={wallpaperJpeg}
+                alt="Letícia e Kiury"
+                srcSet={`${wallpaperWebpMobile} 800w, ${wallpaperWebpTablet} 1400w, ${wallpaperWebpFull} 6182w`}
+                sizes="100vw"
+                className="w-full h-full object-cover"
+                fetchPriority="high"
+                loading="eager"
+                decoding="sync"
+              />
+            </picture>
             <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-white"></div>
           </div>
 
