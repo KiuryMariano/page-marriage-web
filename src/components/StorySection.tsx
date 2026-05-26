@@ -6,7 +6,7 @@ const StorySection = () => {
       date: "Setembro/24",
       title: "O Começo de Tudo",
       description:
-        "Nos conhecemos pessoalmente na FAC - eu cursando Engenharia de Software, ela Medicina, ambos no 4º período. As conversas começaram no Instagram, ela que seguiu primeiro. Nosso primeiro encontro foi no refeitório do bloco 4, onde conversamos sobre a vida. Com o passar dos dias ficamos mais próximos, e no dia 23 demos nosso primeiro beijo. De fato nunca fomos devagar - sempre soubemos o que queríamos.",
+        "Nos conhecemos pessoalmente na FAG - eu cursando Engenharia de Software, ela Medicina, ambos no 4º período. As conversas começaram no Instagram, ela que seguiu primeiro. Nosso primeiro encontro foi no refeitório do bloco 4, onde conversamos sobre a vida. Com o passar dos dias ficamos mais próximos, e no dia 23 demos nosso primeiro beijo. De fato nunca fomos devagar - sempre soubemos o que queríamos.",
     },
     {
       date: "Outubro/24",
