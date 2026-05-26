@@ -5,6 +5,8 @@ import wallpaperWebpFull from "../assets/wallpaper_2.webp";
 import wallpaperWebpTablet from "../assets/wallpaper_2_tablet.webp";
 import wallpaperWebpMobile from "../assets/wallpaper_2_mobile.webp";
 import wallpaperJpeg from "../assets/wallpaper_2.JPEG";
+import background from "../assets/background.png";
+import backgroundMobile from "../assets/background_mobile.png";
 import { colors } from "../theme";
 import { layoutPattern, trocas, trocasCiclicas } from "../mocks";
 
@@ -194,7 +196,19 @@ const Galeria = () => {
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
 
   return (
-    <div className="min-h-screen flex flex-col relative bg-white overflow-hidden">
+    <div className="min-h-screen flex flex-col relative">
+      {/* Background Fixo */}
+      <div
+        className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat hidden md:block"
+        style={{ backgroundImage: `url(${background})` }}
+      ></div>
+      <div
+        className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat md:hidden"
+        style={{ backgroundImage: `url(${backgroundMobile})` }}
+      >
+        <div className="absolute inset-0 bg-white/70"></div>
+      </div>
+
       {/* Animated Background Effects */}
       <div className="fixed left-0 right-0 top-0 bottom-[120px] pointer-events-none overflow-hidden z-0">
         {/* Notebook Lines (subtle) */}
@@ -283,55 +297,75 @@ const Galeria = () => {
         </section>
 
         {/* Textos de introdução */}
-        <section className="py-8 md:py-10 px-4 relative overflow-hidden">
-          <div className="max-w-4xl mx-auto">
-            {/* Card de destaque */}
-            <div
-              className="bg-white rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-2xl border-l-8 relative overflow-hidden"
-              style={{ borderLeftColor: colors.primary[500] }}
-            >
-              {/* Background decorativo */}
-              <div className="absolute top-0 right-0 w-32 md:w-40 h-32 md:h-40 opacity-5">
-                <svg
-                  viewBox="0 0 100 100"
-                  className="w-full h-full"
-                  style={{ color: colors.primary[600] }}
-                >
-                  <path fill="currentColor" d="M50 0 L100 50 L50 100 L0 50 Z" />
+        <section className="py-6 md:py-8 px-4">
+          <div className="max-w-3xl mx-auto">
+            {/* Container com borda decorativa */}
+            <div className="relative p-6 md:p-8">
+              {/* Bordas decorativas nos cantos */}
+              <div className="absolute top-0 left-0 w-6 h-6 md:w-8 md:h-8 border-t-4 border-l-4 rounded-tl-lg"
+                   style={{ borderColor: colors.primary.DEFAULT }}></div>
+              <div className="absolute top-0 right-0 w-6 h-6 md:w-8 md:h-8 border-t-4 border-r-4 rounded-tr-lg"
+                   style={{ borderColor: colors.primary.DEFAULT }}></div>
+              <div className="absolute bottom-0 left-0 w-6 h-6 md:w-8 md:h-8 border-b-4 border-l-4 rounded-bl-lg"
+                   style={{ borderColor: colors.primary.DEFAULT }}></div>
+              <div className="absolute bottom-0 right-0 w-6 h-6 md:w-8 md:h-8 border-b-4 border-r-4 rounded-br-lg"
+                   style={{ borderColor: colors.primary.DEFAULT }}></div>
+
+              {/* Linha decorativa superior */}
+              <div className="flex items-center justify-center gap-4 mb-4">
+                <div className="h-px w-16 bg-gradient-to-r from-transparent to-stone-300"></div>
+                <svg className="w-6 h-6" style={{ color: colors.primary.DEFAULT }} fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm2-2v12h12V4H6z"/>
+                  <path d="M8 8h8v2H8zm0 4h8v2H8z"/>
                 </svg>
+                <div className="h-px w-16 bg-gradient-to-l from-transparent to-stone-300"></div>
               </div>
 
-              <div className="relative z-10 text-center">
-                <p
-                  className="text-lg md:text-xl lg:text-2xl text-gray-800 leading-relaxed font-medium mb-3"
-                  style={{ fontFamily: '"Playfair Display", serif' }}
-                >
-                  Bem-vindos à nossa galeria de momentos!
-                </p>
-                <p
-                  className="text-sm md:text-base lg:text-lg text-gray-600 leading-relaxed mb-4"
-                  style={{ fontFamily: '"Playfair Display", serif' }}
-                >
-                  Role para ver nossas fotos
-                </p>
+              {/* Título principal */}
+              <h2
+                className="text-2xl md:text-4xl lg:text-5xl text-center mb-4"
+                style={{
+                  fontFamily: '"Great Vibes", cursive',
+                  color: colors.primary.dark,
+                  lineHeight: 1.3,
+                }}
+              >
+                Momentos eternizados
+              </h2>
 
-                {/* Seta animada para baixo */}
-                <div className="flex justify-center animate-bounce">
-                  <svg
-                    className="w-6 h-6 md:w-7 md:h-7"
-                    style={{ color: colors.primary[500] }}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 14l-7 7m0 0l-7-7m7 7V3"
-                    />
-                  </svg>
-                </div>
+              {/* Subtítulo */}
+              <div className="flex flex-col items-center gap-2 mb-4">
+                <p className="text-sm md:text-base text-center text-gray-600 leading-relaxed font-light">
+                  Cada foto conta uma história da nossa jornada
+                </p>
+                <p className="text-xs md:text-sm text-gray-500 italic">
+                  Role para ver nossa galeria
+                </p>
+              </div>
+
+              {/* Linha decorativa inferior */}
+              <div className="flex items-center justify-center gap-4 mb-4">
+                <div className="h-px w-16 bg-gradient-to-r from-transparent to-stone-300"></div>
+                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: colors.primary.DEFAULT }}></div>
+                <div className="h-px w-16 bg-gradient-to-l from-transparent to-stone-300"></div>
+              </div>
+
+              {/* Seta animada */}
+              <div className="flex justify-center animate-bounce">
+                <svg
+                  className="w-5 h-5"
+                  style={{ color: colors.primary.DEFAULT }}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                  />
+                </svg>
               </div>
             </div>
           </div>

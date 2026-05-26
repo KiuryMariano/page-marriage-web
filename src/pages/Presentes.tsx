@@ -5,6 +5,8 @@ import wallpaperWebpFull from "../assets/wallpaper_1.webp";
 import wallpaperWebpTablet from "../assets/wallpaper_1_tablet.webp";
 import wallpaperWebpMobile from "../assets/wallpaper_1_mobile.webp";
 import wallpaperJpeg from "../assets/wallpaper_1.JPEG";
+import backgroundMoney from "../assets/background_money.png";
+import backgroundMoneyMobile from "../assets/background_money_mobile.png";
 import { colors, gradients } from "../theme";
 import { gifts, type Gift } from "../mocks";
 
@@ -66,84 +68,18 @@ const Presentes = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col relative bg-white overflow-hidden">
-      {/* Animated Background Effects */}
-      <div className="fixed left-0 right-0 top-0 bottom-[120px] pointer-events-none overflow-hidden z-0">
-        {/* Floating Money Signs */}
-        <div className="absolute inset-0">
-          {[...Array(15)].map((_, i) => (
-            <div
-              key={`money-${i}`}
-              className="absolute animate-float-money font-bold"
-              style={{
-                left: `${5 + i * 7}%`,
-                bottom: `-100px`,
-                animationDelay: `${i * 4}s`,
-                animationDuration: `${18 + Math.random() * 8}s`,
-                fontSize: `${30 + Math.random() * 36}px`,
-                fontFamily: "Arial, sans-serif",
-                color: colors.primary[500],
-                opacity: 0.5,
-              }}
-            >
-              $
-            </div>
-          ))}
-        </div>
-
-        {/* Notebook Lines (subtle) */}
-        <svg
-          className="absolute inset-0 w-full h-full opacity-10"
-          preserveAspectRatio="none"
-        >
-          <defs>
-            <linearGradient id="notebookLine" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#1e3a8a" stopOpacity="0" />
-              <stop offset="5%" stopColor="#1e3a8a" stopOpacity="0.3" />
-              <stop offset="95%" stopColor="#1e3a8a" stopOpacity="0.3" />
-              <stop offset="100%" stopColor="#1e3a8a" stopOpacity="0" />
-            </linearGradient>
-          </defs>
-          {[...Array(20)].map((_, i) => (
-            <line
-              key={`line-${i}`}
-              x1="0"
-              y1={`${(i + 1) * 5}%`}
-              x2="100%"
-              y2={`${(i + 1) * 5}%`}
-              stroke="url(#notebookLine)"
-              strokeWidth="0.5"
-            />
-          ))}
-        </svg>
+    <div className="min-h-screen flex flex-col relative">
+      {/* Background Fixo */}
+      <div
+        className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat hidden md:block"
+        style={{ backgroundImage: `url(${backgroundMoney})` }}
+      ></div>
+      <div
+        className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat md:hidden"
+        style={{ backgroundImage: `url(${backgroundMoneyMobile})` }}
+      >
+        <div className="absolute inset-0 bg-white/70"></div>
       </div>
-
-      {/* Custom animations via style tag */}
-      <style>{`
-        @keyframes float-money {
-          0% {
-            transform: translateY(0) translateX(0) rotate(-15deg) scale(1);
-            opacity: 0;
-          }
-          10% {
-            opacity: 0.3;
-          }
-          50% {
-            transform: translateY(-50vh) translateX(15px) rotate(15deg) scale(1.2);
-          }
-          90% {
-            opacity: 0.15;
-          }
-          100% {
-            transform: translateY(-120vh) translateX(-15px) rotate(-10deg) scale(0.8);
-            opacity: 0;
-          }
-        }
-
-        .animate-float-money {
-          animation: float-money linear infinite;
-        }
-      `}</style>
 
       <Navbar />
 

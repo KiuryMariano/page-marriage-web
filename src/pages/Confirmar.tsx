@@ -6,6 +6,7 @@ import wallpaperWebpTablet from "../assets/wallpaper_2_tablet.webp";
 import wallpaperWebpMobile from "../assets/wallpaper_2_mobile.webp";
 import wallpaperJpeg from "../assets/wallpaper_2.JPEG";
 import background from "../assets/background.png";
+import backgroundMobile from "../assets/background_mobile.png";
 import { colors } from "../theme";
 
 const whatsappNumber = "554599830461";
@@ -34,8 +35,12 @@ const Confirmar = () => {
     <div className="min-h-screen flex flex-col relative">
       {/* Background Fixo */}
       <div
-        className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat"
+        className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat hidden md:block"
         style={{ backgroundImage: `url(${background})` }}
+      ></div>
+      <div
+        className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat md:hidden"
+        style={{ backgroundImage: `url(${backgroundMobile})` }}
       >
         <div className="absolute inset-0 bg-white/70"></div>
       </div>
