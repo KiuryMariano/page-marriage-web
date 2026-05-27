@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import iniciais from "../assets/iniciais_white.png";
+import iniciais from "../assets/iniciais_white.webp";
 import { colors } from "../theme";
 
 const Navbar = () => {

@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import wallpaperWebpFull from "../assets/wallpaper_2.webp";
 import wallpaperWebpTablet from "../assets/wallpaper_2_tablet.webp";
 import wallpaperWebpMobile from "../assets/wallpaper_2_mobile.webp";
-import wallpaperJpeg from "../assets/wallpaper_2.JPEG";
 
 const weddingDate = new Date("2027-01-09T00:00:00");
 
@@ -42,23 +41,16 @@ const Hero = () => {
     >
       {/* Background Image */}
       <div className="absolute inset-0">
-        <picture>
-          <source
-            srcSet={`${wallpaperWebpMobile} 800w, ${wallpaperWebpTablet} 1400w, ${wallpaperWebpFull} 6182w`}
-            sizes="100vw"
-            type="image/webp"
-          />
-          <img
-            src={wallpaperJpeg}
-            alt="Letícia e Kiury"
-            srcSet={`${wallpaperWebpMobile} 800w, ${wallpaperWebpTablet} 1400w, ${wallpaperWebpFull} 6182w`}
-            sizes="100vw"
-            className="w-full h-full object-cover"
-            fetchPriority="high"
-            loading="eager"
-            decoding="sync"
-          />
-        </picture>
+        <img
+          src={wallpaperWebpFull}
+          alt="Letícia e Kiury"
+          srcSet={`${wallpaperWebpMobile} 800w, ${wallpaperWebpTablet} 1400w, ${wallpaperWebpFull} 6182w`}
+          sizes="100vw"
+          className="w-full h-full object-cover"
+          fetchPriority="high"
+          loading="eager"
+          decoding="sync"
+        />
         <div className="absolute bottom-0 left-0 right-0 h-1/6 bg-gradient-to-t from-[#FDFBF8] via-transparent to-transparent"></div>
       </div>
 

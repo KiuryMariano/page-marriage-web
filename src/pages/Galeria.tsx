@@ -4,9 +4,8 @@ import Footer from "../components/Footer";
 import wallpaperWebpFull from "../assets/wallpaper_2.webp";
 import wallpaperWebpTablet from "../assets/wallpaper_2_tablet.webp";
 import wallpaperWebpMobile from "../assets/wallpaper_2_mobile.webp";
-import wallpaperJpeg from "../assets/wallpaper_2.JPEG";
-import background from "../assets/background.png";
-import backgroundMobile from "../assets/background_mobile.png";
+import background from "../assets/background.webp";
+import backgroundMobile from "../assets/background_mobile.webp";
 import { colors } from "../theme";
 import { layoutPattern, trocas, trocasCiclicas } from "../mocks";
 
@@ -255,23 +254,16 @@ const Galeria = () => {
         <section className="relative min-h-[55vh] flex items-center justify-center overflow-hidden">
           {/* Background Image */}
           <div className="absolute inset-0">
-            <picture>
-              <source
-                srcSet={`${wallpaperWebpMobile} 800w, ${wallpaperWebpTablet} 1400w, ${wallpaperWebpFull} 6182w`}
-                sizes="100vw"
-                type="image/webp"
-              />
-              <img
-                src={wallpaperJpeg}
-                alt="Letícia e Kiury"
-                srcSet={`${wallpaperWebpMobile} 800w, ${wallpaperWebpTablet} 1400w, ${wallpaperWebpFull} 6182w`}
-                sizes="100vw"
-                className="w-full h-full object-cover"
-                fetchPriority="high"
-                loading="eager"
-                decoding="sync"
-              />
-            </picture>
+            <img
+              src={wallpaperWebpFull}
+              alt="Letícia e Kiury"
+              srcSet={`${wallpaperWebpMobile} 800w, ${wallpaperWebpTablet} 1400w, ${wallpaperWebpFull} 6182w`}
+              sizes="100vw"
+              className="w-full h-full object-cover"
+              fetchPriority="high"
+              loading="eager"
+              decoding="sync"
+            />
             <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-transparent"></div>
             <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-[#FDFBF8] via-transparent to-transparent"></div>
           </div>

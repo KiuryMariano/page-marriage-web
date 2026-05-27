@@ -9,7 +9,7 @@ import './index.css';
 function App() {
   // Recupera rota do sessionStorage (definido pelo 404.html)
   const storedRedirect = sessionStorage.getItem('redirect');
-  const redirectPath = storedRedirect ? storedRedirect.replace(/^\/page-marriage-web/, '') : null;
+  const redirectPath = storedRedirect;
   if (storedRedirect) {
     sessionStorage.removeItem('redirect');
   }
@@ -20,7 +20,7 @@ function App() {
   }
 
   return (
-    <BrowserRouter basename="/page-marriage-web">
+    <BrowserRouter>
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />

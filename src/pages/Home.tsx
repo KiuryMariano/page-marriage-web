@@ -2,8 +2,8 @@ import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import StorySection from "../components/StorySection";
 import Footer from "../components/Footer";
-import background from "../assets/background.png";
-import backgroundMobile from "../assets/background_mobile.png";
+import background from "../assets/background.webp";
+import backgroundMobile from "../assets/background_mobile.webp";
 
 const Home = () => {
   return (
