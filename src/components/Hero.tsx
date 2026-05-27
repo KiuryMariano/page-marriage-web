@@ -4,10 +4,9 @@ import wallpaperWebpTablet from "../assets/wallpaper_2_tablet.webp";
 import wallpaperWebpMobile from "../assets/wallpaper_2_mobile.webp";
 import wallpaperJpeg from "../assets/wallpaper_2.JPEG";
 
-const Hero = () => {
-  const weddingDate = new Date("2027-01-09T00:00:00");
+const weddingDate = new Date("2027-01-09T00:00:00");
 
-  const calculateTimeRemaining = () => {
+const calculateTimeRemaining = () => {
     const now = new Date();
     const difference = weddingDate.getTime() - now.getTime();
 
@@ -25,6 +24,7 @@ const Hero = () => {
     return { days, hours, minutes, seconds };
   };
 
+const Hero = () => {
   const [timeRemaining, setTimeRemaining] = useState(calculateTimeRemaining());
 
   useEffect(() => {

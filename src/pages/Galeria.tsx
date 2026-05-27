@@ -71,12 +71,6 @@ const createPhotosArray = (): PhotoWithLayout[] => {
   }
 
   // Ordenar por data (mais recentes primeiro)
-  [...horizontalPhotos, ...normalPhotos].forEach((photo) => {
-    if (photo.date) {
-      photo.date = photo.date;
-    }
-  });
-
   horizontalPhotos.sort((a, b) => {
     if (!a.date) return 1;
     if (!b.date) return -1;
@@ -304,18 +298,18 @@ const Galeria = () => {
             <div className="relative p-6 md:p-8">
               {/* Bordas decorativas nos cantos */}
               <div className="absolute top-0 left-0 w-6 h-6 md:w-8 md:h-8 border-t-4 border-l-4 rounded-tl-lg"
-                   style={{ borderColor: colors.primary.DEFAULT }}></div>
+                   style={{ borderColor: colors.primary[500] }}></div>
               <div className="absolute top-0 right-0 w-6 h-6 md:w-8 md:h-8 border-t-4 border-r-4 rounded-tr-lg"
-                   style={{ borderColor: colors.primary.DEFAULT }}></div>
+                   style={{ borderColor: colors.primary[500] }}></div>
               <div className="absolute bottom-0 left-0 w-6 h-6 md:w-8 md:h-8 border-b-4 border-l-4 rounded-bl-lg"
-                   style={{ borderColor: colors.primary.DEFAULT }}></div>
+                   style={{ borderColor: colors.primary[500] }}></div>
               <div className="absolute bottom-0 right-0 w-6 h-6 md:w-8 md:h-8 border-b-4 border-r-4 rounded-br-lg"
-                   style={{ borderColor: colors.primary.DEFAULT }}></div>
+                   style={{ borderColor: colors.primary[500] }}></div>
 
               {/* Linha decorativa superior */}
               <div className="flex items-center justify-center gap-4 mb-4">
                 <div className="h-px w-16 bg-gradient-to-r from-transparent to-stone-300"></div>
-                <svg className="w-6 h-6" style={{ color: colors.primary.DEFAULT }} fill="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6" style={{ color: colors.primary[500] }} fill="currentColor" viewBox="0 0 24 24">
                   <path d="M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm2-2v12h12V4H6z"/>
                   <path d="M8 8h8v2H8zm0 4h8v2H8z"/>
                 </svg>
@@ -327,7 +321,7 @@ const Galeria = () => {
                 className="text-2xl md:text-4xl lg:text-5xl text-center mb-4"
                 style={{
                   fontFamily: '"Great Vibes", cursive',
-                  color: colors.primary.dark,
+                  color: colors.primary[700],
                   lineHeight: 1.3,
                 }}
               >
@@ -347,7 +341,7 @@ const Galeria = () => {
               {/* Linha decorativa inferior */}
               <div className="flex items-center justify-center gap-4 mb-4">
                 <div className="h-px w-16 bg-gradient-to-r from-transparent to-stone-300"></div>
-                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: colors.primary.DEFAULT }}></div>
+                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: colors.primary[500] }}></div>
                 <div className="h-px w-16 bg-gradient-to-l from-transparent to-stone-300"></div>
               </div>
 
@@ -355,7 +349,7 @@ const Galeria = () => {
               <div className="flex justify-center animate-bounce">
                 <svg
                   className="w-5 h-5"
-                  style={{ color: colors.primary.DEFAULT }}
+                  style={{ color: colors.primary[500] }}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"

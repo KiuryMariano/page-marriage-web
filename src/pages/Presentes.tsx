@@ -454,315 +454,361 @@ const Presentes = () => {
           </div>
         </section>
 
-        {/* Tutorial Como Funciona */}
-        <section className="py-10 md:py-16 px-4 md:px-6">
-          <div className="max-w-6xl mx-auto">
-            <div className="relative mb-12 md:mb-16">
-              {/* Elemento decorativo superior */}
+        {/* Textos de introdução */}
+        <section className="py-6 md:py-8 px-4">
+          <div className="max-w-3xl mx-auto">
+            {/* Container com borda decorativa */}
+            <div className="relative p-6 md:p-8">
+              {/* Bordas decorativas nos cantos */}
               <div
-                className="absolute -top-8 left-1/2 transform -translate-x-1/2 w-24 md:w-32 h-1"
-                style={{
-                  background: gradients.horizontal.primary,
-                }}
+                className="absolute top-0 left-0 w-6 h-6 md:w-8 md:h-8 border-t-4 border-l-4 rounded-tl-lg"
+                style={{ borderColor: colors.primary[500] }}
+              ></div>
+              <div
+                className="absolute top-0 right-0 w-6 h-6 md:w-8 md:h-8 border-t-4 border-r-4 rounded-tr-lg"
+                style={{ borderColor: colors.primary[500] }}
+              ></div>
+              <div
+                className="absolute bottom-0 left-0 w-6 h-6 md:w-8 md:h-8 border-b-4 border-l-4 rounded-bl-lg"
+                style={{ borderColor: colors.primary[500] }}
+              ></div>
+              <div
+                className="absolute bottom-0 right-0 w-6 h-6 md:w-8 md:h-8 border-b-4 border-r-4 rounded-br-lg"
+                style={{ borderColor: colors.primary[500] }}
               ></div>
 
-              <div className="text-center mb-8 md:mb-10">
-                <div className="inline-flex items-center gap-3 md:gap-4 mb-4 md:mb-5">
+              {/* Linha decorativa superior */}
+              <div className="flex items-center justify-center gap-4 mb-4">
+                <div className="h-px w-16 bg-gradient-to-r from-transparent to-stone-300"></div>
+                <svg
+                  className="w-6 h-6"
+                  style={{ color: colors.primary[500] }}
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+                <div className="h-px w-16 bg-gradient-to-l from-transparent to-stone-300"></div>
+              </div>
+
+              {/* Título principal */}
+              <h2
+                className="text-2xl md:text-4xl lg:text-5xl text-center mb-4"
+                style={{
+                  fontFamily: '"Great Vibes", cursive',
+                  color: colors.primary[700],
+                  lineHeight: 1.3,
+                }}
+              >
+                Como Presentear?
+              </h2>
+
+              {/* Subtítulo */}
+              <div className="flex flex-col items-center gap-2 mb-4">
+                <p className="text-sm md:text-base text-center text-gray-600 leading-relaxed font-light">
+                  Siga os passos abaixo para nos presentear
+                </p>
+                <p className="text-xs md:text-sm text-gray-500 italic">
+                  É simples e rápido!
+                </p>
+              </div>
+
+              {/* Linha decorativa inferior */}
+              <div className="flex items-center justify-center gap-4 mb-4">
+                <div className="h-px w-16 bg-gradient-to-r from-transparent to-stone-300"></div>
+                <div
+                  className="w-2 h-2 rounded-full"
+                  style={{ backgroundColor: colors.primary[500] }}
+                ></div>
+                <div className="h-px w-16 bg-gradient-to-l from-transparent to-stone-300"></div>
+              </div>
+
+              {/* Seta animada */}
+              <div className="flex justify-center animate-bounce">
+                <svg
+                  className="w-5 h-5"
+                  style={{ color: colors.primary[500] }}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Cards de Como Funciona */}
+        <section className="pb-8 md:pb-12 px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-3 gap-5 md:gap-7">
+              <div
+                className="bg-white rounded-xl p-5 md:p-6 shadow-md border-l-4 hover:shadow-xl transition-all hover:-translate-y-1"
+                style={{ borderLeftColor: colors.primary[500] }}
+              >
+                <div className="flex items-center gap-3 mb-4">
                   <div
-                    className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center shadow-lg text-white"
+                    className="w-14 h-14 rounded-xl flex items-center justify-center font-bold text-xl text-white shadow-lg"
                     style={{
-                      background: gradients.primary,
+                      background: gradients.secondary,
                     }}
                   >
-                    <svg
-                      className="w-7 h-7 md:w-8 md:h-8"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
-                    </svg>
+                    1
                   </div>
-                  <h3
-                    className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-800"
-                    style={{ fontFamily: '"Playfair Display", serif' }}
-                  >
-                    Como Presentear?
-                  </h3>
-                </div>
-                <div
-                  className="w-32 md:w-40 h-1 mx-auto"
-                  style={{
-                    background: gradients.horizontal.primaryLight,
-                  }}
-                ></div>
-              </div>
-
-              <div className="grid md:grid-cols-3 gap-5 md:gap-7">
-                <div
-                  className="bg-white rounded-xl p-5 md:p-6 shadow-md border-l-4 hover:shadow-xl transition-all hover:-translate-y-1"
-                  style={{ borderLeftColor: colors.primary[500] }}
-                >
-                  <div className="flex items-center gap-3 mb-4">
-                    <div
-                      className="w-14 h-14 rounded-xl flex items-center justify-center font-bold text-xl text-white shadow-lg"
-                      style={{
-                        background: gradients.secondary,
-                      }}
-                    >
-                      1
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-bold text-gray-800 text-base md:text-lg">
-                        Escolha os Presentes
-                      </h4>
-                    </div>
-                  </div>
-                  <div className="space-y-3 text-sm text-gray-700">
-                    <div className="flex items-start gap-3">
-                      <div
-                        className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
-                        style={{ backgroundColor: colors.primary[100] }}
-                      >
-                        <svg
-                          className="w-3 h-3"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          style={{ color: colors.primary[600] }}
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </div>
-                      <span>Navegue pelos cards e escolha os itens</span>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <div
-                        className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
-                        style={{ backgroundColor: colors.primary[100] }}
-                      >
-                        <svg
-                          className="w-3 h-3"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          style={{ color: colors.primary[600] }}
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </div>
-                      <span>
-                        Clique em <strong>"Adicionar"</strong>
-                      </span>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <div
-                        className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
-                        style={{ backgroundColor: colors.primary[100] }}
-                      >
-                        <svg
-                          className="w-3 h-3"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          style={{ color: colors.primary[600] }}
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </div>
-                      <span>Adicione quantos quiser</span>
-                    </div>
+                  <div className="flex-1">
+                    <h4 className="font-bold text-gray-800 text-base md:text-lg">
+                      Escolha os Presentes
+                    </h4>
                   </div>
                 </div>
-
-                <div
-                  className="bg-white rounded-xl p-5 shadow-md border-l-4 hover:shadow-xl transition-all hover:-translate-y-1"
-                  style={{ borderLeftColor: "#f59e0b" }}
-                >
-                  <div className="flex items-center gap-3 mb-4">
+                <div className="space-y-3 text-sm text-gray-700">
+                  <div className="flex items-start gap-3">
                     <div
-                      className="w-14 h-14 rounded-xl flex items-center justify-center font-bold text-xl text-white shadow-lg"
-                      style={{
-                        background:
-                          "linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%)",
-                      }}
+                      className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+                      style={{ backgroundColor: colors.primary[100] }}
                     >
-                      2
+                      <svg
+                        className="w-3 h-3"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        style={{ color: colors.primary[600] }}
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
                     </div>
-                    <div className="flex-1">
-                      <h4 className="font-bold text-gray-800 text-base md:text-lg">
-                        Revise o Carrinho
-                      </h4>
-                    </div>
+                    <span>Navegue pelos cards e escolha os itens</span>
                   </div>
-                  <div className="space-y-3 text-sm text-gray-700">
-                    <div className="flex items-start gap-3">
-                      <div
-                        className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
-                        style={{ backgroundColor: colors.primary[100] }}
-                      >
-                        <svg
-                          className="w-3 h-3"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          style={{ color: colors.primary[600] }}
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </div>
-                      <span>Clique no ícone do carrinho</span>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <div
-                        className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
-                        style={{ backgroundColor: colors.primary[100] }}
-                      >
-                        <svg
-                          className="w-3 h-3"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          style={{ color: colors.primary[600] }}
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </div>
-                      <span>Ajuste quantidades ou remova itens</span>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <div
-                        className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
-                        style={{ backgroundColor: colors.primary[100] }}
-                      >
-                        <svg
-                          className="w-3 h-3"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          style={{ color: colors.primary[600] }}
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </div>
-                      <span>Confira o total antes de finalizar</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  className="bg-white rounded-xl p-5 shadow-md border-l-4 hover:shadow-xl transition-all hover:-translate-y-1"
-                  style={{ borderLeftColor: "#f59e0b" }}
-                >
-                  <div className="flex items-center gap-3 mb-4">
+                  <div className="flex items-start gap-3">
                     <div
-                      className="w-14 h-14 rounded-xl flex items-center justify-center font-bold text-xl text-white shadow-lg"
-                      style={{
-                        background:
-                          "linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%)",
-                      }}
+                      className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+                      style={{ backgroundColor: colors.primary[100] }}
                     >
-                      3
+                      <svg
+                        className="w-3 h-3"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        style={{ color: colors.primary[600] }}
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
                     </div>
-                    <div className="flex-1">
-                      <h4 className="font-bold text-gray-800 text-base md:text-lg">
-                        Finalize o Presente
-                      </h4>
-                    </div>
+                    <span>
+                      Clique em <strong>"Adicionar"</strong>
+                    </span>
                   </div>
-                  <div className="space-y-3 text-sm text-gray-700">
-                    <div className="flex items-start gap-3">
-                      <div
-                        className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
-                        style={{ backgroundColor: colors.primary[100] }}
+                  <div className="flex items-start gap-3">
+                    <div
+                      className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+                      style={{ backgroundColor: colors.primary[100] }}
+                    >
+                      <svg
+                        className="w-3 h-3"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        style={{ color: colors.primary[600] }}
                       >
-                        <svg
-                          className="w-3 h-3"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          style={{ color: colors.primary[600] }}
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </div>
-                      <span>
-                        Clique em <strong>"Finalizar Compra"</strong>
-                      </span>
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
                     </div>
-                    <div className="flex items-start gap-3">
-                      <div
-                        className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
-                        style={{ backgroundColor: colors.primary[100] }}
-                      >
-                        <svg
-                          className="w-3 h-3"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          style={{ color: colors.primary[600] }}
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </div>
-                      <span>Escolha o método de pagamento</span>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <div
-                        className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
-                        style={{ backgroundColor: colors.primary[100] }}
-                      >
-                        <svg
-                          className="w-3 h-3"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          style={{ color: colors.primary[600] }}
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </div>
-                      <span>Pronto! Muito obrigado!</span>
-                    </div>
+                    <span>Adicione quantos quiser</span>
                   </div>
                 </div>
               </div>
 
-              {/* Elemento decorativo inferior */}
               <div
-                className="absolute -bottom-8 md:-bottom-10 left-1/2 transform -translate-x-1/2 w-24 md:w-32 h-1"
-                style={{
-                  background: gradients.horizontal.primary,
-                }}
-              ></div>
-            </div>
+                className="bg-white rounded-xl p-5 shadow-md border-l-4 hover:shadow-xl transition-all hover:-translate-y-1"
+                style={{ borderLeftColor: "#f59e0b" }}
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <div
+                    className="w-14 h-14 rounded-xl flex items-center justify-center font-bold text-xl text-white shadow-lg"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%)",
+                    }}
+                  >
+                    2
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="font-bold text-gray-800 text-base md:text-lg">
+                      Revise o Carrinho
+                    </h4>
+                  </div>
+                </div>
+                <div className="space-y-3 text-sm text-gray-700">
+                  <div className="flex items-start gap-3">
+                    <div
+                      className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+                      style={{ backgroundColor: colors.primary[100] }}
+                    >
+                      <svg
+                        className="w-3 h-3"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        style={{ color: colors.primary[600] }}
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </div>
+                    <span>Clique no ícone do carrinho</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div
+                      className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+                      style={{ backgroundColor: colors.primary[100] }}
+                    >
+                      <svg
+                        className="w-3 h-3"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        style={{ color: colors.primary[600] }}
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </div>
+                    <span>Ajuste quantidades ou remova itens</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div
+                      className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+                      style={{ backgroundColor: colors.primary[100] }}
+                    >
+                      <svg
+                        className="w-3 h-3"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        style={{ color: colors.primary[600] }}
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </div>
+                    <span>Confira o total antes de finalizar</span>
+                  </div>
+                </div>
+              </div>
 
+              <div
+                className="bg-white rounded-xl p-5 shadow-md border-l-4 hover:shadow-xl transition-all hover:-translate-y-1"
+                style={{ borderLeftColor: "#f59e0b" }}
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <div
+                    className="w-14 h-14 rounded-xl flex items-center justify-center font-bold text-xl text-white shadow-lg"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%)",
+                    }}
+                  >
+                    3
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="font-bold text-gray-800 text-base md:text-lg">
+                      Finalize o Presente
+                    </h4>
+                  </div>
+                </div>
+                <div className="space-y-3 text-sm text-gray-700">
+                  <div className="flex items-start gap-3">
+                    <div
+                      className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+                      style={{ backgroundColor: colors.primary[100] }}
+                    >
+                      <svg
+                        className="w-3 h-3"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        style={{ color: colors.primary[600] }}
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </div>
+                    <span>
+                      Clique em <strong>"Finalizar Compra"</strong>
+                    </span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div
+                      className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+                      style={{ backgroundColor: colors.primary[100] }}
+                    >
+                      <svg
+                        className="w-3 h-3"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        style={{ color: colors.primary[600] }}
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </div>
+                    <span>Escolha o método de pagamento</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div
+                      className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+                      style={{ backgroundColor: colors.primary[100] }}
+                    >
+                      <svg
+                        className="w-3 h-3"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        style={{ color: colors.primary[600] }}
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </div>
+                    <span>Pronto! Muito obrigado!</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Grid de Presentes */}
+        <section className="pb-8 md:pb-12 px-4">
+          <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-5 mt-10 md:mt-12">
               {gifts.map((gift) => (
                 <div

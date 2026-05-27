@@ -1,16 +1,10 @@
-import { useState, useEffect } from "react";
-
 const Footer = () => {
-  const [daysRemaining, setDaysRemaining] = useState<number>(0);
-
-  useEffect(() => {
-    // Data do casamento - 09 de Janeiro de 2027
-    const weddingDate = new Date("2027-01-09");
-    const today = new Date();
-    const diffTime = weddingDate.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) - 1;
-    setDaysRemaining(diffDays > 0 ? diffDays : 0);
-  }, []);
+  // Data do casamento - 09 de Janeiro de 2027
+  const weddingDate = new Date("2027-01-09");
+  const today = new Date();
+  const diffTime = weddingDate.getTime() - today.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) - 1;
+  const daysRemaining = diffDays > 0 ? diffDays : 0;
 
   return (
     <footer className="bg-gray-950 border-t border-gray-700 shadow-[0_-4px_20px_rgba(0,0,0,0.5)] mt-auto">
