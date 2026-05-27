@@ -59,7 +59,7 @@ const Hero = () => {
             decoding="sync"
           />
         </picture>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/30"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-1/6 bg-gradient-to-t from-[#FDFBF8] via-transparent to-transparent"></div>
       </div>
 
       {/* Content */}
