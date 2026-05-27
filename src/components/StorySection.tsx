@@ -6,49 +6,49 @@ const StorySection = () => {
       date: "Setembro/24",
       title: "O Começo de Tudo",
       description:
-        "Nos conhecemos pessoalmente na FAG - eu cursando Engenharia de Software, ela Medicina, ambos no 4º período. As conversas começaram no Instagram, ela que seguiu primeiro. Nosso primeiro encontro foi no refeitório do bloco 4, onde conversamos sobre a vida. Com o passar dos dias ficamos mais próximos, e no dia 23 demos nosso primeiro beijo. De fato nunca fomos devagar - sempre soubemos o que queríamos.",
+        "Se conheceram pessoalmente na FAG - ele cursando Engenharia de Software, ela Medicina, ambos no 4º período. As conversas começaram no Instagram, ela que seguiu primeiro. O primeiro encontro foi no refeitório do bloco 4, onde conversaram sobre a vida. Com o passar dos dias ficaram mais próximos, e no dia 23 deram o primeiro beijo. De fato nunca foram devagar - sempre souberam o que queriam.",
     },
     {
       date: "Outubro/24",
       title: "Eu Te Amo",
       description:
-        "No dia 6 de outubro disse que a amava. Poucas semanas depois, no dia 14, conheci seus pais - um momento muito especial na nossa jornada. No dia 27, ela conheceu meus pais, marcando o início de uma nova fase em nossas vidas, onde nossas famílias começaram a se unir.",
+        "No dia 6 de outubro ele disse que a amava. Poucas semanas depois, no dia 14, ele conheceu os pais dela - um momento muito especial na jornada deles. No dia 27, ela conheceu os pais dele, marcando o início de uma nova fase em suas vidas, onde suas famílias começaram a se unir.",
     },
     {
       date: "Dezembro/24",
       title: "O Pedido de Namoro",
       description:
-        'No Palo Santo em Cascavel. Organizei tudo um mês antes. Ela achava que era mais um encontro nosso. Me retirei para "ir ao banheiro", e então o violino começou a tocar. Seus amigos chegaram entregando rosas, e eu entrei com o buquê e as alianças. Ao som de "Die With A Smile", fiz o pedido. E ela disse SIM!',
+        'No Palo Santo em Cascavel. Ele organizou tudo um mês antes. Ela achava que era mais um encontro deles. Ele se retirou para "ir ao banheiro", e então o violino começou a tocar. Os amigos dela chegaram entregando rosas, e ele entrou com o buquê e as alianças. Ao som de "Die With A Smile", fez o pedido. E ela disse SIM!',
     },
     {
       date: "Setembro/25",
       title: "Meio Médica",
       description:
-        "Dia 27 tiramos as fotos para o seu meio médico. Minha gata estava se tornando meio médica, e eu não poderia estar mais orgulhoso.",
+        "Dia 27 tiraram as fotos para o meio médico dela. A noiva estava se tornando meio médica, e o noivo não poderia estar mais orgulhoso.",
     },
     {
       date: "Outubro/25",
       title: "Nossa Segunda Corrida",
       description:
-        "Dia 19 fomos para nossa segunda prova de 5km em Capitão. Você passou muito mal e tivemos que caminhar praticamente a prova toda, mas começamos e finalizamos juntos. Juntos sempre.",
+        "Dia 19 foram para sua segunda prova de 5km em Capitão. Ela passou muito mal e tiveram que caminhar praticamente a prova toda, mas começaram e finalizaram juntos. Juntos sempre.",
     },
     {
       date: "Dezembro/25",
       title: "Um Ano Juntos",
       description:
-        "Completamos nosso primeiro ano oficialmente. Relembramos tantos momentos e fizemos fotos para ver nossa evolução durante os anos, criando nossas tradições. Te levei no Palo Santo para comemorar, e com uma sobremesa pedi para renovar o contrato para mais um ano comigo. Nas férias, passamos muito tempo juntos: trabalhando em sítio, pescando, secando açude, saindo em roles diferentes e nos divertindo. Dia 30 comprei seu anel de noivado.",
+        "Completaram seu primeiro ano oficialmente. Relembraram tantos momentos e fizeram fotos para ver a evolução durante os anos, criando suas tradições. Ele a levou no Palo Santo para comemorar, e com uma sobremesa pediu para renovar o contrato para mais um ano. Nas férias, passaram muito tempo juntos: trabalhando em sítio, pescando, secando açude, saindo em roles diferentes e se divertindo. Dia 30 ele comprou o anel de noivado dela.",
     },
     {
       date: "Janeiro/26",
       title: "A Pergunta",
       description:
-        'Viajamos para Itapoá, SC - provavelmente a viagem que mais ficará marcada. Na virada do ano, exatamente quando virou para 2026, disse no seu ouvido: "Este ano eu vou te pedir em casamento. Pode ser hoje ou daqui a 365 dias, fica com a unha sempre pronta." No nascer do sol do dia 14 de janeiro, te pedi em casamento. Uma completa surpresa. Organizei um piquenique como você ama, e mesmo com todos os dias de chuvas e tempestade anteriores, no dia o sol saiu e brilhou muito - tanto quanto você. E você disse SIM!',
+        'Viajaram para Itapoá, SC - provavelmente a viagem que mais ficará marcada. Na virada do ano, exatamente quando virou para 2026, ele disse no ouvido dela: "Este ano eu vou te pedir em casamento. Pode ser hoje ou daqui a 365 dias, fica com a unha sempre pronta." No nascer do sol do dia 14 de janeiro, ele a pediu em casamento. Uma completa surpresa. Ele organizou um piquenique como ela ama, e mesmo com todos os dias de chuvas e tempestade anteriores, no dia o sol saiu e brilhou muito - tanto quanto ela. E ela disse SIM!',
     },
     {
       date: "Janeiro/26",
       title: "Planejando o Futuro",
       description:
-        "Agora como noivos continuamos nossa viagem em Itapoá. Retornamos e passamos o restante de nossas férias acadêmicas planejando o casamento, deixando quase tudo encaminhado mesmo com um ano de antecedência. Nossa jornada juntos só está começando.",
+        "Agora como noivos continuaram sua viagem em Itapoá. Retornaram e passaram o restante das férias acadêmicas planejando o casamento, deixando quase tudo encaminhado mesmo com um ano de antecedência. A jornada juntos só está começando.",
     },
   ];
 
