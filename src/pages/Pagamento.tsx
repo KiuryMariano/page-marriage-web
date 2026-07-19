@@ -79,6 +79,11 @@ const Pagamento = () => {
     setShowCardPayment(false);
   };
 
+  const handleCardApproved = () => {
+    localStorage.removeItem("casamento_cart");
+    navigate("/pagamento-sucesso");
+  };
+
   return (
     <div className="h-screen flex flex-col relative overflow-hidden">
       <div
@@ -401,6 +406,7 @@ const Pagamento = () => {
                 cart={cart}
                 cartTotal={cartTotal}
                 onCancel={handleCardCancel}
+                onPaymentApproved={handleCardApproved}
               />
             </div>
           </div>

@@ -8,3 +8,8 @@
   Order Allow,Deny
   Allow from all
 </Files>
+
+<Files "processCardPayment.php">
+  Order Allow,Deny
+  Allow from all
+</Files>

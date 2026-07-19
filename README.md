@@ -52,18 +52,18 @@ Endpoints envolvidos:
 
 ### Cartão — Mercado Pago
 
-O pagamento por cartão usa o Checkout hospedado do Mercado Pago:
+O pagamento por cartão utiliza o **Card Payment Brick** do Checkout Transparente. O formulário é exibido dentro do site, enquanto os campos sensíveis são tratados e tokenizados pelo Mercado Pago:
 
-1. O frontend envia os itens do carrinho para `POST /api/createPreference.php`.
-2. A API monta uma preferência com itens, valor, referência externa e URLs de retorno.
-3. O frontend redireciona o usuário para o `init_point` retornado pelo Mercado Pago.
-4. Ao fim do checkout, o Mercado Pago redireciona para uma das rotas configuradas: `/pagamento-sucesso`, `/pagamento-falha` ou `/pagamento-pendente`.
+1. O Brick coleta e tokeniza os dados do cartão no navegador.
+2. O frontend envia o token, o método de pagamento, as parcelas, o pagador e os itens do carrinho para `POST /api/processCardPayment.php`.
+3. A API calcula o total, cria uma chave de idempotência e envia o pagamento para `https://api.mercadopago.com/v1/payments` com o token privado apenas no servidor.
+4. A resposta de aprovação, pendência ou recusa é exibida sem redirecionar o cliente para o checkout hospedado.
 
-O formulário permite selecionar de 1 a 12 parcelas apenas para apresentação da interface. As regras efetivas de parcelamento, aprovação e captura são determinadas pela conta e pelo checkout do Mercado Pago.
+O Card Payment Brick atende aos requisitos de coleta segura dos dados de cartão; não crie campos próprios para número, validade ou CVV. A integração ainda deve ser testada com credenciais e cartões de teste antes de receber pagamentos reais.
 
 | Endpoint | Responsabilidade |
 | --- | --- |
-| `api/createPreference.php` | Cria a preferência em `https://api.mercadopago.com/checkout/preferences`. |
+| `api/processCardPayment.php` | Processa o token do Brick em `https://api.mercadopago.com/v1/payments`. |
 
 ## Configuração das credenciais
 
@@ -77,10 +77,15 @@ O formulário permite selecionar de 1 a 12 parcelas apenas para apresentação d
 define('OPENPIX_API_KEY', 'SUA_CHAVE_PRIVADA_OPENPIX');
 define('OPENPIX_APP_ID', 'SEU_APP_ID_OPENPIX');
 define('MP_ACCESS_TOKEN', 'SEU_ACCESS_TOKEN_PRIVADO_MERCADO_PAGO');
-define('MP_PUBLIC_KEY', 'SUA_CHAVE_PUBLICA_MERCADO_PAGO');
 define('SITE_URL', 'https://seu-dominio.com');
 define('PIX_VERIFICATION_DELAY', 10);
 define('PIX_VERIFICATION_INTERVAL', 4);
+```
+
+A chave pública é usada pelo frontend e deve ser definida no arquivo `.env` antes do build:
+
+```env
+VITE_MERCADO_PAGO_PUBLIC_KEY=SUA_CHAVE_PUBLICA_MERCADO_PAGO
 ```
 
 `api/config.php` já está no `.gitignore`. Use credenciais de teste durante o desenvolvimento e credenciais de produção somente no servidor de produção. Caso uma chave tenha sido publicada, revogue-a e gere outra no provedor correspondente.
@@ -90,13 +95,13 @@ define('PIX_VERIFICATION_INTERVAL', 4);
 ```text
 src/
   components/
-    CardPayment.tsx       # Checkout por cartão
+    CardPayment.tsx       # Formulário Card Payment Brick
     PixPayment.tsx        # QR Code e acompanhamento PIX
   pages/Pagamento.tsx     # Seleção da forma de pagamento
 api/
   createPix.php           # Criação da cobrança OpenPix
   checkPix.php            # Consulta de status OpenPix
-  createPreference.php    # Preferência de checkout Mercado Pago
+  processCardPayment.php  # Processamento transparente do cartão
   config.example.php      # Modelo de configurações privadas
 ```
 

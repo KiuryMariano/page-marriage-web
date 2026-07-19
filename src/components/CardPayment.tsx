@@ -1,4 +1,8 @@
 import { useState } from "react";
+import {
+  CardPayment as MercadoPagoCardPayment,
+  initMercadoPago,
+} from "@mercadopago/sdk-react";
 import { colors } from "../theme";
 import { type Gift } from "../mocks";
 
@@ -6,67 +10,99 @@ interface CardPaymentProps {
   cart: (Gift & { quantity: number })[];
   cartTotal: number;
   onCancel: () => void;
+  onPaymentApproved: () => void;
 }
 
-const formatPrice = (value: number) => {
-  return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+const publicKey = import.meta.env.VITE_MERCADO_PAGO_PUBLIC_KEY;
+
+if (publicKey) {
+  initMercadoPago(publicKey, { locale: "pt-BR" });
+}
+
+const debugPayment = (stage: string, details: Record<string, unknown> = {}) => {
+  console.info(`[CardPayment] ${stage}`, details);
 };
 
-export const CardPayment = ({ cart, cartTotal, onCancel }: CardPaymentProps) => {
-  const [loading, setLoading] = useState(false);
-  const [installments, setInstallments] = useState(1);
-  const installmentValue = cartTotal / installments;
+export const CardPayment = ({
+  cart,
+  cartTotal,
+  onCancel,
+  onPaymentApproved,
+}: CardPaymentProps) => {
+  const [isReady, setIsReady] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handlePayWithMercadoPago = async () => {
+  const handleSubmit = async (formData: {
+    token: string;
+    issuer_id: string;
+    payment_method_id: string;
+    installments: number;
+    payer: {
+      email?: string;
+      identification?: { type?: string; number?: string };
+    };
+  }) => {
+    setErrorMessage("");
+    debugPayment("Token do cartão recebido do Brick", {
+      paymentMethod: formData.payment_method_id,
+      installments: formData.installments,
+      hasPayerEmail: Boolean(formData.payer.email),
+    });
+
     try {
-      setLoading(true);
-
-      // Chama API PHP
-      const payload = {
-        itens: cart,
-        nome: 'Convidado',
-      };
-
-      const response = await fetch('/api/createPreference.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+      debugPayment("Enviando pagamento para a API local", {
+        itemCount: cart.length,
+        cartTotal,
       });
 
-      const responseText = await response.text();
+      const response = await fetch("/api/processCardPayment.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ formData, cart }),
+      });
+      const result = await response.json();
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${responseText}`);
+      debugPayment("Resposta do processamento recebida", {
+        httpStatus: response.status,
+        paymentStatus: result.status,
+        statusDetail: result.status_detail,
+        paymentId: result.id,
+      });
+
+      if (!response.ok || result.status !== "approved") {
+        const message = result.message || "O pagamento não foi aprovado. Verifique os dados e tente novamente.";
+        setErrorMessage(message);
+        throw new Error(message);
       }
 
-      let data;
-      try {
-        data = JSON.parse(responseText);
-      } catch {
-        throw new Error('Resposta não é JSON válido');
-      }
-
-      if (data.error) {
-        alert('Erro ao criar pagamento: ' + data.error);
-        setLoading(false);
-        return;
-      }
-
-      if (data.init_point) {
-        window.location.href = data.init_point;
-      } else {
-        alert('Erro: init_point não encontrado');
-        setLoading(false);
-      }
-    } catch {
-      alert('Erro ao processar pagamento. Tente novamente mais tarde.');
-      setLoading(false);
+      debugPayment("Pagamento aprovado", { paymentId: result.id });
+      onPaymentApproved();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Não foi possível processar o pagamento.";
+      setErrorMessage(message);
+      debugPayment("Falha no processamento do pagamento", { message });
+      throw error;
     }
   };
 
+  if (!publicKey) {
+    return (
+      <div className="bg-white rounded-2xl shadow-lg p-6 max-w-lg mx-auto">
+        <h2 className="text-2xl font-semibold mb-3" style={{ color: colors.primary[700] }}>
+          Pagamento com Cartão
+        </h2>
+        <p className="text-red-600">
+          Configure a variável <code>VITE_MERCADO_PAGO_PUBLIC_KEY</code> para habilitar o pagamento por cartão.
+        </p>
+        <button onClick={onCancel} className="mt-6 w-full py-3 rounded-lg border-2 border-gray-300">
+          Voltar
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 max-w-lg mx-auto">
-      {/* Header */}
       <div className="text-center mb-6">
         <h2
           className="text-2xl font-semibold mb-2"
@@ -74,92 +110,46 @@ export const CardPayment = ({ cart, cartTotal, onCancel }: CardPaymentProps) => 
         >
           Pagamento com Cartão
         </h2>
-        <p className="text-gray-600">
-          Parcelamento sem juros
-        </p>
+        <p className="text-gray-600">Preencha os dados abaixo para concluir o presente.</p>
       </div>
 
-      {/* Valor */}
-      <div className="text-center mb-6">
-        <p className="text-sm text-gray-500 mb-1">Valor total</p>
-        <p
-          className="text-3xl font-bold"
-          style={{ color: colors.primary[600] }}
-        >
-          {formatPrice(cartTotal)}
-        </p>
-      </div>
-
-      {/* Parcelas */}
-      <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Número de parcelas
-        </label>
-        <select
-          value={installments}
-          onChange={(e) => setInstallments(Number(e.target.value))}
-          className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none"
-        >
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((num) => (
-            <option key={num} value={num}>
-              {num}x de {formatPrice(installmentValue)} {num === 1 ? '(à vista)' : '(sem juros)'}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Info */}
-      <div className="bg-blue-50 rounded-lg p-4 mb-6">
-        <p className="text-sm text-blue-800 flex items-center gap-2">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          Você será redirecionado para o Mercado Pago
-        </p>
-      </div>
-
-      {/* Botões */}
-      <div className="flex gap-3">
-        <button
-          onClick={onCancel}
-          disabled={loading}
-          className="flex-1 py-3 px-4 border-2 border-gray-300 rounded-lg text-gray-700 font-semibold hover:bg-gray-50 transition-colors disabled:opacity-50"
-        >
-          Voltar
-        </button>
-        <button
-          onClick={handlePayWithMercadoPago}
-          disabled={loading}
-          className="flex-1 py-3 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-        >
-          {loading ? (
-            <>
-              <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-              </svg>
-              Processando...
-            </>
-          ) : (
-            <>
-              Pagar Agora
-            </>
-          )}
-        </button>
-      </div>
-
-      <p className="text-xs text-gray-400 text-center mt-4">
-        Pagamento seguro processado por Mercado Pago
+      <p className="text-center text-3xl font-bold mb-6" style={{ color: colors.primary[600] }}>
+        {cartTotal.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
       </p>
 
-      {/* Bandeiras aceitas */}
-      <div className="flex justify-center gap-3 mt-4">
-        <div className="text-2xl" title="Visa">💳</div>
-        <div className="text-2xl" title="Mastercard">💳</div>
-        <div className="text-2xl" title="Elo">💳</div>
-        <div className="text-2xl" title="Hipercard">💳</div>
-        <div className="text-2xl" title="American Express">💳</div>
-      </div>
+      {!isReady && <p className="text-center text-gray-500 mb-4">Carregando formulário seguro...</p>}
+
+      {errorMessage && (
+        <p className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700" role="alert">
+          {errorMessage}
+        </p>
+      )}
+
+      <MercadoPagoCardPayment
+        initialization={{ amount: cartTotal }}
+        customization={{
+          paymentMethods: {
+            maxInstallments: 12,
+          },
+        }}
+        locale="pt-BR"
+        onReady={() => {
+          setIsReady(true);
+          debugPayment("Card Payment Brick carregado");
+        }}
+        onError={(error) => {
+          setErrorMessage("Não foi possível carregar o formulário de cartão.");
+          debugPayment("Erro no Card Payment Brick", { errorType: String(error.type) });
+        }}
+        onSubmit={handleSubmit}
+      />
+
+      <button
+        onClick={onCancel}
+        className="mt-4 w-full py-3 rounded-lg border-2 border-gray-300 text-gray-700 font-semibold hover:bg-gray-50"
+      >
+        Voltar
+      </button>
     </div>
   );
 };
