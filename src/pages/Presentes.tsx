@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import wallpaperWebpFull from "../assets/wallpaper_1.webp";
@@ -8,17 +9,16 @@ import backgroundMoney from "../assets/background_money.webp";
 import backgroundMoneyMobile from "../assets/background_money_mobile.webp";
 import { colors, gradients } from "../theme";
 import { gifts, type Gift } from "../mocks";
-
-interface CartItem extends Gift {
-  quantity: number;
-}
+import { useCartPersist } from "../hooks/useCartPersist";
 
 const formatPrice = (value: number) => {
   return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 };
 
 const Presentes = () => {
-  const [cart, setCart] = useState<CartItem[]>([]);
+  const navigate = useNavigate();
+  const { cart, setCart } = useCartPersist();
+
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isPresenceModalOpen, setIsPresenceModalOpen] = useState(true);
 
@@ -61,9 +61,9 @@ const Presentes = () => {
   const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
 
   const handleCheckout = () => {
-    alert(
-      `Total do carrinho: ${formatPrice(cartTotal)}\n\nRedirecionando para pagamento...`,
-    );
+    // Salva explicitamente no localStorage antes de navegar
+    localStorage.setItem("casamento_cart", JSON.stringify(cart));
+    navigate("/pagamento");
   };
 
   return (

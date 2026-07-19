@@ -1,0 +1,10 @@
+# Configuração para API funcionar no Hostinger
+<Files "createPix.php">
+  Order Allow,Deny
+  Allow from all
+</Files>
+
+<Files "checkPix.php">
+  Order Allow,Deny
+  Allow from all
+</Files>

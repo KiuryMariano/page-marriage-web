@@ -30,10 +30,7 @@ import { gifts, type Gift } from "@/mocks";
 
 // Listar todos os presentes
 gifts.map((gift: Gift) => {
-  console.log(gift.title);        // "PS5 para o Noivo"
-  console.log(gift.price);        // 1500
-  console.log(gift.cotas);        // 2
-  console.log(gift.image);        // "https://..."
+  return `${gift.title}: R$ ${gift.price}`;
 });
 
 // Filtrar presentes com múltiplas cotas

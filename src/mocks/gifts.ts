@@ -63,7 +63,7 @@ export const gifts: Gift[] = [
   {
     id: 1,
     title: "Cota da Festa de Casamento",
-    price: 500,
+    price: 3,
     image: giftImages[1],
     cotas: 20,
   },
