@@ -3,14 +3,16 @@ import { useNavigate } from "react-router-dom";
 import backgroundMoney from "../assets/background_money.webp";
 import backgroundMoneyMobile from "../assets/background_money_mobile.webp";
 import { colors } from "../theme";
+import { useCartPersist } from "../hooks/useCartPersist";
 
 const PagamentoSucesso = () => {
   const navigate = useNavigate();
+  const { clearCart } = useCartPersist();
 
   useEffect(() => {
-    // Limpar carrinho
-    localStorage.removeItem("casamento_cart");
-  }, []);
+    // Limpeza centralizada do carrinho
+    clearCart();
+  }, [clearCart]);
 
   return (
     <div className="h-screen flex flex-col relative">
@@ -58,7 +60,7 @@ const PagamentoSucesso = () => {
           </div>
 
           <button
-            onClick={() => navigate("/presentes", { state: { paymentSuccess: true } })}
+            onClick={() => navigate("/presentes")}
             className="w-full py-3 px-6 rounded-lg text-white font-semibold"
             style={{ backgroundColor: colors.primary[600] }}
           >

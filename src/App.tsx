@@ -18,14 +18,12 @@ function App() {
     sessionStorage.removeItem('redirect');
   }
 
-  // Se houver redirecionamento, mostra um loader ou navega
-  if (redirectPath && redirectPath !== '/') {
-    return <Navigate to={redirectPath} replace />;
-  }
-
   return (
     <BrowserRouter>
       <ScrollToTop />
+      {redirectPath && redirectPath !== '/' && (
+        <Navigate to={redirectPath} replace />
+      )}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/presentes" element={<Presentes />} />

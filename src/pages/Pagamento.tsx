@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import backgroundMoney from "../assets/background_money.webp";
 import backgroundMoneyMobile from "../assets/background_money_mobile.webp";
@@ -9,6 +9,12 @@ import { CardPayment } from "../components/CardPayment";
 
 const formatPrice = (value: number) => {
   return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+};
+
+const debugPagamento = (stage: string, details: Record<string, unknown> = {}) => {
+  if (import.meta.env.DEV) {
+    console.log(`%c[Pagamento] ${stage}`, "color: #9333ea; font-weight: bold", details);
+  }
 };
 
 type PaymentMethod = "pix" | "card" | "boleto";
@@ -24,6 +30,11 @@ const Pagamento = () => {
   const [showPixPayment, setShowPixPayment] = useState(false);
   const [showCardPayment, setShowCardPayment] = useState(false);
 
+  debugPagamento("Página de pagamento carregada", {
+    cartItems: cart.length,
+    cartTotal: cart.reduce((total, item) => total + item.price * item.quantity, 0),
+  });
+
   const cartTotal = cart.reduce(
     (total, item) => total + item.price * item.quantity,
     0,
@@ -37,52 +48,71 @@ const Pagamento = () => {
     }
   }, [cart, navigate]);
 
-  const handleBackToCart = () => {
-    navigate("/presentes", { state: { cart } });
-  };
+  const handleBackToCart = useCallback(() => {
+    navigate("/presentes");
+  }, [navigate]);
 
-  const handleSelectMethod = (method: PaymentMethod) => {
+  const handleSelectMethod = useCallback((method: PaymentMethod) => {
+    debugPagamento("Método de pagamento selecionado", {
+      method,
+      previousMethod: selectedMethod,
+    });
     setSelectedMethod(method);
-  };
+  }, [selectedMethod]);
 
-  const handleContinue = () => {
+  const handleContinue = useCallback(() => {
     if (!selectedMethod) return;
 
+    debugPagamento("Botão continuar clicado", {
+      method: selectedMethod,
+      cartTotal,
+    });
+
     if (selectedMethod === "pix") {
+      debugPagamento("Abrindo modal PIX");
       setShowPixPayment(true);
       return;
     }
 
     if (selectedMethod === "card") {
+      debugPagamento("Abrindo modal Cartão");
       setShowCardPayment(true);
       return;
     }
 
+    debugPagamento("Método não implementado", { method: selectedMethod });
     setIsProcessing(true);
 
     setTimeout(() => {
       setIsProcessing(false);
       alert(`Método selecionado: ${selectedMethod}\nTotal: ${formatPrice(cartTotal)}`);
     }, 1000);
-  };
+  }, [selectedMethod, cartTotal]);
 
-  const handlePixCancel = () => {
+  const handlePixCancel = useCallback(() => {
+    debugPagamento("Pagamento PIX cancelado pelo usuário");
     setShowPixPayment(false);
-  };
+  }, []);
 
-  const handlePixConfirmed = () => {
-    localStorage.removeItem("casamento_cart");
-    navigate("/presentes", { state: { paymentSuccess: true } });
-  };
-
-  const handleCardCancel = () => {
-    setShowCardPayment(false);
-  };
-
-  const handleCardApproved = () => {
-    localStorage.removeItem("casamento_cart");
+  const handlePixConfirmed = useCallback(() => {
+    debugPagamento("Pagamento PIX confirmado");
     navigate("/pagamento-sucesso");
-  };
+  }, [navigate]);
+
+  const handleCardCancel = useCallback(() => {
+    debugPagamento("Pagamento com cartão cancelado pelo usuário");
+    setShowCardPayment(false);
+  }, []);
+
+  const handleCardApproved = useCallback(() => {
+    debugPagamento("Pagamento com cartão aprovado - navegando para sucesso");
+    navigate("/pagamento-sucesso");
+  }, [navigate]);
+
+  const handleCardPending = useCallback(() => {
+    debugPagamento("Pagamento com cartão pendente - navegando para pendente");
+    navigate("/pagamento-pendente");
+  }, [navigate]);
 
   return (
     <div className="h-screen flex flex-col relative overflow-hidden">
@@ -219,7 +249,7 @@ const Pagamento = () => {
                           </span>
                         </div>
                         <p className="text-xs text-gray-600 mt-0.5">
-                          Parcelamento em até 10x Sem Juros
+                          Em até 10x no cartão
                         </p>
                       </div>
                       <div className="w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0">
@@ -381,7 +411,16 @@ const Pagamento = () => {
             onClick={handlePixCancel}
           />
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
-            <div className="relative min-h-fit py-8">
+            <div className="relative min-h-fit py-8" onClick={(e) => e.stopPropagation()}>
+              <button
+                onClick={handlePixCancel}
+                className="absolute top-1 right-1 z-10 p-2 rounded-full bg-white shadow hover:bg-gray-100 transition-colors"
+                aria-label="Fechar"
+              >
+                <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
               <PixPayment
                 valor={cartTotal}
                 descricao="Presente Casamento Letícia & Kiury"
@@ -401,13 +440,65 @@ const Pagamento = () => {
             onClick={handleCardCancel}
           />
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
-            <div className="relative min-h-fit py-8">
-              <CardPayment
-                cart={cart}
-                cartTotal={cartTotal}
-                onCancel={handleCardCancel}
-                onPaymentApproved={handleCardApproved}
-              />
+            <div
+              className="relative bg-white rounded-2xl shadow-lg w-full max-w-lg flex flex-col max-h-[90vh]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header Fixo */}
+              <div className="shrink-0 p-6 pb-4 border-b">
+                <h2
+                  className="text-2xl font-semibold text-center"
+                  style={{ fontFamily: '"Playfair Display", serif', color: colors.primary[700] }}
+                >
+                  Pagamento com Cartão
+                </h2>
+                <p className="text-center text-gray-600 text-sm mt-1">
+                  Preencha os dados abaixo para concluir o presente
+                </p>
+              </div>
+
+              {/* Conteúdo com Scroll */}
+              <div className="flex-1 overflow-y-auto px-6 py-4">
+                <p className="text-center text-3xl font-bold mb-3" style={{ color: colors.primary[600] }}>
+                  {cartTotal.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+                </p>
+
+                <div className="mb-4 rounded-lg bg-amber-50 border border-amber-200 p-3 text-xs text-amber-800" role="note">
+                  <p className="font-semibold mb-0.5">Aviso dos noivos!</p>
+                  <p>
+                    Parcelas mais longas podem ter juros cobrados pela operadora do cartão.
+                    Prometemos que não somos nós cobrando — é só a taxa do processamento!
+                  </p>
+                </div>
+
+                <CardPayment
+                  cart={cart}
+                  cartTotal={cartTotal}
+                  onPaymentApproved={handleCardApproved}
+                  onPaymentPending={handleCardPending}
+                />
+              </div>
+
+              {/* Botão Voltar Fixo */}
+              <div className="shrink-0 p-4 pt-0 border-t">
+                <button
+                  onClick={handleCardCancel}
+                  className="w-full py-3 rounded-lg border-2 border-gray-300 text-gray-700 font-semibold hover:bg-gray-50"
+                >
+                  Voltar
+                </button>
+              </div>
+
+              {/* Botão de fechar no canto */}
+              <button
+                onClick={handleCardCancel}
+                className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors"
+                aria-label="Fechar"
+              >
+                <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
           </div>
         </>

@@ -20,7 +20,6 @@ const Presentes = () => {
   const { cart, setCart } = useCartPersist();
 
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isPresenceModalOpen, setIsPresenceModalOpen] = useState(true);
 
   const addToCart = (gift: Gift) => {
     setCart((prevCart) => {
@@ -61,8 +60,6 @@ const Presentes = () => {
   const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
 
   const handleCheckout = () => {
-    // Salva explicitamente no localStorage antes de navegar
-    localStorage.setItem("casamento_cart", JSON.stringify(cart));
     navigate("/pagamento");
   };
 
@@ -82,137 +79,11 @@ const Presentes = () => {
 
       <Navbar />
 
-      {/* Modal de Importância da Presença */}
-      {isPresenceModalOpen && (
-        <>
-          <div
-            className="fixed inset-0 bg-black/60 z-50 backdrop-blur-sm"
-            onClick={() => setIsPresenceModalOpen(false)}
-          />
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl md:rounded-3xl shadow-2xl max-w-lg w-full p-5 md:p-8 relative transform transition-all">
-              {/* Botão de fechar */}
-              <button
-                onClick={() => setIsPresenceModalOpen(false)}
-                className="absolute top-3 right-3 md:top-4 md:right-4 text-gray-400 hover:text-gray-600 transition-colors p-1"
-              >
-                <svg
-                  className="w-5 h-5 md:w-6 md:h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-
-              {/* Conteúdo do modal */}
-              <div className="text-center">
-                {/* Alerta pulsante */}
-                <div className="flex justify-center mb-4 md:mb-5">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-red-500 rounded-full animate-ping opacity-75"></div>
-                    <div className="relative bg-red-500 text-white rounded-full w-14 h-14 md:w-16 md:h-16 flex items-center justify-center shadow-lg">
-                      <svg
-                        className="w-7 h-7 md:w-8 md:h-8"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-
-                <h2
-                  className="text-2xl md:text-3xl font-bold text-gray-800 mb-4 md:mb-5"
-                  style={{ fontFamily: '"Playfair Display", serif' }}
-                >
-                  Um Aviso Importante!
-                </h2>
-
-                <div className="space-y-4 text-gray-700 text-center text-base md:text-lg leading-relaxed">
-                  <p
-                    className="font-bold"
-                    style={{ color: colors.primary[600] }}
-                  >
-                    Sua presença é nosso maior presente!
-                  </p>
-
-                  <p className="text-sm md:text-base">
-                    Ter você conosco neste dia especial já nos deixa imensamente
-                    felizes. É isso que mais{" "}
-                    <span className="font-bold" style={{ color: "#1e40af" }}>
-                      valorizamos
-                    </span>
-                    .
-                  </p>
-
-                  <p className="text-sm md:text-base">
-                    Se você quiser nos presentear, separamos algumas opções
-                    digitais especiais abaixo. Qualquer valor será{" "}
-                    <span className="font-bold" style={{ color: "#059669" }}>
-                      muito bem-vindo
-                    </span>
-                    !
-                  </p>
-
-                  <div className="relative pt-2">
-                    <div
-                      className="absolute top-0 left-1/2 transform -translate-x-1/2 w-16 h-1"
-                      style={{
-                        background: gradients.horizontal.primaryLight,
-                      }}
-                    ></div>
-                    <p className="pt-2 text-sm md:text-base text-gray-600 italic">
-                      Graças a Deus já temos nossa casa mobiliada, então o
-                      presente digital é a melhor opção para nós.
-                    </p>
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => setIsPresenceModalOpen(false)}
-                  className="mt-5 md:mt-6 w-full text-white font-bold py-3 px-6 rounded-lg transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2"
-                  style={{
-                    fontFamily: '"Playfair Display", serif',
-                    background: gradients.primary,
-                  }}
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  Entendido
-                </button>
-              </div>
-            </div>
-          </div>
-        </>
-      )}
-
       <main>
         {/* Floating Cart Button - ajustado para mobile com navbar inferior */}
         <button
           onClick={() => setIsCartOpen(true)}
+          aria-label={`Abrir carrinho${cartItemCount > 0 ? ` com ${cartItemCount} item(ns)` : ""}`}
           className="fixed bottom-24 md:bottom-6 right-6 z-40 text-white rounded-full p-4 shadow-lg transition-all hover:scale-110"
           style={{
             background: gradients.primary,
@@ -255,6 +126,7 @@ const Presentes = () => {
                 </h2>
                 <button
                   onClick={() => setIsCartOpen(false)}
+                  aria-label="Fechar carrinho"
                   className="text-gray-500 hover:text-gray-700 p-2"
                 >
                   <svg
@@ -448,8 +320,8 @@ const Presentes = () => {
 
         {/* Textos de introdução */}
         <section className="py-6 md:py-8 px-4">
-          <div className="max-w-3xl mx-auto">
-            {/* Container com borda decorativa */}
+          <div className="max-w-6xl mx-auto">
+            {/* Container único com borda decorativa envolvendo as duas colunas */}
             <div className="relative p-6 md:p-8">
               {/* Bordas decorativas nos cantos */}
               <div
@@ -470,7 +342,7 @@ const Presentes = () => {
               ></div>
 
               {/* Linha decorativa superior */}
-              <div className="flex items-center justify-center gap-4 mb-4">
+              <div className="flex items-center justify-center gap-4 mb-6 md:mb-8">
                 <div className="h-px w-16 bg-gradient-to-r from-transparent to-stone-300"></div>
                 <svg
                   className="w-6 h-6"
@@ -483,30 +355,69 @@ const Presentes = () => {
                 <div className="h-px w-16 bg-gradient-to-l from-transparent to-stone-300"></div>
               </div>
 
-              {/* Título principal */}
-              <h2
-                className="text-2xl md:text-4xl lg:text-5xl text-center mb-4"
-                style={{
-                  fontFamily: '"Great Vibes", cursive',
-                  color: colors.primary[700],
-                  lineHeight: 1.3,
-                }}
-              >
-                Como Presentear?
-              </h2>
+              {/* Conteúdo em 2 colunas */}
+              <div className="grid md:grid-cols-2 gap-6 md:gap-10 items-center">
+                {/* Coluna 1: Aviso sobre a presença */}
+                <div className="text-center">
+                  <h2
+                    className="text-2xl md:text-4xl lg:text-5xl mb-4"
+                    style={{
+                      fontFamily: '"Great Vibes", cursive',
+                      color: colors.primary[700],
+                      lineHeight: 1.3,
+                    }}
+                  >
+                    Sua presença é nosso maior presente!
+                  </h2>
+                  <div className="space-y-3 md:space-y-4 text-gray-700 text-sm md:text-base leading-relaxed">
+                    <p>
+                      Ter você conosco neste dia especial já nos deixa
+                      imensamente felizes. É isso que mais{" "}
+                      <span className="font-bold" style={{ color: "#1e40af" }}>
+                        valorizamos
+                      </span>
+                      .
+                    </p>
+                    <p>
+                      Se você quiser nos presentear, separamos algumas opções
+                      digitais especiais abaixo. Qualquer valor será{" "}
+                      <span className="font-bold" style={{ color: "#059669" }}>
+                        muito bem-vindo
+                      </span>
+                      !
+                    </p>
+                    <p className="text-gray-600 italic">
+                      Graças a Deus já temos nossa casa mobiliada, então o
+                      presente digital é a melhor opção para nós.
+                    </p>
+                  </div>
+                </div>
 
-              {/* Subtítulo */}
-              <div className="flex flex-col items-center gap-2 mb-4">
-                <p className="text-sm md:text-base text-center text-gray-600 leading-relaxed font-light">
-                  Siga os passos abaixo para nos presentear
-                </p>
-                <p className="text-xs md:text-sm text-gray-500 italic">
-                  É simples e rápido!
-                </p>
+                {/* Coluna 2: Como Presentear? */}
+                <div className="text-center">
+                  <h2
+                    className="text-2xl md:text-4xl lg:text-5xl mb-4"
+                    style={{
+                      fontFamily: '"Great Vibes", cursive',
+                      color: colors.primary[700],
+                      lineHeight: 1.3,
+                    }}
+                  >
+                    Como Presentear?
+                  </h2>
+                  <div className="flex flex-col items-center gap-2">
+                    <p className="text-sm md:text-base text-center text-gray-600 leading-relaxed font-light">
+                      Siga os passos abaixo para nos presentear
+                    </p>
+                    <p className="text-xs md:text-sm text-gray-500 italic">
+                      É simples e rápido!
+                    </p>
+                  </div>
+                </div>
               </div>
 
               {/* Linha decorativa inferior */}
-              <div className="flex items-center justify-center gap-4 mb-4">
+              <div className="flex items-center justify-center gap-4 mt-6 md:mt-8 mb-4">
                 <div className="h-px w-16 bg-gradient-to-r from-transparent to-stone-300"></div>
                 <div
                   className="w-2 h-2 rounded-full"
