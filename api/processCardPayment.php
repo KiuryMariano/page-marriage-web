@@ -2,13 +2,25 @@
 
 require_once 'config.php';
 
+$allowed_origins = ['https://casamentokiuryeleticia.com.br', 'http://localhost:5173'];
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+if (in_array($origin, $allowed_origins, true)) {
+    header('Access-Control-Allow-Origin: ' . $origin);
+    header('Vary: Origin');
+    header('Access-Control-Allow-Methods: POST, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type');
+    header('Access-Control-Max-Age: 86400');
+}
+
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') {
+    http_response_code(204);
+    exit;
+}
+
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST');
-header('Access-Control-Allow-Headers: Content-Type');
 
 function cardPaymentLog($stage, $context = []) {
-    $message = '[MercadoPago Card] ' . $stage;
+    $message = '[MERCADO_PAGO_CARD] ' . $stage;
 
     if (!empty($context)) {
         $message .= ' ' . json_encode($context, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -30,24 +42,104 @@ $input = json_decode(file_get_contents('php://input'), true);
 $formData = $input['formData'] ?? [];
 $items = $input['cart'] ?? [];
 
+cardPaymentLog('=== INÍCIO DA REQUISIÇÃO ===');
+cardPaymentLog('1. Dados recebidos', [
+    'has_token' => !empty($formData['token']),
+    'token_length' => strlen($formData['token'] ?? ''),
+    'has_email' => !empty($formData['payer']['email']),
+    'email' => $formData['payer']['email'] ?? 'NÃO INFORMADO',
+    'payment_method_id' => $formData['payment_method_id'] ?? null,
+    'installments' => $formData['installments'] ?? null,
+    'issuer_id' => $formData['issuer_id'] ?? null,
+    'identification_type' => $formData['payer']['identification']['type'] ?? null,
+    'identification_number' => !empty($formData['payer']['identification']['number'])
+        ? '***' . substr($formData['payer']['identification']['number'], -4)
+        : 'NÃO INFORMADO',
+]);
+
 if (!is_array($items) || empty($items) || empty($formData['token']) || empty($formData['payment_method_id']) || empty($formData['payer']['email'])) {
-    cardPaymentLog('Requisição inválida', ['item_count' => is_array($items) ? count($items) : 0]);
+    cardPaymentLog('❌ VALIDAÇÃO FALHOU - Requisição inválida', [
+        'is_array_items' => is_array($items),
+        'items_count' => is_array($items) ? count($items) : 'not_array',
+        'has_token' => !empty($formData['token']),
+        'has_payment_method_id' => !empty($formData['payment_method_id']),
+        'has_email' => !empty($formData['payer']['email']),
+    ]);
     http_response_code(422);
     echo json_encode(['message' => 'Dados de pagamento incompletos.']);
     exit;
 }
 
+cardPaymentLog('2. Validação básica passou');
+
 $amount = 0;
-foreach ($items as $item) {
-    $amount += (float) ($item['price'] ?? 0) * (int) ($item['quantity'] ?? 0);
+cardPaymentLog('3. Calculando valor total', [
+    'items_count' => count($items),
+]);
+
+// Validar preços server-side contra fonte canônica (gifts_data.php)
+$canonicalPrices = require __DIR__ . '/gifts_data.php';
+
+foreach ($items as $index => $item) {
+    $itemId = (int) ($item['id'] ?? 0);
+    $qty = (int) ($item['quantity'] ?? 0);
+
+    if ($itemId <= 0 || $qty <= 0) {
+        cardPaymentLog('❌ VALIDAÇÃO FALHOU - Item inválido', [
+            'index' => $index,
+            'item_id' => $itemId,
+            'quantity' => $qty,
+        ]);
+        http_response_code(422);
+        echo json_encode(['message' => 'Item inválido no carrinho.']);
+        exit;
+    }
+
+    if (!isset($canonicalPrices[$itemId])) {
+        cardPaymentLog('❌ VALIDAÇÃO FALHOU - Item desconhecido', ['item_id' => $itemId]);
+        http_response_code(422);
+        echo json_encode(['message' => 'Item não encontrado.']);
+        exit;
+    }
+
+    $realPrice = (float) $canonicalPrices[$itemId];
+    $clientPrice = (float) ($item['price'] ?? 0);
+
+    // Tolerância de 1 centavo para erro de arredondamento
+    if (abs($realPrice - $clientPrice) > 0.01) {
+        cardPaymentLog('❌ VALIDAÇÃO FALHOU - Preço adulterado', [
+            'item_id' => $itemId,
+            'real_price' => $realPrice,
+            'client_price' => $clientPrice,
+        ]);
+        http_response_code(422);
+        echo json_encode(['message' => 'Preço do item não confere.']);
+        exit;
+    }
+
+    $itemTotal = $realPrice * $qty;
+    $amount += $itemTotal;
+    cardPaymentLog("Item #{$index}", [
+        'item_id' => $itemId,
+        'title' => $item['title'] ?? 'N/A',
+        'unit_price' => $realPrice,
+        'quantity' => $qty,
+        'subtotal' => $itemTotal,
+        'running_total' => $amount,
+    ]);
 }
 
 if ($amount <= 0) {
-    cardPaymentLog('Valor inválido');
+    cardPaymentLog('❌ VALIDAÇÃO FALHOU - Valor inválido', ['amount' => $amount]);
     http_response_code(422);
     echo json_encode(['message' => 'O valor do pagamento é inválido.']);
     exit;
 }
+
+// Arredondar para 2 casas para evitar flutuação
+$amount = round($amount, 2);
+
+cardPaymentLog('4. Valor total calculado', ['amount' => $amount]);
 
 $externalReference = 'casamento-' . time() . '-' . random_int(1000, 9999);
 $paymentData = [
@@ -62,9 +154,8 @@ $paymentData = [
     'external_reference' => $externalReference
 ];
 
-if (!empty($formData['issuer_id'])) {
-    $paymentData['issuer_id'] = (int) $formData['issuer_id'];
-}
+// Issuer ID removido - Mercado Pago determina automaticamente
+// Enviar issuer_id incorreto causa erro 10102
 
 if (!empty($formData['payer']['identification']['type']) && !empty($formData['payer']['identification']['number'])) {
     $paymentData['payer']['identification'] = [
@@ -74,12 +165,18 @@ if (!empty($formData['payer']['identification']['type']) && !empty($formData['pa
 }
 
 $idempotencyKey = createIdempotencyKey();
-cardPaymentLog('Enviando pagamento', [
+cardPaymentLog('5. Preparando envio para Mercado Pago', [
     'external_reference' => $externalReference,
+    'idempotency_key' => $idempotencyKey,
     'amount' => $amount,
     'installments' => $paymentData['installments'],
-    'payment_method_id' => $paymentData['payment_method_id']
+    'payment_method_id' => $paymentData['payment_method_id'],
+    'token_length' => strlen($paymentData['token']),
+    'payer_email' => $paymentData['payer']['email'],
+    'has_identification' => !empty($paymentData['payer']['identification']),
 ]);
+
+cardPaymentLog('6. Iniciando requisição cURL para Mercado Pago API');
 
 $ch = curl_init('https://api.mercadopago.com/v1/payments');
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -90,39 +187,93 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, [
     'Content-Type: application/json',
     'X-Idempotency-Key: ' . $idempotencyKey
 ]);
+curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+
+cardPaymentLog('7. Executando cURL', [
+    'url' => 'https://api.mercadopago.com/v1/payments',
+    'has_access_token' => !empty(MP_ACCESS_TOKEN),
+]);
 
 $response = curl_exec($ch);
 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 $curlError = curl_error($ch);
+$curlErrno = curl_errno($ch);
 curl_close($ch);
 
 if ($curlError) {
-    cardPaymentLog('Falha de conexão', ['external_reference' => $externalReference, 'curl_error' => $curlError]);
+    cardPaymentLog('❌ FALHA DE CONEXÃO cURL', [
+        'external_reference' => $externalReference,
+        'curl_errno' => $curlErrno,
+        'curl_error' => $curlError,
+    ]);
     http_response_code(502);
     echo json_encode(['message' => 'Não foi possível conectar ao Mercado Pago.']);
     exit;
 }
 
+cardPaymentLog('8. Resposta HTTP recebida', [
+    'http_code' => $httpCode,
+    'response_length' => strlen($response),
+]);
+
 $result = json_decode($response, true);
 if (!is_array($result)) {
-    cardPaymentLog('Resposta inválida', ['external_reference' => $externalReference, 'http_code' => $httpCode]);
+    cardPaymentLog('❌ RESPOSTA INVÁLIDA - JSON não parseado', [
+        'external_reference' => $externalReference,
+        'http_code' => $httpCode,
+        'raw_response' => substr($response, 0, 500),
+    ]);
     http_response_code(502);
     echo json_encode(['message' => 'O Mercado Pago retornou uma resposta inválida.']);
     exit;
 }
 
-cardPaymentLog('Resposta do pagamento', [
+cardPaymentLog('9. Resposta do Mercado Pago processada', [
     'external_reference' => $externalReference,
     'http_code' => $httpCode,
     'payment_id' => $result['id'] ?? null,
     'status' => $result['status'] ?? null,
-    'status_detail' => $result['status_detail'] ?? null
+    'status_detail' => $result['status_detail'] ?? null,
 ]);
+
+if (isset($result['error']) || $httpCode >= 400) {
+    cardPaymentLog('❌ ERRO DO MERCADO PAGO', [
+        'http_code' => $httpCode,
+        'error_message' => $result['message'] ?? $result['error'] ?? 'Unknown error',
+        'error_type' => $result['type'] ?? null,
+        'status' => $result['status'] ?? null,
+        'status_detail' => $result['status_detail'] ?? null,
+        'cause' => $result['cause'] ?? null,
+        'full_response' => $result,
+    ]);
+} elseif ($result['status'] === 'approved') {
+    cardPaymentLog('✅ PAGAMENTO APROVADO', [
+        'payment_id' => $result['id'],
+        'status' => $result['status'],
+        'status_detail' => $result['status_detail'],
+        'external_reference' => $externalReference,
+    ]);
+} else {
+    cardPaymentLog('⚠️ STATUS DIFERENTE DE APROVADO', [
+        'payment_id' => $result['id'],
+        'status' => $result['status'],
+        'status_detail' => $result['status_detail'],
+    ]);
+}
+
+cardPaymentLog('=== FIM DA REQUISIÇÃO ===');
+
+// Extrair cause code (para mapeamento de mensagens no frontend) sem vazar resposta completa
+$causes = $result['cause'] ?? ($result['debug']['mp_response']['cause'] ?? []);
+$causeCode = isset($causes[0]['code']) ? (int) $causes[0]['code'] : null;
 
 http_response_code($httpCode >= 200 && $httpCode < 300 ? 200 : $httpCode);
 echo json_encode([
     'id' => $result['id'] ?? null,
     'status' => $result['status'] ?? null,
     'status_detail' => $result['status_detail'] ?? null,
-    'message' => $result['message'] ?? $result['status_detail'] ?? 'Não foi possível processar o pagamento.'
+    'cause_code' => $causeCode,
+    'message' => $result['message'] ?? $result['status_detail'] ?? 'Não foi possível processar o pagamento.',
+    'external_reference' => $externalReference,
 ]);

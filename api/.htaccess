@@ -1,15 +1,12 @@
-# Configuração para API funcionar no Hostinger
-<Files "createPix.php">
-  Order Allow,Deny
-  Allow from all
-</Files>
+# Apache 2.4+ (Hostinger)
+# Bloqueia todos os PHP por padrão e libera apenas os endpoints públicos
 
-<Files "checkPix.php">
-  Order Allow,Deny
-  Allow from all
-</Files>
+# Negar tudo por padrão
+<FilesMatch "\.php$">
+    Require all denied
+</FilesMatch>
 
-<Files "processCardPayment.php">
-  Order Allow,Deny
-  Allow from all
-</Files>
+# Libera apenas os endpoints de API necessários
+<FilesMatch "^(createPix|checkPix|processCardPayment)\.php$">
+    Require all granted
+</FilesMatch>

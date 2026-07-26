@@ -1,37 +1,89 @@
 <?php
-// API para criar cobrança PIX com OpenPix
-// Documentação: https://developers.openpix.com.br/api-reference/webhooks/charge
+// API para criar cobrança PIX com Woovi (antiga OpenPix)
+// Documentação: https://developers.woovi.com/api-redoc
 
 require_once 'config.php';
 
+// CORS estrito: apenas domínios permitidos
+$allowed_origins = ['https://casamentokiuryeleticia.com.br', 'http://localhost:5173'];
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+if (in_array($origin, $allowed_origins, true)) {
+    header('Access-Control-Allow-Origin: ' . $origin);
+    header('Vary: Origin');
+    header('Access-Control-Allow-Methods: POST, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type');
+    header('Access-Control-Max-Age: 86400');
+}
+
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') {
+    http_response_code(204);
+    exit;
+}
+
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST');
-header('Access-Control-Allow-Headers: Content-Type');
 
 // Ler dados recebidos
 $rawInput = file_get_contents('php://input');
 $input = json_decode($rawInput, true);
 
-$valor = $input['valor'] ?? 0;
-$descricao = $input['descricao'] ?? 'Presente Casamento';
-$nome = $input['nome'] ?? 'Convidado';
+$descricao = isset($input['descricao']) ? substr(trim((string) $input['descricao']), 0, 200) : 'Presente Casamento';
+$nome = isset($input['nome']) ? substr(trim((string) $input['nome']), 0, 100) : 'Convidado';
+$cart = $input['cart'] ?? [];
 
-if (!$valor) {
-    echo json_encode(['error' => 'Valor não informado']);
+// Source of truth de preços
+$canonicalPrices = require __DIR__ . '/gifts_data.php';
+
+// Calcular valor server-side a partir do carrinho (anti-adulteração)
+$amountReais = 0.0;
+if (is_array($cart) && count($cart) > 0) {
+    foreach ($cart as $item) {
+        $itemId = (int) ($item['id'] ?? 0);
+        $qty = (int) ($item['quantity'] ?? 0);
+
+        if ($itemId <= 0 || $qty <= 0 || !isset($canonicalPrices[$itemId])) {
+            http_response_code(422);
+            echo json_encode(['error' => 'Carrinho inválido.']);
+            exit;
+        }
+
+        $clientPrice = (float) ($item['price'] ?? 0);
+        $realPrice = (float) $canonicalPrices[$itemId];
+
+        if (abs($realPrice - $clientPrice) > 0.01) {
+            http_response_code(422);
+            echo json_encode(['error' => 'Preço do item não confere.']);
+            exit;
+        }
+
+        $amountReais += $realPrice * $qty;
+    }
+} else {
+    // Fallback: se não enviar cart, usa valor informado (mas em centavos, mantém compat)
+    $valorCentavosFallback = isset($input['valor']) ? (int) $input['valor'] : 0;
+    if ($valorCentavosFallback <= 0) {
+        http_response_code(422);
+        echo json_encode(['error' => 'Valor inválido.']);
+        exit;
+    }
+    $amountReais = $valorCentavosFallback / 100;
+}
+
+$amountReais = round($amountReais, 2);
+$valorCentavos = (int) round($amountReais * 100);
+
+if ($valorCentavos <= 0) {
+    http_response_code(422);
+    echo json_encode(['error' => 'Valor inválido.']);
     exit;
 }
 
-// Converter valor de centavos para reais se necessário
-$valorEmReais = $valor > 10000 ? $valor / 100 : $valor;
-
 // Criar cobrança PIX
-$correlationID = 'casamento-' . time() . '-' . rand(1000, 9999);
+$correlationID = 'casamento-' . time() . '-' . random_int(1000, 9999);
 
-// Payload correto da API OpenPix (endpoint /charge)
+// Payload da API Woovi
 $data = [
     'correlationID' => $correlationID,
-    'value' => $valorEmReais,
+    'value' => $valorCentavos,
     'comment' => $descricao,
     'additionalInfo' => [
         [
@@ -39,13 +91,9 @@ $data = [
             'value' => "Presente de $nome"
         ]
     ],
-    'payload' => [
-        'title' => $descricao,
-        'description' => "Presente de $nome"
-    ]
 ];
 
-$ch = curl_init('https://api.openpix.com.br/api/v1/charge');
+$ch = curl_init('https://api.woovi.com/api/v1/charge');
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
@@ -53,6 +101,8 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, [
     'Authorization: ' . OPENPIX_API_KEY,
     'Content-Type: application/json'
 ]);
+curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
 
 $response = curl_exec($ch);
 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -60,31 +110,33 @@ $curlError = curl_error($ch);
 curl_close($ch);
 
 if ($curlError) {
-    echo json_encode(['error' => 'Erro de conexão: ' . $curlError]);
+    error_log('[CREATE_PIX] curl error: ' . $curlError);
+    echo json_encode(['error' => 'Erro de conexão com a Woovi.']);
     exit;
 }
 
 if ($httpCode >= 400) {
-    echo json_encode(['error' => 'Erro ao criar PIX: HTTP ' . $httpCode . ' - ' . substr($response, 0, 200)]);
+    error_log('[CREATE_PIX] woovi http error: ' . $httpCode . ' body: ' . substr($response, 0, 500));
+    echo json_encode(['error' => 'Não foi possível gerar o PIX agora. Tente novamente.']);
     exit;
 }
 
 $result = json_decode($response, true);
 
 if (json_last_error() !== JSON_ERROR_NONE) {
-    echo json_encode(['error' => 'Erro ao processar resposta da API']);
+    error_log('[CREATE_PIX] json decode error: ' . substr($response, 0, 200));
+    echo json_encode(['error' => 'Resposta inválida da Woovi.']);
     exit;
 }
 
-// Verificar se temos o brCode na resposta
 $brCode = $result['brCode'] ?? ($result['charge']['brCode'] ?? '');
 
 if (!$brCode) {
-    echo json_encode(['error' => 'brCode não encontrado na resposta da API']);
+    error_log('[CREATE_PIX] brCode ausente. response keys: ' . implode(',', array_keys($result)));
+    echo json_encode(['error' => 'Não foi possível gerar o QR Code.']);
     exit;
 }
 
-// Retornar dados para o frontend
 echo json_encode([
     'qrCodeImage' => $brCode,
     'brCode' => $brCode,
