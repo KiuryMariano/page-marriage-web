@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import wallpaperWebpFull from "../assets/wallpaper_2.webp";
@@ -187,6 +187,16 @@ const photos = createPhotosArray();
 
 const Galeria = () => {
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
+
+  // Fechar modal com tecla ESC
+  useEffect(() => {
+    if (!selectedPhoto) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSelectedPhoto(null);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [selectedPhoto]);
 
   return (
     <div className="min-h-screen flex flex-col relative">
@@ -416,10 +426,14 @@ const Galeria = () => {
         <>
           <div
             className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Foto ampliada"
             onClick={() => setSelectedPhoto(null)}
           >
             <button
               onClick={() => setSelectedPhoto(null)}
+              aria-label="Fechar foto"
               className="absolute top-4 right-4 text-white hover:text-gray-300 z-10"
             >
               <svg

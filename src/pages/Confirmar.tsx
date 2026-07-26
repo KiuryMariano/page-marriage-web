@@ -27,7 +27,7 @@ const Confirmar = () => {
         `_Enviado através do site de casamento_`,
     );
 
-    window.open(`https://wa.me/${whatsappNumber}?text=${message}`, "_blank");
+    window.open(`https://wa.me/${whatsappNumber}?text=${message}`, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -292,10 +292,11 @@ const Confirmar = () => {
                 <form onSubmit={handleWhatsAppSubmit} className="space-y-6">
                   {/* Campo Nome dos Convidados */}
                   <div>
-                    <label className="block text-gray-700 font-medium mb-3 text-base md:text-lg">
+                    <label htmlFor="nome-convidados" className="block text-gray-700 font-medium mb-3 text-base md:text-lg">
                       Nome(s) do(s) <strong>convidado(s)</strong> *
                     </label>
                     <textarea
+                      id="nome-convidados"
                       required
                       rows={3}
                       className="w-full px-6 py-4 border-2 border-gray-300 rounded-xl transition-all focus:border-opacity-100 text-lg resize-none"

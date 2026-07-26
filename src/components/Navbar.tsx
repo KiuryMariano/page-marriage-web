@@ -97,15 +97,19 @@ const Navbar = () => {
 
             {/* Desktop Menu - Centralizado */}
             <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 space-x-8">
-              {menuItems.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.path}
-                  className="text-white hover:text-amber-300 transition-colors duration-300 text-sm font-medium drop-shadow-md uppercase tracking-[0.2em]"
-                >
-                  {item.name}
-                </Link>
-              ))}
+              {menuItems.map((item) => {
+                const isActive = location.pathname === item.path;
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.path}
+                    aria-current={isActive ? "page" : undefined}
+                    className="text-white hover:text-amber-300 transition-colors duration-300 text-sm font-medium drop-shadow-md uppercase tracking-[0.2em]"
+                  >
+                    {item.name}
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -120,6 +124,8 @@ const Navbar = () => {
               <Link
                 key={item.name}
                 to={item.path}
+                aria-current={isActive ? "page" : undefined}
+                aria-label={item.name}
                 className={`flex flex-col items-center justify-center w-full h-full transition-all duration-300 ${
                   isActive ? "text-amber-400" : "text-gray-400 hover:text-white"
                 }`}
