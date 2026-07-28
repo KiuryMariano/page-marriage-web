@@ -168,9 +168,6 @@ export const PixPayment = ({ valor, descricao, onPaymentConfirmed, onCancel }: P
         }
       } catch {
         // Erro de rede silencioso (próximo tick tenta de novo)
-        if (import.meta.env.DEV) {
-          console.warn("[PixPayment] Erro no polling, tentará novamente");
-        }
       } finally {
         if (isMountedRef.current) setIsChecking(false);
       }

@@ -12,12 +12,6 @@ interface CardPaymentProps {
   onPaymentPending?: () => void;
 }
 
-const debugPayment = (stage: string, details: Record<string, unknown> = {}) => {
-  if (import.meta.env.DEV) {
-    console.log(`%c[CardPayment] ${stage}`, "color: #0066ff; font-weight: bold", details);
-  }
-};
-
 // Flag de módulo para garantir que initMercadoPago seja chamado apenas uma vez
 let mpInitializedGlobal = false;
 
@@ -36,21 +30,13 @@ const CardPaymentComponent = ({
   const isSubmitting = useRef(false);
   const hasRendered = useRef(false);
 
-  // Log apenas na primeira montagem
   useEffect(() => {
     if (hasRendered.current) return;
     hasRendered.current = true;
-    debugPayment("🔰 Componente montado (primeira vez)", {
-      cartTotal,
-      itemCount: cart.length,
-      publicKeyConfigured: Boolean(publicKey),
-    });
   }, [cartTotal, cart.length, publicKey]);
 
-  // Mostrar Brick após pequeno delay para garantir que DOM está pronto
   useEffect(() => {
     const timer = setTimeout(() => {
-      debugPayment("Exibindo Brick após delay");
       setShowBrick(true);
     }, 100);
     return () => {
@@ -58,32 +44,18 @@ const CardPaymentComponent = ({
     };
   }, []);
 
-  // Inicializar Mercado Pago apenas uma vez (usando flag de módulo + state local)
   useEffect(() => {
     if (!publicKey || mpInitializedGlobal || mpInitError) return;
 
-    debugPayment("Inicializando Mercado Pago SDK", {
-      publicKey: publicKey.substring(0, 20) + "...",
-    });
     try {
       initMercadoPago(publicKey, { locale: "pt-BR" });
       mpInitializedGlobal = true;
-      debugPayment("✅ Mercado Pago SDK inicializado com sucesso");
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
-      debugPayment("❌ Erro ao inicializar Mercado Pago SDK", { error: err.message });
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setMpInitError(err);
     }
   }, [publicKey, mpInitError]);
-
-  // Limpar estado ao desmontar
-  useEffect(() => {
-    debugPayment("useEffect cleanup registrado");
-    return () => {
-      debugPayment("Componente desmontado");
-    };
-  }, []);
 
   const handleSubmit = useCallback(async (formData: {
     token: string;
@@ -95,82 +67,28 @@ const CardPaymentComponent = ({
       identification?: { type?: string; number?: string };
     };
   }) => {
-    // Evitar múltiplas submissões simultâneas
     if (isSubmitting.current) {
-      debugPayment("⚠️ Submissão já em andamento, ignorando");
       return;
     }
 
     isSubmitting.current = true;
-
-    debugPayment("=== INÍCIO DO PROCESSAMENTO DO PAGAMENTO ===");
     setErrorMessage("");
 
-    debugPayment("1. Token do cartão recebido do Brick", {
-      token: formData.token ? `${formData.token.substring(0, 8)}...` : "N/A",
-      tokenLength: formData.token?.length || 0,
-      paymentMethod: formData.payment_method_id,
-      installments: formData.installments,
-      issuerId: formData.issuer_id,
-    });
-
-    debugPayment("2. Dados do pagador", {
-      email: formData.payer.email || "NÃO INFORMADO",
-      identificationType: formData.payer.identification?.type || "N/A",
-      identificationNumber: formData.payer.identification?.number
-        ? `***${formData.payer.identification.number.slice(-4)}`
-        : "NÃO INFORMADO",
-    });
-
-    debugPayment("3. Dados do carrinho", {
-      itemCount: cart.length,
-      cartTotal,
-      items: cart.map((i) => ({ title: i.title, price: i.price, qty: i.quantity })),
-    });
-
     try {
-      debugPayment("4. Enviando requisição para API", {
-        url: "/api/processCardPayment.php",
-        method: "POST",
-      });
-
-      const startTime = Date.now();
       const response = await fetch("/api/processCardPayment.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ formData, cart }),
       });
 
-      const duration = Date.now() - startTime;
-      debugPayment("5. Resposta HTTP recebida", {
-        httpStatus: response.status,
-        statusText: response.statusText,
-        duration: `${duration}ms`,
-        ok: response.ok,
-      });
-
       const text = await response.text();
-      debugPayment("6. Corpo da resposta", {
-        rawResponse: text,
-        responseLength: text.length,
-      });
-
       const result = JSON.parse(text);
 
-      debugPayment("7. Dados parseados do JSON", {
-        paymentId: result.id,
-        status: result.status,
-        statusDetail: result.status_detail,
-        message: result.message,
-      });
-
       if (!response.ok || result.status !== "approved") {
-        // Status "pending" / "in_process" → página de pendente
         if (
           response.ok &&
           (result.status === "pending" || result.status === "in_process" || result.status === "in_mediation")
         ) {
-          debugPayment("⏳ PAGAMENTO PENDENTE", { status: result.status });
           isSubmitting.current = false;
           onPaymentPending?.();
           return;
@@ -189,71 +107,36 @@ const CardPaymentComponent = ({
           message = "Cartão recusado pela operadora. Tente com outro cartão.";
         }
 
-        debugPayment(`❌ PAGAMENTO RECUSADO`, {
-          httpStatus: response.status,
-          mpStatus: result.status,
-          mpStatusDetail: statusDetail,
-          rawMessage: result.message,
-          causeCode,
-          userMessage: message,
-        });
         setErrorMessage(message);
         isSubmitting.current = false;
         return;
       }
 
-      debugPayment(`✅ PAGAMENTO APROVADO`, {
-        paymentId: result.id,
-        status: result.status,
-        totalDuration: `${duration}ms`,
-      });
       isSubmitting.current = false;
       onPaymentApproved();
     } catch (error) {
       const message = error instanceof Error ? error.message : "Não foi possível processar o pagamento.";
       setErrorMessage(message);
       isSubmitting.current = false;
-      debugPayment(`❌ ERRO NO PROCESSAMENTO`, {
-        errorMessage: message,
-        error: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined,
-      });
-      // NÃO lançar erro - apenas mostrar mensagem
     }
   }, [cart, cartTotal, onPaymentApproved, onPaymentPending]);
 
   const handleReady = useCallback(() => {
     if (initializationAttempted.current) {
-      debugPayment("onReady chamado novamente (ignorando)");
       return;
     }
     initializationAttempted.current = true;
-
-    debugPayment("✅ Card Payment Brick carregado e pronto");
     setIsReady(true);
-
-    debugPayment("Verificando opções de parcelamento disponíveis", {
-      maxInstallments: 10,
-      amount: cartTotal,
-      aVista: "1x",
-      parcelamento: "2x a 10x",
-    });
   }, [cartTotal]);
 
-  const handleError = useCallback((error: unknown) => {
-    debugPayment("❌ Erro no Card Payment Brick", {
-      errorType: String((error as { type?: string })?.type ?? "unknown"),
-      errorMessage: String((error as { message?: string })?.message ?? "No message"),
-      error: String(error),
-    });
+  const handleError = useCallback(() => {
     setErrorMessage("Não foi possível carregar o formulário de cartão. Tente recarregar a página.");
   }, []);
 
-  const handleBinChange = useCallback((bin: string) => {
-    debugPayment("BIN do cartão atualizado", { bin: bin?.substring(0, 6) });
+  const handleBinChange = useCallback(() => {
+    // Sem operação
   }, []);
 
-  // Memoizar configuração para evitar re-renderizações (chamadas ANTES dos early returns)
   const brickInitialization = useMemo(() => ({ amount: cartTotal }), [cartTotal]);
   const brickCustomization = useMemo(() => ({
     paymentMethods: {
@@ -280,7 +163,6 @@ const CardPaymentComponent = ({
     },
   }), []);
 
-  // Aviso sobre valor mínimo
   const showMinimumAmountWarning = cartTotal < 10;
 
   if (!publicKey) {
@@ -342,14 +224,11 @@ const CardPaymentComponent = ({
   );
 };
 
-// Memoizar componente para evitar re-renderizações desnecessárias
 export const CardPayment = memo(CardPaymentComponent, (prevProps, nextProps) => {
-  // Re-renderizar se cartTotal, callback, ou conteúdo do carrinho mudar
   if (prevProps.cartTotal !== nextProps.cartTotal) return false;
   if (prevProps.onPaymentApproved !== nextProps.onPaymentApproved) return false;
   if (prevProps.onPaymentPending !== nextProps.onPaymentPending) return false;
   if (prevProps.cart.length !== nextProps.cart.length) return false;
-  // Comparação profunda: itens + quantidades (preço é derivado do item)
   for (let i = 0; i < prevProps.cart.length; i++) {
     const p = prevProps.cart[i];
     const n = nextProps.cart[i];

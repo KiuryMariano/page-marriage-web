@@ -11,12 +11,6 @@ const formatPrice = (value: number) => {
   return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 };
 
-const debugPagamento = (stage: string, details: Record<string, unknown> = {}) => {
-  if (import.meta.env.DEV) {
-    console.log(`%c[Pagamento] ${stage}`, "color: #9333ea; font-weight: bold", details);
-  }
-};
-
 type PaymentMethod = "pix" | "card" | "boleto";
 
 const Pagamento = () => {
@@ -29,11 +23,6 @@ const Pagamento = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [showPixPayment, setShowPixPayment] = useState(false);
   const [showCardPayment, setShowCardPayment] = useState(false);
-
-  debugPagamento("Página de pagamento carregada", {
-    cartItems: cart.length,
-    cartTotal: cart.reduce((total, item) => total + item.price * item.quantity, 0),
-  });
 
   const cartTotal = cart.reduce(
     (total, item) => total + item.price * item.quantity,
@@ -53,34 +42,22 @@ const Pagamento = () => {
   }, [navigate]);
 
   const handleSelectMethod = useCallback((method: PaymentMethod) => {
-    debugPagamento("Método de pagamento selecionado", {
-      method,
-      previousMethod: selectedMethod,
-    });
     setSelectedMethod(method);
   }, [selectedMethod]);
 
   const handleContinue = useCallback(() => {
     if (!selectedMethod) return;
 
-    debugPagamento("Botão continuar clicado", {
-      method: selectedMethod,
-      cartTotal,
-    });
-
     if (selectedMethod === "pix") {
-      debugPagamento("Abrindo modal PIX");
       setShowPixPayment(true);
       return;
     }
 
     if (selectedMethod === "card") {
-      debugPagamento("Abrindo modal Cartão");
       setShowCardPayment(true);
       return;
     }
 
-    debugPagamento("Método não implementado", { method: selectedMethod });
     setIsProcessing(true);
 
     setTimeout(() => {
@@ -90,27 +67,22 @@ const Pagamento = () => {
   }, [selectedMethod, cartTotal]);
 
   const handlePixCancel = useCallback(() => {
-    debugPagamento("Pagamento PIX cancelado pelo usuário");
     setShowPixPayment(false);
   }, []);
 
   const handlePixConfirmed = useCallback(() => {
-    debugPagamento("Pagamento PIX confirmado");
     navigate("/pagamento-sucesso");
   }, [navigate]);
 
   const handleCardCancel = useCallback(() => {
-    debugPagamento("Pagamento com cartão cancelado pelo usuário");
     setShowCardPayment(false);
   }, []);
 
   const handleCardApproved = useCallback(() => {
-    debugPagamento("Pagamento com cartão aprovado - navegando para sucesso");
     navigate("/pagamento-sucesso");
   }, [navigate]);
 
   const handleCardPending = useCallback(() => {
-    debugPagamento("Pagamento com cartão pendente - navegando para pendente");
     navigate("/pagamento-pendente");
   }, [navigate]);
 

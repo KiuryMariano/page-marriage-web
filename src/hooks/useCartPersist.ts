@@ -27,10 +27,7 @@ export const useCartPersist = () => {
     try {
       localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
     } catch {
-      // localStorage cheio ou indisponível — silencioso em produção
-      if (import.meta.env.DEV) {
-        console.warn("[useCartPersist] Falha ao salvar carrinho no localStorage");
-      }
+      // localStorage cheio ou indisponível — silencioso
     }
   }, [cart]);
 
