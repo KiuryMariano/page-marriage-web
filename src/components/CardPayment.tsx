@@ -30,7 +30,6 @@ const CardPaymentComponent = ({
   const [isReady, setIsReady] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [showBrick, setShowBrick] = useState(false);
-  const [isDebitOnly, setIsDebitOnly] = useState(false);
   const [mpInitError, setMpInitError] = useState<Error | null>(null);
   const publicKey = import.meta.env.VITE_MERCADO_PAGO_PUBLIC_KEY;
   const initializationAttempted = useRef(false);
@@ -103,6 +102,7 @@ const CardPaymentComponent = ({
     }
 
     isSubmitting.current = true;
+
     debugPayment("=== INÍCIO DO PROCESSAMENTO DO PAGAMENTO ===");
     setErrorMessage("");
 
@@ -249,39 +249,9 @@ const CardPaymentComponent = ({
     setErrorMessage("Não foi possível carregar o formulário de cartão. Tente recarregar a página.");
   }, []);
 
-  const handleBinChange = useCallback(async (bin: string) => {
-    debugPayment("BIN do cartão atualizado", { binLength: bin?.length });
-
-    if (!bin || bin.length < 6 || !publicKey) {
-      setIsDebitOnly(false);
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `https://api.mercadopago.com/v1/payment_methods/search?public_key=${encodeURIComponent(publicKey)}&bin=${encodeURIComponent(bin.slice(0, 6))}`
-      );
-      const data = await response.json();
-      const methods = Array.isArray(data) ? data : [data];
-
-      const hasCreditOption = methods.some(
-        (m: { payment_type_id?: string }) => m.payment_type_id === "credit_card"
-      );
-
-      debugPayment("Tipo do cartão identificado", {
-        methodsCount: methods.length,
-        types: methods.map((m: { payment_type_id?: string }) => m.payment_type_id),
-        hasCreditOption,
-      });
-
-      setIsDebitOnly(!hasCreditOption);
-    } catch (error) {
-      debugPayment("⚠️ Não foi possível verificar o tipo do cartão", {
-        error: error instanceof Error ? error.message : String(error),
-      });
-      setIsDebitOnly(false);
-    }
-  }, [publicKey]);
+  const handleBinChange = useCallback((bin: string) => {
+    debugPayment("BIN do cartão atualizado", { bin: bin?.substring(0, 6) });
+  }, []);
 
   // Memoizar configuração para evitar re-renderizações (chamadas ANTES dos early returns)
   const brickInitialization = useMemo(() => ({ amount: cartTotal }), [cartTotal]);
@@ -354,16 +324,6 @@ const CardPaymentComponent = ({
         <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700" role="alert">
           <p className="font-semibold">Erro no pagamento</p>
           <p>{errorMessage}</p>
-        </div>
-      )}
-
-      {isDebitOnly && (
-        <div className="mb-4 rounded-lg bg-red-50 border-2 border-red-300 p-3 text-sm text-red-700" role="alert">
-          <p className="font-semibold mb-0.5">Cartão de débito não é aceito aqui</p>
-          <p>
-            Esta tela é somente para <strong>cartão de crédito</strong>. Se quiser pagar à vista,
-            volte e escolha <strong>PIX</strong> na tela anterior.
-          </p>
         </div>
       )}
 

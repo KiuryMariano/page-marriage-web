@@ -468,6 +468,7 @@ const Pagamento = () => {
                   <p>
                     Parcelas mais longas podem ter juros cobrados pela operadora do cartão.
                     Prometemos que não somos nós cobrando — é só a taxa do processamento!
+                    IMPORTANTE: Neste tipo de pagamento somente serão aceitos cartões com crédito. Cartões somente débito irão gerar ERRO NO PAGAMENTO.
                   </p>
                 </div>
 
