@@ -8,8 +8,9 @@ import wallpaperWebpMobile from "../assets/wallpaper_1_mobile.webp";
 import backgroundMoney from "../assets/background_money.webp";
 import backgroundMoneyMobile from "../assets/background_money_mobile.webp";
 import { colors, gradients } from "../theme";
-import { gifts, type Gift } from "../mocks";
+import { type Gift } from "../mocks";
 import { useCartPersist } from "../hooks/useCartPersist";
+import { useGifts } from "../hooks/useGifts";
 
 const formatPrice = (value: number) => {
   return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -18,6 +19,7 @@ const formatPrice = (value: number) => {
 const Presentes = () => {
   const navigate = useNavigate();
   const { cart, setCart } = useCartPersist();
+  const { gifts, loading, error } = useGifts();
 
   const [isCartOpen, setIsCartOpen] = useState(false);
 
@@ -712,8 +714,31 @@ const Presentes = () => {
         {/* Grid de Presentes */}
         <section className="pb-8 md:pb-12 px-4">
           <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-5 mt-10 md:mt-12">
-              {gifts.map((gift) => (
+            {/* Loading */}
+            {loading && (
+              <div className="flex flex-col items-center justify-center py-12">
+                <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+                <p className="mt-4 text-gray-600">Carregando presentes...</p>
+              </div>
+            )}
+
+            {/* Error */}
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+                <p className="text-red-600">{error}</p>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="mt-3 text-blue-600 hover:text-blue-800 underline"
+                >
+                  Tentar novamente
+                </button>
+              </div>
+            )}
+
+            {/* Gifts Grid */}
+            {!loading && !error && (
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-5 mt-10 md:mt-12">
+                {gifts.map((gift) => (
                 <div
                   key={gift.id}
                   className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all hover:-translate-y-1 flex flex-col border-l-4 relative z-10 overflow-hidden"
@@ -741,16 +766,40 @@ const Presentes = () => {
                     <div className="flex-1"></div>
 
                     <div className="mb-2 md:mb-3">
-                      <div className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 rounded-full border border-blue-200">
+                      <div
+                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full border ${
+                          gift.cotas === 0
+                            ? "bg-red-50 border-red-200"
+                            : gift.cotas <= 2
+                            ? "bg-yellow-50 border-yellow-200"
+                            : "bg-blue-50 border-blue-200"
+                        }`}
+                      >
                         <svg
-                          className="w-3 h-3 text-blue-600"
+                          className={`w-3 h-3 ${
+                            gift.cotas === 0
+                              ? "text-red-600"
+                              : gift.cotas <= 2
+                              ? "text-yellow-600"
+                              : "text-blue-600"
+                          }`}
                           fill="currentColor"
                           viewBox="0 0 20 20"
                         >
                           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                         </svg>
-                        <span className="text-[10px] font-medium text-blue-700">
-                          {gift.cotas === 1
+                        <span
+                          className={`text-[10px] font-medium ${
+                            gift.cotas === 0
+                              ? "text-red-700"
+                              : gift.cotas <= 2
+                              ? "text-yellow-700"
+                              : "text-blue-700"
+                          }`}
+                        >
+                          {gift.cotas === 0
+                            ? "Esgotado"
+                            : gift.cotas === 1
                             ? "Cota única"
                             : `${gift.cotas} cotas disponíveis`}
                         </span>
@@ -766,33 +815,59 @@ const Presentes = () => {
                       </p>
                     </div>
 
-                    <button
-                      onClick={() => addToCart(gift)}
-                      className="w-full text-white font-semibold py-2.5 md:py-3 px-4 rounded-lg transition-all hover:shadow-md active:scale-95 text-sm md:text-base flex items-center justify-center gap-2"
-                      style={{
-                        fontFamily: '"Playfair Display", serif',
-                        background: gradients.primary,
-                      }}
-                    >
-                      <svg
-                        className="w-4 h-4 md:w-5 md:h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
+                    {gift.cotas > 0 ? (
+                      <button
+                        onClick={() => addToCart(gift)}
+                        className="w-full text-white font-semibold py-2.5 md:py-3 px-4 rounded-lg transition-all hover:shadow-md active:scale-95 text-sm md:text-base flex items-center justify-center gap-2"
+                        style={{
+                          fontFamily: '"Playfair Display", serif',
+                          background: gradients.primary,
+                        }}
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                        />
-                      </svg>
-                      Adicionar
-                    </button>
+                        <svg
+                          className="w-4 h-4 md:w-5 md:h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                          />
+                        </svg>
+                        Adicionar
+                      </button>
+                    ) : (
+                      <button
+                        disabled
+                        className="w-full text-gray-500 font-semibold py-2.5 md:py-3 px-4 rounded-lg text-sm md:text-base flex items-center justify-center gap-2 bg-gray-100 cursor-not-allowed"
+                        style={{
+                          fontFamily: '"Playfair Display", serif',
+                        }}
+                      >
+                        <svg
+                          className="w-4 h-4 md:w-5 md:h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                        Esgotado
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
-            </div>
+              </div>
+            )}
           </div>
         </section>
       </main>

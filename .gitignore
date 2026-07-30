@@ -15,6 +15,7 @@ dist-ssr
 # Environment and credentials
 .env
 api/config.php
+api/config/database.php
 
 # Editor directories and files
 .vscode/*

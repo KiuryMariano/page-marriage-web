@@ -1,12 +1,4 @@
-# Apache 2.4+ (Hostinger)
-# Bloqueia todos os PHP por padrão e libera apenas os endpoints públicos
+# API PHP - Hostinger
+# Libera acesso aos endpoints da API
 
-# Negar tudo por padrão
-<FilesMatch "\.php$">
-    Require all denied
-</FilesMatch>
-
-# Libera apenas os endpoints de API necessários
-<FilesMatch "^(createPix|checkPix|processCardPayment)\.php$">
-    Require all granted
-</FilesMatch>
+Options -Indexes

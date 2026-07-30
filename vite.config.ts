@@ -6,13 +6,12 @@ export default defineConfig({
   plugins: [react()],
   base: '/',
 
-  // Proxy para API PHP em produção - permite testar localmente com API real
   server: {
     proxy: {
       '/api': {
         target: 'https://casamentokiuryeleticia.com.br',
         changeOrigin: true,
-        secure: true,
+        secure: true
       }
     }
   }
