@@ -63,16 +63,26 @@ const giftsByName: Record<string, string> = {
 
 /**
  * Mapeia dados da API para formato Gift do frontend
- * Usa o NOME para encontrar a imagem correta
+ * Usa a URL do banco se disponível, fallback para imagem padrão
  */
 function mapApiToGift(apiGift: GiftApiData): Gift {
-  const image = giftsByName[apiGift.nome] || gift1;
+  // Se tem URL da imagem no banco, usa ela
+  if (apiGift.imagem_url) {
+    return {
+      id: apiGift.id,
+      title: apiGift.nome,
+      price: parseFloat(apiGift.preco),
+      image: apiGift.imagem_url,
+      cotas: apiGift.cotas_disponiveis,
+    };
+  }
 
+  // Fallback para imagem padrão no servidor
   return {
     id: apiGift.id,
     title: apiGift.nome,
     price: parseFloat(apiGift.preco),
-    image: image,
+    image: '/imagens-presentes/sem-imagem.png',
     cotas: apiGift.cotas_disponiveis,
   };
 }
@@ -82,29 +92,51 @@ export function useGifts(category?: string) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const loadGifts = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const response = await fetchGifts(category);
-
-      if (response.success && response.data) {
-        const mappedGifts = response.data.map(mapApiToGift);
-        setGifts(mappedGifts);
-      } else {
-        setError("Erro ao carregar presentes");
-      }
-    } catch (err) {
-      setError("Não foi possível carregar os presentes. Verifique sua conexão.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const loadGifts = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const response = await fetchGifts(category);
+
+        if (response.success && response.data) {
+          const mappedGifts = response.data.map(mapApiToGift);
+          setGifts(mappedGifts);
+        } else {
+          setError("Erro ao carregar presentes");
+        }
+      } catch {
+        setError("Não foi possível carregar os presentes. Verifique sua conexão.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
     loadGifts();
   }, [category]);
 
-  return { gifts, loading, error, refetch: loadGifts };
+  const refetch = () => {
+    (async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const response = await fetchGifts(category);
+
+        if (response.success && response.data) {
+          const mappedGifts = response.data.map(mapApiToGift);
+          setGifts(mappedGifts);
+        } else {
+          setError("Erro ao carregar presentes");
+        }
+      } catch {
+        setError("Não foi possível carregar os presentes. Verifique sua conexão.");
+      } finally {
+        setLoading(false);
+      }
+    })();
+  };
+
+  return { gifts, loading, error, refetch };
 }

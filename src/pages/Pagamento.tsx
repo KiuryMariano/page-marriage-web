@@ -43,7 +43,7 @@ const Pagamento = () => {
 
   const handleSelectMethod = useCallback((method: PaymentMethod) => {
     setSelectedMethod(method);
-  }, [selectedMethod]);
+  }, []);
 
   const handleContinue = useCallback(() => {
     if (!selectedMethod) return;

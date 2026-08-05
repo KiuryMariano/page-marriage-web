@@ -1,4 +1,9 @@
+import { useState } from "react";
+import LoginModal from "./LoginModal";
+
 const Footer = () => {
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
   // Data do casamento - 09 de Janeiro de 2027
   const weddingDate = new Date("2027-01-09");
   const today = new Date();
@@ -12,6 +17,12 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           {/* Lado esquerdo - Desenvolvido pelo noivo */}
           <div className="flex flex-col items-center md:items-start text-center md:text-left">
+            <button
+              onClick={() => setShowLoginModal(true)}
+              className="text-xs text-gray-500 hover:text-gray-300 transition-colors mb-2"
+            >
+              Login
+            </button>
             <p className="text-sm text-gray-300 mb-2">
               Desenvolvido pelo noivo
             </p>
@@ -112,6 +123,8 @@ const Footer = () => {
           </p>
         </div>
       </div>
+
+      <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
     </footer>
   );
 };

@@ -180,6 +180,9 @@ const Presentes = () => {
                             src={item.image}
                             alt={item.title}
                             className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.currentTarget.src = '/imagens-presentes/sem-imagem.png';
+                            }}
                           />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -749,6 +752,9 @@ const Presentes = () => {
                       src={gift.image}
                       alt={gift.title}
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = '/imagens-presentes/sem-imagem.png';
+                      }}
                     />
                   </div>
                   <div className="p-4 md:p-5 flex flex-col flex-1">

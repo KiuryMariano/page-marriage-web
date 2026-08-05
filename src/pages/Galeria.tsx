@@ -186,17 +186,70 @@ const createPhotosArray = (): PhotoWithLayout[] => {
 const photos = createPhotosArray();
 
 const Galeria = () => {
-  const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
 
-  // Fechar modal com tecla ESC
+  const openLightbox = (photoIndex: number) => {
+    setCurrentPhotoIndex(photoIndex);
+    setLightboxOpen(true);
+    document.body.style.overflow = "hidden";
+  };
+
+  const closeLightbox = () => {
+    setLightboxOpen(false);
+    document.body.style.overflow = "";
+  };
+
+  const goToNext = () => {
+    setCurrentPhotoIndex((prev) => (prev + 1) % photos.length);
+  };
+
+  const goToPrevious = () => {
+    setCurrentPhotoIndex((prev) => (prev - 1 + photos.length) % photos.length);
+  };
+
+  // Fechar com ESC e navegar com setas
   useEffect(() => {
-    if (!selectedPhoto) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSelectedPhoto(null);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!lightboxOpen) return;
+
+      if (e.key === "Escape") {
+        closeLightbox();
+      } else if (e.key === "ArrowLeft") {
+        goToPrevious();
+      } else if (e.key === "ArrowRight") {
+        goToNext();
+      }
     };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [selectedPhoto]);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [lightboxOpen]);
+
+  // Handlers para touch/swipe
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!touchStart) return;
+
+    const touchEnd = e.changedTouches[0].clientX;
+    const diff = touchStart - touchEnd;
+
+    // Swipe para esquerda (próxima)
+    if (diff > 50) {
+      goToNext();
+    }
+    // Swipe para direita (anterior)
+    else if (diff < -50) {
+      goToPrevious();
+    }
+
+    setTouchStart(null);
+  };
+
+  const currentPhoto = photos[currentPhotoIndex];
 
   return (
     <div className="min-h-screen flex flex-col relative">
@@ -381,7 +434,7 @@ const Galeria = () => {
                     ${photo.colSpan === 2 ? "col-span-2" : "col-span-1"}
                     ${photo.rowSpan === 2 ? "row-span-2" : "row-span-1"}
                   `}
-                  onClick={() => setSelectedPhoto(photo)}
+                  onClick={() => openLightbox(photos.findIndex(p => p.id === photo.id))}
                 >
                   <img
                     src={photo.url}
@@ -421,49 +474,64 @@ const Galeria = () => {
         </section>
       </main>
 
-      {/* Modal de foto ampliada */}
-      {selectedPhoto && (
-        <>
-          <div
-            className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Foto ampliada"
-            onClick={() => setSelectedPhoto(null)}
+      {/* Lightbox / Visualizador de Imagens */}
+      {lightboxOpen && currentPhoto && (
+        <div
+          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center"
+          onClick={closeLightbox}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
+          {/* Botão Fechar */}
+          <button
+            onClick={closeLightbox}
+            className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors z-10"
+            aria-label="Fechar"
           >
-            <button
-              onClick={() => setSelectedPhoto(null)}
-              aria-label="Fechar foto"
-              className="absolute top-4 right-4 text-white hover:text-gray-300 z-10"
-            >
-              <svg
-                className="w-8 h-8"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-            <div className="max-w-4xl max-h-[90vh]">
-              <img
-                src={selectedPhoto.url}
-                alt={selectedPhoto.alt}
-                className="max-w-full max-h-[85vh] object-contain rounded-lg"
-              />
-              <div className="text-center mt-4">
-                {selectedPhoto.date && (
-                  <p className="text-white text-lg">{selectedPhoto.date}</p>
-                )}
-              </div>
-            </div>
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+
+          {/* Seta Anterior */}
+          <button
+            onClick={(e) => { e.stopPropagation(); goToPrevious(); }}
+            className="absolute left-4 md:left-8 text-white hover:text-gray-300 transition-colors z-10"
+            aria-label="Anterior"
+          >
+            <svg className="w-10 h-10 md:w-12 md:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+
+          {/* Imagem */}
+          <div
+            className="max-w-[90vw] max-h-[85vh] relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={currentPhoto.url}
+              alt={currentPhoto.alt}
+              className="max-w-full max-h-[85vh] object-contain"
+            />
+            {currentPhoto.date && (
+              <p className="text-white text-center mt-3 text-sm md:text-base opacity-80">
+                {currentPhoto.date}
+              </p>
+            )}
           </div>
-        </>
+
+          {/* Seta Próximo */}
+          <button
+            onClick={(e) => { e.stopPropagation(); goToNext(); }}
+            className="absolute right-4 md:right-8 text-white hover:text-gray-300 transition-colors z-10"
+            aria-label="Próximo"
+          >
+            <svg className="w-10 h-10 md:w-12 md:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
       )}
 
       <Footer />

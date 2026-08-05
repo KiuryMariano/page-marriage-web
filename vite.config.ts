@@ -12,6 +12,11 @@ export default defineConfig({
         target: 'https://casamentokiuryeleticia.com.br',
         changeOrigin: true,
         secure: true
+      },
+      '/imagens-presentes': {
+        target: 'https://casamentokiuryeleticia.com.br',
+        changeOrigin: true,
+        secure: true
       }
     }
   }

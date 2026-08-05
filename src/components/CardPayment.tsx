@@ -119,7 +119,7 @@ const CardPaymentComponent = ({
       setErrorMessage(message);
       isSubmitting.current = false;
     }
-  }, [cart, cartTotal, onPaymentApproved, onPaymentPending]);
+  }, [cart, onPaymentApproved, onPaymentPending]);
 
   const handleReady = useCallback(() => {
     if (initializationAttempted.current) {
@@ -127,7 +127,7 @@ const CardPaymentComponent = ({
     }
     initializationAttempted.current = true;
     setIsReady(true);
-  }, [cartTotal]);
+  }, []);
 
   const handleError = useCallback(() => {
     setErrorMessage("Não foi possível carregar o formulário de cartão. Tente recarregar a página.");
