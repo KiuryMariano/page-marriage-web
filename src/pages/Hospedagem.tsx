@@ -46,7 +46,7 @@ const hotels: Hotel[] = [
     address: "Rod. BR-163, Km 145 - Zona Rural, Capitão Leônidas Marques - PR, CEP 85790-000",
     mapUrl: "https://www.google.com/maps/search/?api=1&query=Golden+View+Hotel+Capitão+Leônidas+Marques+PR",
     images: [goldenView1, goldenView2, goldenView3],
-    description: "Hotel com recepção 24h, serviço de quarto, estacionamento gratuito e Wi-Fi."
+    description: "As comodidades incluem serviço de quarto e uma recepção 24 horas, além de Wi-Fi grátis em toda a propriedade. O hotel oferece quartos para famílias."
   },
   {
     id: "calema",
@@ -55,7 +55,7 @@ const hotels: Hotel[] = [
     address: "BR-163, Km 131 (entrada da cidade), Jardim Caçula, Capitão Leônidas Marques - PR, CEP 85790-000",
     mapUrl: "https://www.google.com/maps/search/?api=1&query=Hotel+Calema+Capitão+Leônidas+Marques+PR",
     images: [calema1, calema2, calema3],
-    description: "Quartos familiares com banheiro privativo, ar condicionado e vista para o jardim. Wi-Fi e estacionamento gratuitos."
+    description: "Conta com Wi-Fi grátis e estacionamento privativo grátis. Cada quarto tem mesa de trabalho, TV de tela plana, banheiro privativo, roupa de cama e toalhas."
   },
   {
     id: "maxi-palace",
@@ -64,7 +64,7 @@ const hotels: Hotel[] = [
     address: "Avenida Iguaçu, 609 - Centro, Capitão Leônidas Marques - PR, CEP 85790-000",
     mapUrl: "https://www.google.com/maps/search/?api=1&query=Maxi+Palace+Hotel+Capitão+Leônidas+Marques+PR",
     images: [maxiPalace1, maxiPalace2, maxiPalace3],
-    description: "Hotel com recepção 24h, serviço de quarto, jardim e lounge compartilhado. Estacionamento disponível."
+    description: "Oferece jardim e lounge compartilhado. A acomodação conta com serviço de quarto e uma recepção 24 horas. Os quartos têm ar-condicionado e TV de tela plana."
   },
   {
     id: "conforto-plaza",
@@ -73,7 +73,7 @@ const hotels: Hotel[] = [
     address: "Rod. Dep. Arnaldo Faivro Busato Km 139, Capitão Leônidas Marques - PR, CEP 85790-000",
     mapUrl: "https://www.google.com/maps/search/?api=1&query=Conforto+Plaza+Hotel+Capitão+Leônidas+Marques+PR",
     images: [confortoPlaza1, confortoPlaza2, confortoPlaza3],
-    description: "Hotel 2 estrelas com café da manhã incluso, estacionamento gratuito, Wi-Fi, ar condicionado, bar, piscina externa e restaurante. Pet-friendly."
+    description: "Inclui serviço de quarto e uma recepção 24 horas, Wi-Fi grátis em toda a propriedade. Lanchonete. Cada quarto tem mesa de trabalho, banheiro privativo com bidê e produtos de banho de cortesia, TV de tela plana e ar-condicionado, e certos quartos também oferecem varanda."
   }
 ];
 
@@ -237,28 +237,28 @@ const Hospedagem = () => {
         </section>
 
         {/* Lista de Hotéis */}
-        <section className="pb-16 md:pb-24 px-4">
+        <section className="pb-4 md:pb-12 px-4">
           <div className="max-w-6xl mx-auto space-y-8 md:space-y-12">
             {hotels.map((hotel, hotelIndex) => {
               const photoStartIndex = hotelIndex * 3;
               return (
                 <div
                   key={hotel.id}
-                  className="bg-white rounded-2xl shadow-lg overflow-hidden border"
+                  className="bg-white rounded-2xl shadow-lg overflow-hidden border flex flex-col md:flex-row"
                   style={{ borderColor: `${colors.success.DEFAULT}30` }}
                 >
-                  <div className="grid md:grid-cols-2">
+                  <div className="grid md:grid-cols-2 flex-1">
                     {/* Fotos - Layout com imagem 1 maior e 2,3 à direita */}
-                    <div className="grid grid-cols-[2fr_1fr] grid-rows-2 gap-2 p-2">
+                    <div className="grid grid-cols-[2fr_1fr] grid-rows-2 gap-2 p-2 h-[280px] md:h-[350px]">
                       {/* Foto Principal - Imagem 1 (maior, ocupa toda a altura) */}
                       <div
-                        className="row-span-2 relative cursor-pointer group"
+                        className="row-span-2 relative cursor-pointer group overflow-hidden rounded-lg"
                         onClick={() => openLightbox(photoStartIndex)}
                       >
                         <img
                           src={hotel.images[0]}
                           alt={`${hotel.name} - Foto 1`}
-                          className="w-full h-full object-cover rounded-lg transition-transform group-hover:scale-[1.02]"
+                          className="w-full h-full object-cover transition-transform group-hover:scale-[1.02]"
                         />
                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors rounded-lg flex items-center justify-center">
                           <svg
@@ -318,19 +318,19 @@ const Hospedagem = () => {
                     </div>
 
                     {/* Informações */}
-                    <div className="p-6 md:p-8">
+                    <div className="p-6 md:p-8 flex flex-col justify-between min-h-[320px] md:min-h-[380px]">
                       <h3
                         className="text-2xl md:text-3xl font-semibold mb-3"
                         style={{
                           fontFamily: '"Playfair Display", serif',
-                          color: colors.success.dark,
+                          color: colors.primary[600],
                         }}
                       >
                         {hotel.name}
                       </h3>
 
                       {hotel.description && (
-                        <p className="text-gray-600 mb-4 leading-relaxed">
+                        <p className="text-gray-600 mb-4 leading-relaxed text-justify">
                           {hotel.description}
                         </p>
                       )}
@@ -338,10 +338,10 @@ const Hospedagem = () => {
                       {/* Endereço e Contato */}
                       <div className="grid md:grid-cols-2 gap-6 mb-4">
                         {/* Endereço */}
-                        <div className="flex items-start gap-3">
+                        <div className="flex items-center gap-3">
                           <div
                             className="w-10 h-10 text-white rounded-full flex items-center justify-center shrink-0"
-                            style={{ backgroundColor: colors.success.DEFAULT }}
+                            style={{ backgroundColor: colors.primary[600] }}
                           >
                             <svg
                               className="w-5 h-5"
@@ -363,29 +363,14 @@ const Hospedagem = () => {
                               />
                             </svg>
                           </div>
-                          <div className="flex-1">
-                            <p className="text-sm font-medium text-gray-700 mb-1">Endereço</p>
-                            <p className="text-gray-600 text-sm leading-relaxed">{hotel.address}</p>
-                            <a
-                              href={hotel.mapUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 mt-2 text-sm font-medium"
-                              style={{ color: colors.success.DEFAULT }}
-                            >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                              </svg>
-                              Ver no mapa
-                            </a>
-                          </div>
+                          <p className="text-gray-600 text-sm leading-relaxed">{hotel.address}</p>
                         </div>
 
                         {/* Contato */}
-                        <div className="flex items-start gap-3">
+                        <div className="flex items-center gap-3">
                           <div
                             className="w-10 h-10 text-white rounded-full flex items-center justify-center shrink-0"
-                            style={{ backgroundColor: colors.success.DEFAULT }}
+                            style={{ backgroundColor: colors.primary[600] }}
                           >
                             <svg
                               className="w-5 h-5"
@@ -401,38 +386,50 @@ const Hospedagem = () => {
                               />
                             </svg>
                           </div>
-                          <div className="flex-1">
-                            <p className="text-sm font-medium text-gray-700 mb-1">Contato</p>
-                            {hotel.phone && (
-                              <p className="text-gray-600 text-sm">
-                                {hotel.phone.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3')}
-                              </p>
-                            )}
-                          </div>
+                          <p className="text-gray-600 text-sm">
+                            {hotel.phone.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3')}
+                          </p>
                         </div>
                       </div>
 
-                      {/* Botão WhatsApp */}
+                      {/* Botões de Ação - Mobile: lado a lado | Desktop: WhatsApp full width */}
                       {hotel.phone ? (
-                        <button
-                          onClick={() => handleWhatsAppClick(hotel.phone)}
-                          className="w-full text-white font-bold py-4 px-6 rounded-xl transition-all text-lg flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] shadow-md"
-                          style={{
-                            fontFamily: '"Playfair Display", serif',
-                            backgroundColor: colors.success.DEFAULT,
-                          }}
-                          onMouseEnter={(e) =>
-                            (e.currentTarget.style.backgroundColor = colors.success.dark)
-                          }
-                          onMouseLeave={(e) =>
-                            (e.currentTarget.style.backgroundColor = colors.success.DEFAULT)
-                          }
-                        >
-                          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-                          </svg>
-                          Contatar via WhatsApp
-                        </button>
+                        <>
+                          {/* Botões lado a lado - Mobile e Desktop */}
+                          <div className="flex gap-3">
+                            <a
+                              href={hotel.mapUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex-1 font-semibold py-3 md:py-4 px-4 rounded-xl transition-all flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] shadow-md text-sm md:text-lg bg-white border-2"
+                              style={{
+                                fontFamily: '"Playfair Display", serif',
+                                color: colors.primary[600],
+                                borderColor: '#f3f4f6',
+                              }}
+                            >
+                              <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: colors.primary[600] }}>
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                              </svg>
+                              Localização
+                            </a>
+                            <button
+                              onClick={() => handleWhatsAppClick(hotel.phone)}
+                              className="flex-1 font-semibold py-3 md:py-4 px-4 rounded-xl transition-all flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] shadow-md text-sm md:text-lg bg-white border-2"
+                              style={{
+                                fontFamily: '"Playfair Display", serif',
+                                color: colors.success.DEFAULT,
+                                borderColor: '#f3f4f6',
+                              }}
+                            >
+                              <svg className="w-5 h-5 md:w-6 md:h-6" fill="currentColor" viewBox="0 0 24 24" style={{ color: colors.success.DEFAULT }}>
+                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                              </svg>
+                              WhatsApp
+                            </button>
+                          </div>
+                        </>
                       ) : (
                         <div className="text-gray-500 text-sm italic mt-4 text-center p-4 bg-gray-100 rounded-lg">
                           Contato em breve
@@ -447,17 +444,14 @@ const Hospedagem = () => {
         </section>
 
         {/* Nota Final */}
-        <section className="py-8 md:py-12 px-4">
+        <section className="py-2 md:py-6 px-4">
           <div className="max-w-4xl mx-auto text-center">
             <div className="p-6 md:p-8 rounded-xl border" style={{
               backgroundColor: `${colors.success.light}20`,
               borderColor: `${colors.success.DEFAULT}30`,
             }}>
               <p className="text-gray-700 leading-relaxed">
-                Recomendamos que faça sua reserva com antecedência, especialmente para a data do nosso casamento (09/01/2027).
-              </p>
-              <p className="text-gray-600 text-sm mt-3">
-                Ao entrar em contato, mencione que é convidado do casamento de <strong>Letícia & Kiury</strong>.
+                Recomendamos que faça sua reserva com antecedência, especialmente para a data do nosso casamento.
               </p>
             </div>
           </div>

@@ -351,16 +351,6 @@ const Galeria = () => {
           <div className="max-w-3xl mx-auto">
             {/* Container com borda decorativa */}
             <div className="relative p-6 md:p-8">
-              {/* Bordas decorativas nos cantos */}
-              <div className="absolute top-0 left-0 w-6 h-6 md:w-8 md:h-8 border-t-4 border-l-4 rounded-tl-lg"
-                   style={{ borderColor: colors.primary[500] }}></div>
-              <div className="absolute top-0 right-0 w-6 h-6 md:w-8 md:h-8 border-t-4 border-r-4 rounded-tr-lg"
-                   style={{ borderColor: colors.primary[500] }}></div>
-              <div className="absolute bottom-0 left-0 w-6 h-6 md:w-8 md:h-8 border-b-4 border-l-4 rounded-bl-lg"
-                   style={{ borderColor: colors.primary[500] }}></div>
-              <div className="absolute bottom-0 right-0 w-6 h-6 md:w-8 md:h-8 border-b-4 border-r-4 rounded-br-lg"
-                   style={{ borderColor: colors.primary[500] }}></div>
-
               {/* Linha decorativa superior */}
               <div className="flex items-center justify-center gap-4 mb-4">
                 <div className="h-px w-16 bg-gradient-to-r from-transparent to-stone-300"></div>

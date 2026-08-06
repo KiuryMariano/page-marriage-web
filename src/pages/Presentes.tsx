@@ -426,24 +426,6 @@ const Presentes = () => {
           <div className="max-w-6xl mx-auto">
             {/* Container único com borda decorativa envolvendo as duas colunas */}
             <div className="relative p-6 md:p-8">
-              {/* Bordas decorativas nos cantos - apenas desktop */}
-              <div
-                className="hidden md:block absolute top-0 left-0 w-6 h-6 md:w-8 md:h-8 border-t-4 border-l-4 rounded-tl-lg"
-                style={{ borderColor: colors.primary[500] }}
-              ></div>
-              <div
-                className="hidden md:block absolute top-0 right-0 w-6 h-6 md:w-8 md:h-8 border-t-4 border-r-4 rounded-tr-lg"
-                style={{ borderColor: colors.primary[500] }}
-              ></div>
-              <div
-                className="hidden md:block absolute bottom-0 left-0 w-6 h-6 md:w-8 md:h-8 border-b-4 border-l-4 rounded-bl-lg"
-                style={{ borderColor: colors.primary[500] }}
-              ></div>
-              <div
-                className="hidden md:block absolute bottom-0 right-0 w-6 h-6 md:w-8 md:h-8 border-b-4 border-r-4 rounded-br-lg"
-                style={{ borderColor: colors.primary[500] }}
-              ></div>
-
               {/* Linha decorativa superior */}
               <div className="flex items-center justify-center gap-4 mb-6 md:mb-8">
                 <div className="h-px w-16 bg-gradient-to-r from-transparent to-stone-300"></div>
@@ -936,7 +918,7 @@ const Presentes = () => {
             <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-xs max-h-[60vh] flex flex-col">
               <div className="p-3 border-b">
                 <div className="flex items-center justify-between mb-1">
-                  <h2 className="text-base font-semibold text-orange-600" style={{ fontFamily: '"Playfair Display", serif' }}>
+                  <h2 className="text-base font-semibold text-orange-600">
                     Categorias
                   </h2>
                   <button
@@ -989,7 +971,7 @@ const Presentes = () => {
             <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-xs max-h-[60vh] flex flex-col">
               <div className="p-3 border-b">
                 <div className="flex items-center justify-between mb-1">
-                  <h2 className="text-base font-semibold text-orange-600" style={{ fontFamily: '"Playfair Display", serif' }}>
+                  <h2 className="text-base font-semibold text-orange-600">
                     Cotas
                   </h2>
                   <button
@@ -1111,11 +1093,9 @@ const Presentes = () => {
                   </div>
                   <div className="p-4 md:p-5 flex flex-col flex-1">
                     <h3
-                      className="text-base md:text-lg font-semibold text-gray-800 leading-tight mb-2 md:mb-3"
+                      className="text-base md:text-lg font-semibold leading-tight mb-2 md:mb-3"
                       style={{
-                        fontFamily: '"Playfair Display", serif',
-                        fontSize: "1rem",
-                        lineHeight: "1.25",
+                        color: "#9A3412",
                       }}
                     >
                       {gift.title}
@@ -1178,7 +1158,6 @@ const Presentes = () => {
                         onClick={() => addToCart(gift)}
                         className="w-full text-white font-semibold py-2 px-4 rounded-lg transition-all hover:shadow-md active:scale-95 text-sm md:text-base flex items-center justify-center gap-2"
                         style={{
-                          fontFamily: '"Playfair Display", serif',
                           background: gradients.primary,
                         }}
                       >
@@ -1201,9 +1180,6 @@ const Presentes = () => {
                       <button
                         disabled
                         className="w-full text-gray-500 font-semibold py-2.5 md:py-3 px-4 rounded-lg text-sm md:text-base flex items-center justify-center gap-2 bg-gray-100 cursor-not-allowed"
-                        style={{
-                          fontFamily: '"Playfair Display", serif',
-                        }}
                       >
                         <svg
                           className="w-4 h-4 md:w-5 md:h-5"
