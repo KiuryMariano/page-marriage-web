@@ -92,6 +92,28 @@ const Admin = () => {
     }
   };
 
+  const deleteImage = async (imageUrl: string): Promise<boolean> => {
+    try {
+      const response = await fetch('/api/presentes/delete-image.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image_url: imageUrl }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        return true;
+      } else {
+        showNotification('error', result.error || 'Erro ao deletar imagem');
+        return false;
+      }
+    } catch {
+      showNotification('error', 'Erro ao deletar imagem do servidor');
+      return false;
+    }
+  };
+
   const fetchPresentes = useCallback(async () => {
     try {
       setLoading(true);
@@ -160,6 +182,7 @@ const Admin = () => {
     });
     setImageFile(null);
     setImagePreview(null);
+    setOriginalImageUrl(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -529,7 +552,11 @@ const Admin = () => {
                       />
                       <button
                         type="button"
-                        onClick={() => {
+                        onClick={async () => {
+                          // Deletar a imagem do servidor
+                          if (formData.imagem_url) {
+                            await deleteImage(formData.imagem_url);
+                          }
                           setImageFile(null);
                           setImagePreview(null);
                           setFormData({ ...formData, imagem_url: "" });

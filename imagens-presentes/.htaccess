@@ -1,0 +1,9 @@
+<IfModule mod_headers.c>
+    # Cache de imagens por 1 ano
+    <FilesMatch "\.(jpg|jpeg|png|gif|webp|avif)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+</IfModule>
+
+# Permitir acesso direto
+Options -Indexes
