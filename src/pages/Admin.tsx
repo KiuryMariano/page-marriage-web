@@ -182,7 +182,6 @@ const Admin = () => {
     });
     setImageFile(null);
     setImagePreview(null);
-    setOriginalImageUrl(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -555,11 +554,21 @@ const Admin = () => {
                         onClick={async () => {
                           // Deletar a imagem do servidor
                           if (formData.imagem_url) {
-                            await deleteImage(formData.imagem_url);
+                            const deleted = await deleteImage(formData.imagem_url);
+                            if (deleted) {
+                              // Só limpa os campos se a deleção foi bem-sucedida
+                              setImageFile(null);
+                              setImagePreview(null);
+                              setFormData({ ...formData, imagem_url: "" });
+                              showNotification("success", "Imagem removida com sucesso");
+                            }
+                            // Se não foi bem-sucedida, o erro já foi mostrado pelo deleteImage
+                          } else {
+                            // Se não tem URL, apenas limpa os campos locais
+                            setImageFile(null);
+                            setImagePreview(null);
+                            setFormData({ ...formData, imagem_url: "" });
                           }
-                          setImageFile(null);
-                          setImagePreview(null);
-                          setFormData({ ...formData, imagem_url: "" });
                         }}
                         className="px-3 py-1.5 text-sm bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
                       >

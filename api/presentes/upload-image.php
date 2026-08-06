@@ -4,8 +4,16 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type');
 
-// Diretório para salvar as imagens (um nível acima da pasta api)
-$uploadDir = __DIR__ . '/../../imagens-presentes/';
+// Diretório para salvar as imagens no servidor
+// upload-image.php está em: /home/usuario/public_html/api/presentes/
+// imagens-presentes está em: /home/usuario/public_html/imagens-presentes/
+$baseDir = dirname(dirname(dirname(__DIR__))); // Sobe 3 níveis
+$uploadDir = $baseDir . '/imagens-presentes/';
+
+// Fallback: tenta usar DOCUMENT_ROOT
+if (!is_dir($uploadDir)) {
+    $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/imagens-presentes/';
+}
 
 // Criar diretório se não existir
 if (!file_exists($uploadDir)) {
