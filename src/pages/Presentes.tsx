@@ -1,12 +1,11 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import wallpaperWebpFull from "../assets/wallpaper_1.webp";
-import wallpaperWebpTablet from "../assets/wallpaper_1_tablet.webp";
-import wallpaperWebpMobile from "../assets/wallpaper_1_mobile.webp";
+import wallpaperWebpFull from "../assets/wallpaper_2.webp";
+import wallpaperWebpTablet from "../assets/wallpaper_2_tablet.webp";
+import wallpaperWebpMobile from "../assets/wallpaper_2_mobile.webp";
 import backgroundMoney from "../assets/background_money.webp";
 import backgroundMoneyMobile from "../assets/background_money_mobile.webp";
 import { colors, gradients } from "../theme";
@@ -16,6 +15,11 @@ import { useGifts } from "../hooks/useGifts";
 
 const formatPrice = (value: number) => {
   return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+};
+
+const capitalize = (str: string) => {
+  if (!str) return str;
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 };
 
 const Presentes = () => {
@@ -29,6 +33,63 @@ const Presentes = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("todos");
   const [cotasFilter, setCotasFilter] = useState<string>("todos");
 
+  // Modal de filtros (mobile)
+  const [openFilterModal, setOpenFilterModal] = useState<"categoria" | "cotas" | null>(null);
+
+  // Carrossel de cards
+  const [activeCard, setActiveCard] = useState(0);
+  const carouselRef = useRef<HTMLDivElement>(null);
+
+  // Detectar scroll do carrossel e atualizar card ativo
+  useEffect(() => {
+    const carousel = carouselRef.current;
+    if (!carousel) return;
+
+    const handleScroll = () => {
+      const scrollLeft = carousel.scrollLeft;
+      const carouselWidth = carousel.offsetWidth;
+      const cardWidth = carouselWidth * 0.85;
+      const gap = 20;
+      const totalCardWidth = cardWidth + gap;
+
+      // Calcular qual card está mais visível (baseado no centro do container)
+      const centerOffset = scrollLeft + (carouselWidth / 2);
+      const cardIndex = Math.round((centerOffset - (carouselWidth * 0.075)) / totalCardWidth);
+
+      setActiveCard(Math.min(Math.max(cardIndex, 0), 2));
+    };
+
+    carousel.addEventListener('scroll', handleScroll);
+    return () => carousel.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Função para navegar para um card específico
+  const scrollToCard = (index: number) => {
+    const carousel = carouselRef.current;
+    if (!carousel) return;
+
+    const carouselWidth = carousel.offsetWidth;
+    const cardWidth = carouselWidth * 0.85;
+    const gap = 20;
+    // Calcular posição para centralizar o card
+    const scrollPosition = index * (cardWidth + gap) - (carouselWidth * 0.075);
+    carousel.scrollTo({ left: Math.max(0, scrollPosition), behavior: 'smooth' });
+  };
+
+  // Função para ir ao card anterior
+  const goToPrevious = () => {
+    if (activeCard > 0) {
+      scrollToCard(activeCard - 1);
+    }
+  };
+
+  // Função para ir ao próximo card
+  const goToNext = () => {
+    if (activeCard < 2) {
+      scrollToCard(activeCard + 1);
+    }
+  };
+
   // Extrair categorias únicas dos presentes
   const categories = useMemo(() => {
     const cats = new Set(gifts.map(g => g.categoria || "Sem categoria").filter(Boolean));
@@ -37,18 +98,27 @@ const Presentes = () => {
 
   // Aplicar filtros
   const filteredGifts = useMemo(() => {
-    return gifts.filter(gift => {
+    let result = gifts.filter(gift => {
       // Filtro por categoria
       if (selectedCategory !== "todos" && gift.categoria !== selectedCategory) {
         return false;
       }
-
-      // Filtro por cotas
-      if (cotasFilter === "mais_cotas" && gift.cotas <= 2) return false;
-      if (cotasFilter === "menos_cotas" && gift.cotas > 2) return false;
-
       return true;
     });
+
+    // Filtro e ordenação por cotas
+    if (cotasFilter === "mais_cotas") {
+      // Ordena do maior para o menor
+      result = [...result].sort((a, b) => b.cotas - a.cotas);
+    } else if (cotasFilter === "menos_cotas") {
+      // Apenas disponíveis, ordena do menor para o maior
+      result = [...result].filter(g => g.cotas > 0).sort((a, b) => a.cotas - b.cotas);
+    } else if (cotasFilter === "esgotado") {
+      // Apenas esgotados
+      result = [...result].filter(g => g.cotas === 0);
+    }
+
+    return result;
   }, [gifts, selectedCategory, cotasFilter]);
 
   const addToCart = (gift: Gift) => {
@@ -142,11 +212,11 @@ const Presentes = () => {
         {/* Cart Sidebar */}
         {isCartOpen && (
           <>
-            <div
-              className="fixed inset-0 bg-black/50 z-40"
-              onClick={() => setIsCartOpen(false)}
-            />
-            <div className="fixed right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl z-50 flex flex-col">
+          <div
+            className="fixed inset-0 bg-black/50 z-[70]"
+            onClick={() => setIsCartOpen(false)}
+          />
+          <div className="fixed right-0 top-0 h-full w-[90%] md:w-full max-w-md bg-white shadow-2xl z-[70] flex flex-col">
               <div className="p-4 md:p-6 border-b flex items-center justify-between">
                 <h2
                   className="text-xl md:text-2xl font-semibold"
@@ -319,7 +389,7 @@ const Presentes = () => {
         )}
 
         {/* Hero Section com Wallpaper */}
-        <section className="relative min-h-[50vh] md:min-h-[55vh] lg:min-h-[60vh] flex items-center justify-center overflow-hidden">
+        <section className="relative h-[25vh] md:h-[55vh] lg:h-[60vh] flex items-center justify-center overflow-hidden">
           {/* Background Image */}
           <div className="absolute inset-0">
             <img
@@ -327,7 +397,7 @@ const Presentes = () => {
               alt="Letícia e Kiury"
               srcSet={`${wallpaperWebpMobile} 800w, ${wallpaperWebpTablet} 1400w, ${wallpaperWebpFull} 6182w`}
               sizes="100vw"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover object-center"
               fetchPriority="high"
               loading="eager"
               decoding="sync"
@@ -352,25 +422,25 @@ const Presentes = () => {
         </section>
 
         {/* Textos de introdução */}
-        <section className="py-6 md:py-8 px-4">
+        <section className="py-2 md:py-8 px-4">
           <div className="max-w-6xl mx-auto">
             {/* Container único com borda decorativa envolvendo as duas colunas */}
             <div className="relative p-6 md:p-8">
-              {/* Bordas decorativas nos cantos */}
+              {/* Bordas decorativas nos cantos - apenas desktop */}
               <div
-                className="absolute top-0 left-0 w-6 h-6 md:w-8 md:h-8 border-t-4 border-l-4 rounded-tl-lg"
+                className="hidden md:block absolute top-0 left-0 w-6 h-6 md:w-8 md:h-8 border-t-4 border-l-4 rounded-tl-lg"
                 style={{ borderColor: colors.primary[500] }}
               ></div>
               <div
-                className="absolute top-0 right-0 w-6 h-6 md:w-8 md:h-8 border-t-4 border-r-4 rounded-tr-lg"
+                className="hidden md:block absolute top-0 right-0 w-6 h-6 md:w-8 md:h-8 border-t-4 border-r-4 rounded-tr-lg"
                 style={{ borderColor: colors.primary[500] }}
               ></div>
               <div
-                className="absolute bottom-0 left-0 w-6 h-6 md:w-8 md:h-8 border-b-4 border-l-4 rounded-bl-lg"
+                className="hidden md:block absolute bottom-0 left-0 w-6 h-6 md:w-8 md:h-8 border-b-4 border-l-4 rounded-bl-lg"
                 style={{ borderColor: colors.primary[500] }}
               ></div>
               <div
-                className="absolute bottom-0 right-0 w-6 h-6 md:w-8 md:h-8 border-b-4 border-r-4 rounded-br-lg"
+                className="hidden md:block absolute bottom-0 right-0 w-6 h-6 md:w-8 md:h-8 border-b-4 border-r-4 rounded-br-lg"
                 style={{ borderColor: colors.primary[500] }}
               ></div>
 
@@ -483,16 +553,30 @@ const Presentes = () => {
         {/* Cards de Como Funciona */}
         <section className="pb-8 md:pb-12 px-4">
           <div className="max-w-6xl mx-auto">
-            <div className="grid md:grid-cols-3 gap-5 md:gap-7">
+            {/* Container com carrossel no mobile, grid no desktop */}
+            <div
+              ref={carouselRef}
+              className="flex md:grid md:grid-cols-3 gap-5 md:gap-7 overflow-x-auto overflow-y-visible snap-x snap-mandatory -mx-4 px-4 md:mx-0 md:px-0 items-stretch"
+              style={{
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none',
+              }}
+            >
+              <style>{`
+                div[ref="${carouselRef}"]::-webkit-scrollbar {
+                  display: none;
+                }
+              `}</style>
+              {/* Card 1 */}
               <div
-                className="bg-white rounded-xl p-5 md:p-6 shadow-md border-l-4 hover:shadow-xl transition-all hover:-translate-y-1"
-                style={{ borderLeftColor: colors.primary[500] }}
+                className="bg-white rounded-xl p-5 md:p-6 shadow-lg hover:shadow-2xl transition-all flex-shrink-0 w-[85vw] md:w-auto snap-center self-stretch"
               >
                 <div className="flex items-center gap-3 mb-4">
                   <div
                     className="w-14 h-14 rounded-xl flex items-center justify-center font-bold text-xl text-white shadow-lg"
                     style={{
-                      background: gradients.secondary,
+                      background:
+                        "linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%)",
                     }}
                   >
                     1
@@ -569,9 +653,9 @@ const Presentes = () => {
                 </div>
               </div>
 
+              {/* Card 2 */}
               <div
-                className="bg-white rounded-xl p-5 shadow-md border-l-4 hover:shadow-xl transition-all hover:-translate-y-1"
-                style={{ borderLeftColor: "#f59e0b" }}
+                className="bg-white rounded-xl p-5 md:p-6 shadow-lg hover:shadow-2xl transition-all flex-shrink-0 w-[85vw] md:w-auto snap-center self-stretch"
               >
                 <div className="flex items-center gap-3 mb-4">
                   <div
@@ -653,9 +737,9 @@ const Presentes = () => {
                 </div>
               </div>
 
+              {/* Card 3 */}
               <div
-                className="bg-white rounded-xl p-5 shadow-md border-l-4 hover:shadow-xl transition-all hover:-translate-y-1"
-                style={{ borderLeftColor: "#f59e0b" }}
+                className="bg-white rounded-xl p-5 md:p-6 shadow-lg hover:shadow-2xl transition-all flex-shrink-0 w-[85vw] md:w-auto snap-center self-stretch"
               >
                 <div className="flex items-center gap-3 mb-4">
                   <div
@@ -739,106 +823,231 @@ const Presentes = () => {
                 </div>
               </div>
             </div>
+
+            {/* Setas de navegação do carrossel - apenas mobile */}
+            <div className="flex justify-center items-center gap-6 mt-6 md:hidden">
+              {/* Seta Anterior */}
+              <button
+                onClick={goToPrevious}
+                disabled={activeCard === 0}
+                className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+                  activeCard === 0
+                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    : 'bg-amber-500 text-white hover:bg-amber-600 active:scale-95'
+                }`}
+                aria-label="Anterior"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+              </button>
+
+              {/* Indicador de posição */}
+              <span className="text-sm font-medium text-gray-600">
+                {activeCard + 1} / 3
+              </span>
+
+              {/* Seta Próximo */}
+              <button
+                onClick={goToNext}
+                disabled={activeCard === 2}
+                className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+                  activeCard === 2
+                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    : 'bg-amber-500 text-white hover:bg-amber-600 active:scale-95'
+                }`}
+                aria-label="Próximo"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
         </section>
 
         {/* Filtros */}
-        <section className="pb-6 md:pb-8 px-4">
-          <div className="max-w-6xl mx-auto flex gap-4">
+        <section className="pb-2 md:pb-3 px-4">
+          <div className="max-w-6xl mx-auto mb-3">
+            <p className="text-sm text-gray-600 text-center">
+              Utilize os filtros abaixo para facilitar sua consulta aos presentes.
+            </p>
+          </div>
+          <div className="max-w-6xl mx-auto flex gap-3 md:gap-4">
             {/* Filtro por Categoria */}
-            <Menu as="div" className="relative">
-              <MenuButton className="inline-flex justify-between gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 min-w-[200px]">
-                {selectedCategory === "todos" ? "Todas as categorias" : selectedCategory}
-                <ChevronDownIcon aria-hidden="true" className="-mr-1 size-5 text-gray-400" />
-              </MenuButton>
-              <MenuItems
-                transition
-                className="absolute left-0 z-50 mt-2 min-w-[200px] origin-top-left rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition data-closed:scale-95 data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
+            <div className="relative flex-1">
+              <button
+                onClick={() => setOpenFilterModal("categoria")}
+                className="w-full inline-flex justify-between gap-x-0.5 rounded-xl px-4 py-3 md:px-3 md:py-2 text-sm md:text-sm font-semibold shadow-md hover:shadow-lg transition-all active:scale-95 border-0 bg-white text-orange-600"
               >
-                <div className="py-1">
-                  <MenuItem>
-                    <button
-                      onClick={() => setSelectedCategory("todos")}
-                      className="block w-full px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900"
-                    >
-                      Todas as categorias
-                    </button>
-                  </MenuItem>
-                  {categories.slice(1).map((cat) => (
-                    <MenuItem key={cat}>
-                      <button
-                        onClick={() => setSelectedCategory(cat)}
-                        className="block w-full px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900"
-                      >
-                        {cat}
-                      </button>
-                    </MenuItem>
-                  ))}
-                </div>
-              </MenuItems>
-            </Menu>
+                <span className="truncate">{selectedCategory === "todos" ? "Categorias" : capitalize(selectedCategory)}</span>
+                <ChevronDownIcon aria-hidden="true" className="-mr-1 size-5 md:size-5 shrink-0 text-orange-600" />
+              </button>
+            </div>
 
             {/* Filtro por Cotas */}
-            <Menu as="div" className="relative">
-              <MenuButton className="inline-flex justify-between gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 min-w-[200px]">
-                {cotasFilter === "todos"
-                  ? "Todos"
-                  : cotasFilter === "mais_cotas"
-                  ? "Com mais cotas"
-                  : "Com menos cotas"}
-                <ChevronDownIcon aria-hidden="true" className="-mr-1 size-5 text-gray-400" />
-              </MenuButton>
-              <MenuItems
-                transition
-                className="absolute left-0 z-50 mt-2 min-w-[200px] origin-top-left rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition data-closed:scale-95 data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
+            <div className="relative flex-1">
+              <button
+                onClick={() => setOpenFilterModal("cotas")}
+                className="w-full inline-flex justify-between gap-x-0.5 rounded-xl px-4 py-3 md:px-3 md:py-2 text-sm md:text-sm font-semibold shadow-md hover:shadow-lg transition-all active:scale-95 border-0 bg-white text-orange-600"
               >
-                <div className="py-1">
-                  <MenuItem>
-                    <button
-                      onClick={() => setCotasFilter("todos")}
-                      className="block w-full px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900"
-                    >
-                      Todos
-                    </button>
-                  </MenuItem>
-                  <MenuItem>
-                    <button
-                      onClick={() => setCotasFilter("mais_cotas")}
-                      className="block w-full px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900"
-                    >
-                      Com mais cotas
-                    </button>
-                  </MenuItem>
-                  <MenuItem>
-                    <button
-                      onClick={() => setCotasFilter("menos_cotas")}
-                      className="block w-full px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900"
-                    >
-                      Com menos cotas
-                    </button>
-                  </MenuItem>
-                </div>
-              </MenuItems>
-            </Menu>
-
-            {/* Contador */}
-            <div className="flex items-center text-sm text-gray-600">
-              {filteredGifts.length} {filteredGifts.length === 1 ? 'presente' : 'presentes'}
-              {filteredGifts.length !== gifts.length && ` de ${gifts.length}`}
-              {(selectedCategory !== "todos" || cotasFilter !== "todos") && (
-                <button
-                  onClick={() => {
-                    setSelectedCategory("todos");
-                    setCotasFilter("todos");
-                  }}
-                  className="ml-2 text-blue-600 hover:text-blue-800 underline"
-                >
-                  Limpar filtros
-                </button>
-              )}
+                <span className="truncate">
+                  {cotasFilter === "todos"
+                    ? "Cotas"
+                    : cotasFilter === "mais_cotas"
+                    ? "Mais"
+                    : cotasFilter === "menos_cotas"
+                    ? "Menos"
+                    : "Esgotado"}
+                </span>
+                <ChevronDownIcon aria-hidden="true" className="-mr-1 size-5 md:size-5 shrink-0 text-orange-600" />
+              </button>
             </div>
           </div>
         </section>
+
+        {/* Modal - Categoria */}
+        {openFilterModal === "categoria" && (
+          <div className="fixed inset-0 z-30 flex items-center justify-center p-4">
+            <div
+              className="absolute inset-0 bg-black/20"
+              onClick={() => setOpenFilterModal(null)}
+            />
+            <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-xs max-h-[60vh] flex flex-col">
+              <div className="p-3 border-b">
+                <div className="flex items-center justify-between mb-1">
+                  <h2 className="text-base font-semibold text-orange-600" style={{ fontFamily: '"Playfair Display", serif' }}>
+                    Categorias
+                  </h2>
+                  <button
+                    onClick={() => setOpenFilterModal(null)}
+                    className="text-orange-600 hover:text-orange-700 p-1"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+                <p className="text-xs text-gray-500">Selecione uma categoria para filtrar os presentes</p>
+              </div>
+              <div className="overflow-y-auto p-2 space-y-1">
+                <button
+                  onClick={() => { setSelectedCategory("todos"); setOpenFilterModal(null); }}
+                  className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    selectedCategory === "todos"
+                      ? "bg-orange-100 text-orange-700"
+                      : "text-orange-600 hover:bg-orange-50"
+                  }`}
+                >
+                  Todas
+                </button>
+                {categories.slice(1).map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => { setSelectedCategory(cat); setOpenFilterModal(null); }}
+                    className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      selectedCategory === cat
+                        ? "bg-orange-100 text-orange-700"
+                        : "text-orange-600 hover:bg-orange-50"
+                    }`}
+                  >
+                    {capitalize(cat)}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Modal - Cotas */}
+        {openFilterModal === "cotas" && (
+          <div className="fixed inset-0 z-30 flex items-center justify-center p-4">
+            <div
+              className="absolute inset-0 bg-black/20"
+              onClick={() => setOpenFilterModal(null)}
+            />
+            <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-xs max-h-[60vh] flex flex-col">
+              <div className="p-3 border-b">
+                <div className="flex items-center justify-between mb-1">
+                  <h2 className="text-base font-semibold text-orange-600" style={{ fontFamily: '"Playfair Display", serif' }}>
+                    Cotas
+                  </h2>
+                  <button
+                    onClick={() => setOpenFilterModal(null)}
+                    className="text-orange-600 hover:text-orange-700 p-1"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+                <p className="text-xs text-gray-500">Cotas são a quantidade disponível de cada presente para escolha</p>
+              </div>
+              <div className="overflow-y-auto p-2 space-y-1">
+                <button
+                  onClick={() => { setCotasFilter("todos"); setOpenFilterModal(null); }}
+                  className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    cotasFilter === "todos"
+                      ? "bg-orange-100 text-orange-700"
+                      : "text-orange-600 hover:bg-orange-50"
+                  }`}
+                >
+                  Todos
+                </button>
+                <button
+                  onClick={() => { setCotasFilter("mais_cotas"); setOpenFilterModal(null); }}
+                  className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    cotasFilter === "mais_cotas"
+                      ? "bg-orange-100 text-orange-700"
+                      : "text-orange-600 hover:bg-orange-50"
+                  }`}
+                >
+                  Mais cotas disponíveis
+                </button>
+                <button
+                  onClick={() => { setCotasFilter("menos_cotas"); setOpenFilterModal(null); }}
+                  className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    cotasFilter === "menos_cotas"
+                      ? "bg-orange-100 text-orange-700"
+                      : "text-orange-600 hover:bg-orange-50"
+                  }`}
+                >
+                  Menos cotas disponíveis
+                </button>
+                <button
+                  onClick={() => { setCotasFilter("esgotado"); setOpenFilterModal(null); }}
+                  className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    cotasFilter === "esgotado"
+                      ? "bg-orange-100 text-orange-700"
+                      : "text-orange-600 hover:bg-orange-50"
+                  }`}
+                >
+                  Esgotado
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Grid de Presentes */}
         <section className="pb-8 md:pb-12 px-4 relative z-10">
