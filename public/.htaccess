@@ -1,0 +1,17 @@
+# SPA - Redireciona todas as rotas para index.html
+# React Router (BrowserRouter) precisa disso para funcionar ao recarregar páginas
+
+RewriteEngine On
+RewriteBase /
+
+# Se o arquivo existir (index.html, assets, etc.), serve diretamente
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+
+# Se o diretório existir, serve diretamente
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Para tudo mais, redireciona para index.html
+# Isso permite que React Router resolva as rotas
+RewriteRule ^(.*)$ /index.html [L]
