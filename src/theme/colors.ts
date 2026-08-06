@@ -67,15 +67,15 @@ export const colors = {
 
 // Gradientes pré-definidos
 export const gradients = {
-  primary: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
-  primaryLight: "linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)",
-  secondary: "linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%)",
-  secondaryLight: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
+  primary: "#c2410c",
+  primaryLight: "#ea580c",
+  secondary: "#1e3a8a",
+  secondaryLight: "#2563eb",
   horizontal: {
     primary:
-      "linear-gradient(90deg, transparent 0%, #f59e0b 50%, transparent 100%)",
+      "linear-gradient(90deg, transparent 0%, #ea580c 50%, transparent 100%)",
     primaryLight:
-      "linear-gradient(90deg, transparent 0%, #fbbf24 50%, transparent 100%)",
+      "linear-gradient(90deg, transparent 0%, #f97316 50%, transparent 100%)",
   },
 };
 

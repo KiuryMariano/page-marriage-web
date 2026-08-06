@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import wallpaperWebpFull from "../assets/wallpaper_1.webp";
@@ -22,6 +24,32 @@ const Presentes = () => {
   const { gifts, loading, error } = useGifts();
 
   const [isCartOpen, setIsCartOpen] = useState(false);
+
+  // Filtros
+  const [selectedCategory, setSelectedCategory] = useState<string>("todos");
+  const [cotasFilter, setCotasFilter] = useState<string>("todos");
+
+  // Extrair categorias únicas dos presentes
+  const categories = useMemo(() => {
+    const cats = new Set(gifts.map(g => g.categoria || "Sem categoria").filter(Boolean));
+    return ["todos", ...Array.from(cats).sort()];
+  }, [gifts]);
+
+  // Aplicar filtros
+  const filteredGifts = useMemo(() => {
+    return gifts.filter(gift => {
+      // Filtro por categoria
+      if (selectedCategory !== "todos" && gift.categoria !== selectedCategory) {
+        return false;
+      }
+
+      // Filtro por cotas
+      if (cotasFilter === "mais_cotas" && gift.cotas <= 2) return false;
+      if (cotasFilter === "menos_cotas" && gift.cotas > 2) return false;
+
+      return true;
+    });
+  }, [gifts, selectedCategory, cotasFilter]);
 
   const addToCart = (gift: Gift) => {
     setCart((prevCart) => {
@@ -714,8 +742,106 @@ const Presentes = () => {
           </div>
         </section>
 
+        {/* Filtros */}
+        <section className="pb-6 md:pb-8 px-4">
+          <div className="max-w-6xl mx-auto flex gap-4">
+            {/* Filtro por Categoria */}
+            <Menu as="div" className="relative">
+              <MenuButton className="inline-flex justify-between gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 min-w-[200px]">
+                {selectedCategory === "todos" ? "Todas as categorias" : selectedCategory}
+                <ChevronDownIcon aria-hidden="true" className="-mr-1 size-5 text-gray-400" />
+              </MenuButton>
+              <MenuItems
+                transition
+                className="absolute left-0 z-50 mt-2 min-w-[200px] origin-top-left rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition data-closed:scale-95 data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
+              >
+                <div className="py-1">
+                  <MenuItem>
+                    <button
+                      onClick={() => setSelectedCategory("todos")}
+                      className="block w-full px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900"
+                    >
+                      Todas as categorias
+                    </button>
+                  </MenuItem>
+                  {categories.slice(1).map((cat) => (
+                    <MenuItem key={cat}>
+                      <button
+                        onClick={() => setSelectedCategory(cat)}
+                        className="block w-full px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900"
+                      >
+                        {cat}
+                      </button>
+                    </MenuItem>
+                  ))}
+                </div>
+              </MenuItems>
+            </Menu>
+
+            {/* Filtro por Cotas */}
+            <Menu as="div" className="relative">
+              <MenuButton className="inline-flex justify-between gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 min-w-[200px]">
+                {cotasFilter === "todos"
+                  ? "Todos"
+                  : cotasFilter === "mais_cotas"
+                  ? "Com mais cotas"
+                  : "Com menos cotas"}
+                <ChevronDownIcon aria-hidden="true" className="-mr-1 size-5 text-gray-400" />
+              </MenuButton>
+              <MenuItems
+                transition
+                className="absolute left-0 z-50 mt-2 min-w-[200px] origin-top-left rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition data-closed:scale-95 data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
+              >
+                <div className="py-1">
+                  <MenuItem>
+                    <button
+                      onClick={() => setCotasFilter("todos")}
+                      className="block w-full px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900"
+                    >
+                      Todos
+                    </button>
+                  </MenuItem>
+                  <MenuItem>
+                    <button
+                      onClick={() => setCotasFilter("mais_cotas")}
+                      className="block w-full px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900"
+                    >
+                      Com mais cotas
+                    </button>
+                  </MenuItem>
+                  <MenuItem>
+                    <button
+                      onClick={() => setCotasFilter("menos_cotas")}
+                      className="block w-full px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900"
+                    >
+                      Com menos cotas
+                    </button>
+                  </MenuItem>
+                </div>
+              </MenuItems>
+            </Menu>
+
+            {/* Contador */}
+            <div className="flex items-center text-sm text-gray-600">
+              {filteredGifts.length} {filteredGifts.length === 1 ? 'presente' : 'presentes'}
+              {filteredGifts.length !== gifts.length && ` de ${gifts.length}`}
+              {(selectedCategory !== "todos" || cotasFilter !== "todos") && (
+                <button
+                  onClick={() => {
+                    setSelectedCategory("todos");
+                    setCotasFilter("todos");
+                  }}
+                  className="ml-2 text-blue-600 hover:text-blue-800 underline"
+                >
+                  Limpar filtros
+                </button>
+              )}
+            </div>
+          </div>
+        </section>
+
         {/* Grid de Presentes */}
-        <section className="pb-8 md:pb-12 px-4">
+        <section className="pb-8 md:pb-12 px-4 relative z-10">
           <div className="max-w-6xl mx-auto">
             {/* Loading */}
             {loading && (
@@ -738,20 +864,37 @@ const Presentes = () => {
               </div>
             )}
 
+            {/* Sem resultados */}
+            {!loading && !error && filteredGifts.length === 0 && (
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-8 text-center">
+                <p className="text-yellow-800 text-lg">
+                  Nenhum presente encontrado com os filtros selecionados.
+                </p>
+                <button
+                  onClick={() => {
+                    setSelectedCategory("todos");
+                    setCotasFilter("todos");
+                  }}
+                  className="mt-3 text-blue-600 hover:text-blue-800 underline"
+                >
+                  Limpar filtros
+                </button>
+              </div>
+            )}
+
             {/* Gifts Grid */}
             {!loading && !error && (
               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-5 mt-10 md:mt-12">
-                {gifts.map((gift) => (
+                {filteredGifts.map((gift) => (
                 <div
                   key={gift.id}
-                  className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all hover:-translate-y-1 flex flex-col border-l-4 relative z-10 overflow-hidden"
-                  style={{ borderLeftColor: colors.primary[500] }}
+                  className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all hover:-translate-y-1 flex flex-col relative z-10 overflow-hidden"
                 >
-                  <div className="h-24 sm:h-28 md:h-32 overflow-hidden">
+                  <div className="aspect-square overflow-hidden p-3">
                     <img
                       src={gift.image}
                       alt={gift.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover rounded-xl"
                       onError={(e) => {
                         e.currentTarget.src = '/imagens-presentes/sem-imagem.png';
                       }}
@@ -815,7 +958,7 @@ const Presentes = () => {
                     <div className="flex items-center justify-between mb-2 md:mb-3">
                       <p
                         className="text-base md:text-lg font-bold"
-                        style={{ color: colors.primary[600] }}
+                        style={{ color: gradients.primary }}
                       >
                         {formatPrice(gift.price)}
                       </p>
@@ -824,7 +967,7 @@ const Presentes = () => {
                     {gift.cotas > 0 ? (
                       <button
                         onClick={() => addToCart(gift)}
-                        className="w-full text-white font-semibold py-2.5 md:py-3 px-4 rounded-lg transition-all hover:shadow-md active:scale-95 text-sm md:text-base flex items-center justify-center gap-2"
+                        className="w-full text-white font-semibold py-2 px-4 rounded-lg transition-all hover:shadow-md active:scale-95 text-sm md:text-base flex items-center justify-center gap-2"
                         style={{
                           fontFamily: '"Playfair Display", serif',
                           background: gradients.primary,
@@ -840,7 +983,7 @@ const Presentes = () => {
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth={2}
-                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                            d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"
                           />
                         </svg>
                         Adicionar
@@ -866,7 +1009,7 @@ const Presentes = () => {
                             d="M6 18L18 6M6 6l12 12"
                           />
                         </svg>
-                        Esgotado
+                        PRESENTEADO
                       </button>
                     )}
                   </div>

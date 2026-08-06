@@ -74,6 +74,7 @@ function mapApiToGift(apiGift: GiftApiData): Gift {
       price: parseFloat(apiGift.preco),
       image: apiGift.imagem_url,
       cotas: apiGift.cotas_disponiveis,
+      categoria: apiGift.categoria,
     };
   }
 
@@ -84,6 +85,7 @@ function mapApiToGift(apiGift: GiftApiData): Gift {
     price: parseFloat(apiGift.preco),
     image: '/imagens-presentes/sem-imagem.png',
     cotas: apiGift.cotas_disponiveis,
+    categoria: apiGift.categoria,
   };
 }
 
