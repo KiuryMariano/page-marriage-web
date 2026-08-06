@@ -68,14 +68,21 @@ const Hero = () => {
             Estamos Casando
           </p>
           <h1
-            className="text-5xl md:text-7xl lg:text-9xl mb-6 text-white whitespace-nowrap"
+            className="text-5xl md:text-7xl lg:text-9xl mb-6 text-white md:whitespace-nowrap"
             style={{
               fontFamily: '"Great Vibes", cursive',
               textShadow:
                 "0 4px 30px rgba(0,0,0,0.8), 0 0 60px rgba(0,0,0,0.6)",
             }}
           >
-            Kiury <span className="text-gold-400 mx-2 md:mx-3">&</span> Letícia
+            <span className="md:hidden grid grid-cols-[1fr_auto_1fr] items-center w-full">
+              <span className="text-right pr-2">Kiury</span>
+              <span className="text-gold-400 text-center px-0">&</span>
+              <span className="text-left pl-2">Letícia</span>
+            </span>
+            <span className="hidden md:inline">
+              Kiury <span className="text-gold-400 mx-2 md:mx-3">&</span> Letícia
+            </span>
           </h1>
           <p
             className="text-lg md:text-2xl font-light text-white/95 tracking-wide"
@@ -89,11 +96,11 @@ const Hero = () => {
         </div>
 
         {/* Countdown - Near Bottom */}
-        <div className="mb-8 md:scale-[0.7]">
-          <p className="text-sm uppercase tracking-widest mb-6">
+        <div className="mb-8 scale-[0.92] md:scale-100">
+          <p className="text-xs md:text-sm uppercase tracking-widest mb-5 md:mb-6">
             Save the Date
           </p>
-          <div className="flex justify-center gap-4 md:gap-8">
+          <div className="flex justify-center gap-3 md:gap-8">
             {[
               { label: "Dias", value: timeRemaining.days },
               { label: "Horas", value: timeRemaining.hours },
@@ -101,34 +108,17 @@ const Hero = () => {
               { label: "Segundos", value: timeRemaining.seconds },
             ].map((item) => (
               <div key={item.label} className="text-center">
-                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 md:p-6 min-w-[70px] md:min-w-[90px]">
-                  <span className="block text-2xl md:text-4xl font-semibold">
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 md:p-6 min-w-[58px] md:min-w-[90px]">
+                  <span className="block text-xl md:text-4xl font-semibold">
                     {item.value}
                   </span>
                 </div>
-                <span className="text-xs md:text-sm uppercase tracking-wider mt-2 block">
+                <span className="text-[11px] md:text-sm uppercase tracking-wider mt-1 md:mt-2 block">
                   {item.label}
                 </span>
               </div>
             ))}
           </div>
-        </div>
-
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 14l-7 7m0 0l-7-7m7 7V3"
-            />
-          </svg>
         </div>
       </div>
     </section>

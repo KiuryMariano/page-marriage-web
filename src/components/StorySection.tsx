@@ -53,18 +53,18 @@ const StorySection = () => {
   ];
 
   return (
-    <section className="py-24 px-4">
+    <section className="py-24 px-6 md:px-4">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-20">
+        <div className="text-center mb-16 md:mb-20">
           <p
-            className="uppercase tracking-[0.3em] text-xs mb-4"
+            className="uppercase tracking-[0.3em] text-[10px] md:text-xs mb-4"
             style={{ color: colors.primary[600] }}
           >
             Nossa Jornada
           </p>
           <h2
-            className="text-6xl md:text-7xl text-gray-800"
+            className="text-4xl md:text-6xl lg:text-7xl text-gray-800"
             style={{ fontFamily: '"Great Vibes", cursive' }}
           >
             Nossa História
@@ -72,12 +72,12 @@ const StorySection = () => {
         </div>
 
         {/* Events List */}
-        <div className="space-y-16">
+        <div className="space-y-12 md:space-y-16">
           {events.map((event, index) => (
             <div key={index} className="relative">
               {/* Date */}
               <p
-                className="uppercase tracking-widest text-xs mb-2"
+                className="uppercase tracking-widest text-[10px] md:text-xs mb-2"
                 style={{ color: colors.primary[600] }}
               >
                 {event.date}
@@ -85,20 +85,20 @@ const StorySection = () => {
 
               {/* Title */}
               <h3
-                className="text-3xl text-gray-800 mb-4"
+                className="text-2xl md:text-3xl text-gray-800 mb-3 md:mb-4"
                 style={{ fontFamily: '"Great Vibes", cursive' }}
               >
                 {event.title}
               </h3>
 
               {/* Description */}
-              <p className="text-gray-600 leading-relaxed text-lg">
+              <p className="text-gray-600 leading-relaxed text-sm md:text-lg text-justify">
                 {event.description}
               </p>
 
               {/* Divider - except for last item */}
               {index < events.length - 1 && (
-                <div className="mt-12 flex items-center gap-4">
+                <div className="mt-8 md:mt-12 flex items-center gap-4">
                   <div
                     className="flex-1 h-px"
                     style={{
@@ -107,7 +107,7 @@ const StorySection = () => {
                     }}
                   ></div>
                   <span
-                    className="text-xl"
+                    className="text-lg md:text-xl"
                     style={{ color: colors.primary[400] }}
                   >
                     ◆
@@ -126,19 +126,19 @@ const StorySection = () => {
         </div>
 
         {/* Final Quote */}
-        <div className="mt-24 text-center">
+        <div className="mt-16 md:mt-24 text-center">
           <div
-            className="pl-8 inline-block"
+            className="pl-6 md:pl-8 inline-block"
             style={{ borderLeft: "2px solid " + colors.primary[400] }}
           >
             <blockquote
-              className="text-2xl md:text-3xl text-gray-700 leading-relaxed"
+              className="text-xl md:text-2xl lg:text-3xl text-gray-700 leading-relaxed"
               style={{ fontFamily: '"Great Vibes", cursive' }}
             >
               Sempre soubemos o que queríamos e o que éramos um para o outro
             </blockquote>
             <p
-              className="uppercase tracking-widest text-xs mt-4"
+              className="uppercase tracking-widest text-[10px] md:text-xs mt-4"
               style={{ color: colors.primary[600] }}
             >
               Letícia & Kiury
