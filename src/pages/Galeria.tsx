@@ -314,7 +314,7 @@ const Galeria = () => {
 
       <main>
         {/* Hero Section com Wallpaper */}
-        <section className="relative min-h-[55vh] flex items-center justify-center overflow-hidden">
+        <section className="relative h-[25vh] md:h-[55vh] lg:h-[60vh] flex items-center justify-center overflow-hidden">
           {/* Background Image */}
           <div className="absolute inset-0">
             <img
@@ -322,7 +322,7 @@ const Galeria = () => {
               alt="Letícia e Kiury"
               srcSet={`${wallpaperWebpMobile} 800w, ${wallpaperWebpTablet} 1400w, ${wallpaperWebpFull} 6182w`}
               sizes="100vw"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover object-center"
               fetchPriority="high"
               loading="eager"
               decoding="sync"
