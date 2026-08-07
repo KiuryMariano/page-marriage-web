@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import backgroundMoney from "../assets/background_money.webp";
 import backgroundMoneyMobile from "../assets/background_money_mobile.webp";
+import pixLogo from "../assets/pix-removebg.png";
+import creditCardLogo from "../assets/credit-card.png";
 import { colors, gradients } from "../theme";
 import { useCartPersist } from "../hooks/useCartPersist";
 import { PixPayment } from "../components/PixPayment";
@@ -99,8 +101,8 @@ const Pagamento = () => {
         <div className="absolute inset-0 bg-white/70"></div>
       </div>
 
-      <main className="flex-1 flex flex-col px-4 py-3 md:py-4 overflow-hidden">
-        <div className="max-w-5xl mx-auto w-full flex flex-col h-full">
+      <main className="flex-1 flex flex-col px-4 md:px-4 py-3 md:py-4 overflow-hidden max-w-full">
+        <div className="max-w-5xl mx-auto w-full flex flex-col h-full overflow-x-hidden">
           {/* Header Compacto */}
           <div className="flex items-center gap-3 mb-3 md:mb-4">
             <button
@@ -124,61 +126,52 @@ const Pagamento = () => {
             </h1>
           </div>
 
-          {/* Conteúdo Principal - Layout horizontal em desktop */}
-          <div className="flex-1 grid md:grid-cols-5 gap-3 md:gap-4 min-h-0">
+          {/* Conteúdo Principal - Layout vertical em mobile, horizontal em desktop */}
+          <div className="flex-1 flex flex-col md:grid md:grid-cols-5 gap-2 md:gap-4 min-h-0 w-full overflow-x-hidden">
             {/* Coluna Esquerda - Métodos de Pagamento */}
-            <div className="md:col-span-3 flex flex-col min-h-0">
-              {/* Métodos de Pagamento */}
-              <div className="bg-white rounded-2xl shadow-lg p-4 flex-1 flex flex-col">
+            <div className="h-fit md:col-span-3 md:flex md:flex-col md:min-h-0">
+              {/* Métodos de Pagamento - Tamanho mínimo no mobile, flex no desktop */}
+              <div className="bg-white rounded-2xl shadow-lg p-3 md:p-4 h-auto md:flex-1 md:flex md:flex-col overflow-hidden w-full max-w-full">
                 <h2
-                  className="text-lg md:text-xl font-semibold mb-4 flex items-center gap-2 shrink-0"
+                  className="text-base md:text-lg lg:text-xl font-semibold mb-3 md:mb-4 flex items-center gap-2 shrink-0"
                   style={{ fontFamily: '"Playfair Display", serif', color: colors.primary[700] }}
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                   </svg>
                   Forma de Pagamento
                 </h2>
 
-                <div className="space-y-3 flex-1 overflow-y-auto pr-1">
+                <div className="space-y-2 md:space-y-3 md:flex-1 md:overflow-y-auto md:pr-1">
                   {/* PIX */}
                   <button
                     onClick={() => handleSelectMethod("pix")}
-                    className={`w-full text-left p-4 rounded-xl border-2 transition-all ${
+                    className={`w-full text-left p-2.5 md:p-4 rounded-xl border-2 transition-all overflow-hidden ${
                       selectedMethod === "pix"
-                        ? "border-purple-500 bg-purple-50"
-                        : "border-gray-200 hover:border-purple-300 hover:bg-purple-50/50"
+                        ? "border-orange-500 bg-orange-50"
+                        : "border-gray-200 hover:border-orange-300 hover:bg-orange-50/50"
                     }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${
-                          selectedMethod === "pix" ? "bg-purple-500" : "bg-purple-100"
-                        }`}
-                      >
-                        <svg
-                          className={`w-6 h-6 ${selectedMethod === "pix" ? "text-white" : "text-purple-600"}`}
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                          <path d="M18.9 9.5c-.3-1.3-1.3-2.3-2.6-2.6-1.1-.2-2.2-.2-3.3 0-1.3.3-2.3 1.3-2.6 2.6-.2 1.1-.2 2.2 0 3.3.3 1.3 1.3 2.3 2.6 2.6 1.1.2 2.2.2 3.3 0 1.3-.3 2.3-1.3 2.6-2.6.2-1.1.2-2.2 0-3.3zm-4.5 2.8c-1.2 0-2.2-1-2.2-2.2s1-2.2 2.2-2.2 2.2 1 2.2 2.2-1 2.2-2.2 2.2z" />
-                        </svg>
+                    <div className="flex items-center gap-1.5 md:gap-3">
+                      <div className="w-8 h-8 md:w-12 md:h-12 flex items-center justify-center shrink-0">
+                        <img
+                          src={pixLogo}
+                          alt="PIX"
+                          className="w-6 h-6 md:w-10 md:h-10 object-contain"
+                        />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <h3 className="font-bold text-gray-800">PIX</h3>
-                          <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded-full">
-                            Benção dos noivos
-                          </span>
-                        </div>
-                        <p className="text-xs text-gray-600 mt-0.5">
+                        <h3 className="font-bold text-gray-800 truncate text-sm md:text-base">PIX</h3>
+                        <span className="px-1.5 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded-full inline-block mt-0.5">
+                          Benção dos noivos
+                        </span>
+                        <p className="text-xs text-gray-600 mt-0.5 break-words line-clamp-2">
                           QR Code ou PIX Copia e cola
                         </p>
                       </div>
-                      <div className="w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0">
+                      <div className="w-4 h-4 md:w-5 md:h-5 rounded-full border-2 flex items-center justify-center shrink-0">
                         {selectedMethod === "pix" && (
-                          <div className="w-3 h-3 rounded-full bg-purple-500" />
+                          <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-purple-500" />
                         )}
                       </div>
                     </div>
@@ -187,46 +180,32 @@ const Pagamento = () => {
                   {/* Cartão de Crédito */}
                   <button
                     onClick={() => handleSelectMethod("card")}
-                    className={`w-full text-left p-4 rounded-xl border-2 transition-all ${
+                    className={`w-full text-left p-2.5 md:p-4 rounded-xl border-2 transition-all overflow-hidden ${
                       selectedMethod === "card"
                         ? "border-blue-500 bg-blue-50"
                         : "border-gray-200 hover:border-blue-300 hover:bg-blue-50/50"
                     }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${
-                          selectedMethod === "card" ? "bg-blue-500" : "bg-blue-100"
-                        }`}
-                      >
-                        <svg
-                          className={`w-6 h-6 ${selectedMethod === "card" ? "text-white" : "text-blue-600"}`}
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-                          />
-                        </svg>
+                    <div className="flex items-center gap-1.5 md:gap-3">
+                      <div className="w-8 h-8 md:w-12 md:h-12 flex items-center justify-center shrink-0">
+                        <img
+                          src={creditCardLogo}
+                          alt="Cartão de Crédito"
+                          className="w-6 h-6 md:w-10 md:h-10 object-contain"
+                        />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <h3 className="font-bold text-gray-800">Cartão de Crédito</h3>
-                          <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
-                            Para não ficar apertado
-                          </span>
-                        </div>
-                        <p className="text-xs text-gray-600 mt-0.5">
+                        <h3 className="font-bold text-gray-800 truncate text-sm md:text-base">Cartão de Crédito</h3>
+                        <span className="px-1.5 py-0.5 bg-blue-100 text-blue-700 text-xs font-medium rounded-full inline-block mt-0.5">
+                          Para não ficar apertado
+                        </span>
+                        <p className="text-xs text-gray-600 mt-0.5 break-words line-clamp-2">
                           Em até 10x no cartão
                         </p>
                       </div>
-                      <div className="w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0">
+                      <div className="w-4 h-4 md:w-5 md:h-5 rounded-full border-2 flex items-center justify-center shrink-0">
                         {selectedMethod === "card" && (
-                          <div className="w-3 h-3 rounded-full bg-blue-500" />
+                          <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-blue-500" />
                         )}
                       </div>
                     </div>
@@ -237,20 +216,20 @@ const Pagamento = () => {
             </div>
 
             {/* Coluna Direita - Resumo */}
-            <div className="md:col-span-2 flex flex-col gap-3 md:gap-4 min-h-0">
-              {/* Itens do Carrinho - Compacto */}
-              <div className="bg-white rounded-2xl shadow-lg p-4">
+            <div className="md:col-span-2 flex flex-col gap-2 md:gap-4 flex-1 min-h-0">
+              {/* Itens do Carrinho - Ocupa espaço restante no mobile */}
+              <div className="bg-white rounded-2xl shadow-lg p-3 md:p-4 flex-1 flex flex-col min-h-0 overflow-hidden w-full max-w-full">
                 <h3
-                  className="text-sm font-semibold mb-2 flex items-center gap-1.5"
+                  className="text-xs md:text-sm font-semibold mb-2 md:mb-3 flex items-center gap-1.5 shrink-0"
                   style={{ fontFamily: '"Playfair Display", serif', color: colors.primary[700] }}
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                   </svg>
                   Itens ({cartItemCount})
                 </h3>
 
-                <div className="space-y-1.5 max-h-24 md:max-h-32 overflow-y-auto">
+                <div className="space-y-1 md:space-y-1.5 flex-1 overflow-y-auto min-h-0">
                   {cart.map((item) => (
                     <div
                       key={item.id}
@@ -270,21 +249,21 @@ const Pagamento = () => {
                 </div>
               </div>
 
-              {/* Resumo de Valores e Botão */}
-              <div className="bg-white rounded-2xl shadow-lg p-4 flex-1 flex flex-col">
-                <div className="space-y-2 mb-3">
-                  <div className="flex justify-between text-sm text-gray-600">
+              {/* Resumo de Valores e Botão - Tamanho mínimo no mobile */}
+              <div className="bg-white rounded-2xl shadow-lg p-3 md:p-4 h-fit md:flex-1 md:flex md:flex-col w-full max-w-full">
+                <div className="space-y-1.5 md:space-y-2 mb-2 md:mb-3">
+                  <div className="flex justify-between text-xs md:text-sm text-gray-600">
                     <span>Itens ({cartItemCount})</span>
                     <span>{formatPrice(cartTotal)}</span>
                   </div>
-                  <div className="flex justify-between text-sm text-gray-600">
+                  <div className="flex justify-between text-xs md:text-sm text-gray-600">
                     <span>Taxa</span>
                     <span className="text-green-600 font-medium">Grátis</span>
                   </div>
-                  <div className="border-t pt-2 flex justify-between items-center">
-                    <span className="font-semibold text-gray-800">Total</span>
+                  <div className="border-t pt-1.5 md:pt-2 flex justify-between items-center">
+                    <span className="font-semibold text-gray-800 text-sm md:text-base">Total</span>
                     <span
-                      className="text-xl font-bold"
+                      className="text-lg md:text-xl font-bold"
                       style={{ color: colors.primary[600] }}
                     >
                       {formatPrice(cartTotal)}
@@ -295,7 +274,7 @@ const Pagamento = () => {
                 <button
                   onClick={handleContinue}
                   disabled={!selectedMethod || isProcessing}
-                  className="w-full text-white font-bold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+                  className="w-full text-white font-bold py-2.5 md:py-3 px-3 md:px-4 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shrink-0 text-sm md:text-base"
                   style={{
                     fontFamily: '"Playfair Display", serif',
                     background: selectedMethod ? gradients.primary : "#9ca3af",
@@ -319,7 +298,7 @@ const Pagamento = () => {
                   )}
                 </button>
 
-                <p className="text-xs text-gray-500 text-center mt-2">
+                <p className="text-xs text-gray-500 text-center mt-1.5 md:mt-2">
                   Pagamento seguro
                 </p>
               </div>
