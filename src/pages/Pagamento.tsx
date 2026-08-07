@@ -126,12 +126,12 @@ const Pagamento = () => {
             </h1>
           </div>
 
-          {/* Conteúdo Principal - Layout vertical em mobile, horizontal em desktop */}
-          <div className="flex-1 flex flex-col md:grid md:grid-cols-5 gap-2 md:gap-4 min-h-0 w-full overflow-x-hidden">
-            {/* Coluna Esquerda - Métodos de Pagamento */}
-            <div className="h-fit md:col-span-3 md:flex md:flex-col md:min-h-0">
-              {/* Métodos de Pagamento - Tamanho mínimo no mobile, flex no desktop */}
-              <div className="bg-white rounded-2xl shadow-lg p-3 md:p-4 h-auto md:flex-1 md:flex md:flex-col overflow-hidden w-full max-w-full">
+          {/* Conteúdo Principal - Layout vertical em mobile, grid em desktop */}
+          <div className="flex-1 flex flex-col md:grid md:grid-cols-5 md:grid-rows-[auto_1fr] gap-2 md:gap-4 min-h-0 w-full overflow-x-hidden">
+
+            {/* 1. Forma de Pagamento - Esquerda em cima (col-span-3, row-span-1) */}
+            <div className="h-fit md:col-span-3 md:row-span-1 md:flex md:flex-col md:min-h-0">
+              <div className="bg-white rounded-2xl shadow-lg p-3 md:p-4 h-fit md:flex-1 md:flex md:flex-col overflow-hidden w-full max-w-full">
                 <h2
                   className="text-base md:text-lg lg:text-xl font-semibold mb-3 md:mb-4 flex items-center gap-2 shrink-0"
                   style={{ fontFamily: '"Playfair Display", serif', color: colors.primary[700] }}
@@ -215,92 +215,89 @@ const Pagamento = () => {
               </div>
             </div>
 
-            {/* Coluna Direita - Resumo */}
-            <div className="md:col-span-2 flex flex-col gap-2 md:gap-4 flex-1 min-h-0">
-              {/* Itens do Carrinho - Ocupa espaço restante no mobile */}
-              <div className="bg-white rounded-2xl shadow-lg p-3 md:p-4 flex-1 flex flex-col min-h-0 overflow-hidden w-full max-w-full">
-                <h3
-                  className="text-xs md:text-sm font-semibold mb-2 md:mb-3 flex items-center gap-1.5 shrink-0"
-                  style={{ fontFamily: '"Playfair Display", serif', color: colors.primary[700] }}
-                >
-                  <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                  </svg>
-                  Itens ({cartItemCount})
-                </h3>
-
-                <div className="space-y-1 md:space-y-1.5 flex-1 overflow-y-auto min-h-0">
-                  {cart.map((item) => (
-                    <div
-                      key={item.id}
-                      className="flex items-center justify-between py-1 px-2 bg-gray-50 rounded text-xs"
-                    >
-                      <span className="text-gray-700 truncate pr-2">
-                        {item.quantity}x {item.title}
-                      </span>
-                      <span
-                        className="font-semibold"
-                        style={{ color: colors.primary[600] }}
-                      >
-                        {formatPrice(item.price * item.quantity)}
-                      </span>
-                    </div>
-                  ))}
+            {/* 2. Resumo de Valores e Botão - Direita (col-span-2, row-span-2) */}
+            <div className="md:col-span-2 md:row-span-2 bg-white rounded-2xl shadow-lg p-3 md:p-4 h-fit md:flex md:flex-col md:justify-end w-full max-w-full">
+              <div className="space-y-1.5 md:space-y-2 mb-2 md:mb-3">
+                <div className="flex justify-between text-xs md:text-sm text-gray-600">
+                  <span>Itens ({cartItemCount})</span>
+                  <span>{formatPrice(cartTotal)}</span>
+                </div>
+                <div className="flex justify-between text-xs md:text-sm text-gray-600">
+                  <span>Taxa</span>
+                  <span className="text-green-600 font-medium">Grátis</span>
+                </div>
+                <div className="border-t pt-1.5 md:pt-2 flex justify-between items-center">
+                  <span className="font-semibold text-gray-800 text-sm md:text-base">Total</span>
+                  <span
+                    className="text-lg md:text-xl font-bold"
+                    style={{ color: colors.primary[600] }}
+                  >
+                    {formatPrice(cartTotal)}
+                  </span>
                 </div>
               </div>
 
-              {/* Resumo de Valores e Botão - Tamanho mínimo no mobile */}
-              <div className="bg-white rounded-2xl shadow-lg p-3 md:p-4 h-fit md:flex-1 md:flex md:flex-col w-full max-w-full">
-                <div className="space-y-1.5 md:space-y-2 mb-2 md:mb-3">
-                  <div className="flex justify-between text-xs md:text-sm text-gray-600">
-                    <span>Itens ({cartItemCount})</span>
-                    <span>{formatPrice(cartTotal)}</span>
-                  </div>
-                  <div className="flex justify-between text-xs md:text-sm text-gray-600">
-                    <span>Taxa</span>
-                    <span className="text-green-600 font-medium">Grátis</span>
-                  </div>
-                  <div className="border-t pt-1.5 md:pt-2 flex justify-between items-center">
-                    <span className="font-semibold text-gray-800 text-sm md:text-base">Total</span>
+              <button
+                onClick={handleContinue}
+                disabled={!selectedMethod || isProcessing}
+                className="w-full text-white font-bold py-2.5 md:py-3 px-3 md:px-4 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shrink-0 text-sm md:text-base"
+                style={{
+                  fontFamily: '"Playfair Display", serif',
+                  background: selectedMethod ? gradients.primary : "#9ca3af",
+                }}
+              >
+                {isProcessing ? (
+                  <>
+                    <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    Processando...
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Pagar com {selectedMethod === "pix" ? "PIX" : "Cartão"}
+                  </>
+                )}
+              </button>
+
+              <p className="text-xs text-gray-500 text-center mt-1.5 md:mt-2">
+                Pagamento seguro
+              </p>
+            </div>
+
+            {/* 3. Itens do Carrinho - Esquerda embaixo (col-span-3, row-span-2) */}
+            <div className="bg-white rounded-2xl shadow-lg p-3 md:p-4 flex-1 flex flex-col min-h-0 overflow-hidden w-full max-w-full md:col-span-3 md:row-span-2">
+              <h3
+                className="text-xs md:text-sm font-semibold mb-2 md:mb-3 flex items-center gap-1.5 shrink-0"
+                style={{ fontFamily: '"Playfair Display", serif', color: colors.primary[700] }}
+              >
+                <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+                Itens ({cartItemCount})
+              </h3>
+
+              <div className="space-y-1 md:space-y-1.5 flex-1 overflow-y-auto min-h-0">
+                {cart.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center justify-between py-1 px-2 bg-gray-50 rounded text-xs"
+                  >
+                    <span className="text-gray-700 truncate pr-2">
+                      {item.quantity}x {item.title}
+                    </span>
                     <span
-                      className="text-lg md:text-xl font-bold"
+                      className="font-semibold"
                       style={{ color: colors.primary[600] }}
                     >
-                      {formatPrice(cartTotal)}
+                      {formatPrice(item.price * item.quantity)}
                     </span>
                   </div>
-                </div>
-
-                <button
-                  onClick={handleContinue}
-                  disabled={!selectedMethod || isProcessing}
-                  className="w-full text-white font-bold py-2.5 md:py-3 px-3 md:px-4 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shrink-0 text-sm md:text-base"
-                  style={{
-                    fontFamily: '"Playfair Display", serif',
-                    background: selectedMethod ? gradients.primary : "#9ca3af",
-                  }}
-                >
-                  {isProcessing ? (
-                    <>
-                      <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                      </svg>
-                      Processando...
-                    </>
-                  ) : (
-                    <>
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      Pagar com {selectedMethod === "pix" ? "PIX" : "Cartão"}
-                    </>
-                  )}
-                </button>
-
-                <p className="text-xs text-gray-500 text-center mt-1.5 md:mt-2">
-                  Pagamento seguro
-                </p>
+                ))}
               </div>
             </div>
           </div>
