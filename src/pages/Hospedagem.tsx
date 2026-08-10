@@ -9,15 +9,15 @@ import backgroundMoneyMobile from "../assets/background_money_mobile.webp";
 import { colors } from "../theme";
 
 // Importar fotos dos hotéis
-import goldenView1 from "../assets/hospedagens/Golden View Hotel 1.jpg";
-import goldenView2 from "../assets/hospedagens/Golden View Hotel 2.jpg";
-import goldenView3 from "../assets/hospedagens/Golden View Hotel 3.jpg";
-import calema1 from "../assets/hospedagens/Hotel Calema 1.jpg";
-import calema2 from "../assets/hospedagens/Hotel Calema 2.jpg";
-import calema3 from "../assets/hospedagens/Hotel Calema 3.jpg";
-import maxiPalace1 from "../assets/hospedagens/Maxi Palace Hotel 1.png";
-import maxiPalace2 from "../assets/hospedagens/Maxi Palace Hotel 2.jpg";
-import maxiPalace3 from "../assets/hospedagens/Maxi Palace Hotel 3.jpg";
+import goldenView1 from "../assets/hospedagens/Golden View Hotel 1.webp";
+import goldenView2 from "../assets/hospedagens/Golden View Hotel 2.webp";
+import goldenView3 from "../assets/hospedagens/Golden View Hotel 3.webp";
+import calema1 from "../assets/hospedagens/Hotel Calema 1.webp";
+import calema2 from "../assets/hospedagens/Hotel Calema 2.webp";
+import calema3 from "../assets/hospedagens/Hotel Calema 3.webp";
+import maxiPalace1 from "../assets/hospedagens/Maxi Palace Hotel 1.webp";
+import maxiPalace2 from "../assets/hospedagens/Maxi Palace Hotel 2.webp";
+import maxiPalace3 from "../assets/hospedagens/Maxi Palace Hotel 3.webp";
 import confortoPlaza1 from "../assets/hospedagens/Conforto Plaza Hotel 1.avif";
 import confortoPlaza2 from "../assets/hospedagens/Conforto Plaza Hotel 2.webp";
 import confortoPlaza3 from "../assets/hospedagens/Conforto Plaza Hotel 3.avif";
