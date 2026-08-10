@@ -8,6 +8,7 @@ import { colors, gradients } from "../theme";
 import { useCartPersist } from "../hooks/useCartPersist";
 import { PixPayment } from "../components/PixPayment";
 import { CardPayment } from "../components/CardPayment";
+import { createSale } from "../services/giftsApi";
 
 const formatPrice = (value: number) => {
   return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -72,17 +73,31 @@ const Pagamento = () => {
     setShowPixPayment(false);
   }, []);
 
-  const handlePixConfirmed = useCallback(() => {
-    navigate("/pagamento-sucesso");
-  }, [navigate]);
+  const handlePixConfirmed = useCallback(async () => {
+    try {
+      // Registrar venda antes de navegar - isso aciona o trigger que decrementa as cotas
+      await createSale(cart, "pix");
+      navigate("/pagamento-sucesso");
+    } catch (error) {
+      console.error("Erro ao registrar venda:", error);
+      alert("Erro ao registrar a venda. Tente novamente ou contate os noivos.");
+    }
+  }, [cart, navigate]);
 
   const handleCardCancel = useCallback(() => {
     setShowCardPayment(false);
   }, []);
 
-  const handleCardApproved = useCallback(() => {
-    navigate("/pagamento-sucesso");
-  }, [navigate]);
+  const handleCardApproved = useCallback(async () => {
+    try {
+      // Registrar venda antes de navegar - isso aciona o trigger que decrementa as cotas
+      await createSale(cart, "cartao");
+      navigate("/pagamento-sucesso");
+    } catch (error) {
+      console.error("Erro ao registrar venda:", error);
+      alert("Erro ao registrar a venda. Tente novamente ou contate os noivos.");
+    }
+  }, [cart, navigate]);
 
   const handleCardPending = useCallback(() => {
     navigate("/pagamento-pendente");
