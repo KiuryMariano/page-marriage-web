@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import wallpaperWebpFull from "../assets/wallpaper_2.webp";
-import wallpaperWebpTablet from "../assets/wallpaper_2_tablet.webp";
-import wallpaperWebpMobile from "../assets/wallpaper_2_mobile.webp";
-import background from "../assets/background.webp";
-import backgroundMobile from "../assets/background_mobile.webp";
+import wallpaperWebpFull from "../assets/wallpapers/wallpaper_2.webp";
+import wallpaperWebpTablet from "../assets/wallpapers/wallpaper_2_tablet.webp";
+import wallpaperWebpMobile from "../assets/wallpapers/wallpaper_2_mobile.webp";
+import background from "../assets/backgrounds/background.webp";
+import backgroundMobile from "../assets/backgrounds/background_mobile.webp";
 import { colors } from "../theme";
 import { layoutPattern, trocas, trocasCiclicas } from "../mocks";
 

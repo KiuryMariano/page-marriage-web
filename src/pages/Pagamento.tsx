@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import backgroundMoney from "../assets/background_money.webp";
-import backgroundMoneyMobile from "../assets/background_money_mobile.webp";
+import backgroundMoney from "../assets/backgrounds/background_money.webp";
+import backgroundMoneyMobile from "../assets/backgrounds/background_money_mobile.webp";
 import pixLogo from "../assets/pix-removebg.png";
 import creditCardLogo from "../assets/credit-card.png";
 import { colors, gradients } from "../theme";

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import wallpaperWebpFull from "../assets/wallpaper_2.webp";
-import wallpaperWebpTablet from "../assets/wallpaper_2_tablet.webp";
-import wallpaperWebpMobile from "../assets/wallpaper_2_mobile.webp";
+import wallpaperWebpFull from "../assets/wallpapers/wallpaper_2.webp";
+import wallpaperWebpTablet from "../assets/wallpapers/wallpaper_2_tablet.webp";
+import wallpaperWebpMobile from "../assets/wallpapers/wallpaper_2_mobile.webp";
 
 const weddingDate = new Date("2027-01-09T00:00:00");
 
