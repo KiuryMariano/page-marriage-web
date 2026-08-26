@@ -1,4 +1,12 @@
 <?php
+/**
+ * GET /api/version.php
+ * Diagnóstico de deploy — apenas via CLI, nunca via HTTP
+ */
+if (PHP_SAPI !== 'cli') {
+    http_response_code(404);
+    exit;
+}
 header('Content-Type: application/json');
 echo json_encode([
     'version' => '2.1',

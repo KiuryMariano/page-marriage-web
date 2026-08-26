@@ -82,7 +82,8 @@ export async function fetchGiftStatus(id: number): Promise<{ success: boolean; d
  */
 export async function createSale(
   items: Array<{ id: number; quantity: number }>,
-  paymentMethod: "pix" | "cartao"
+  paymentMethod: "pix" | "cartao",
+  paymentId: string
 ): Promise<{ success: boolean; venda_id?: string; total?: number; error?: string }> {
   const response = await fetch("/api/vendas/create.php", {
     method: "POST",
@@ -90,6 +91,7 @@ export async function createSale(
     body: JSON.stringify({
       itens: items,
       metodo_pagamento: paymentMethod,
+      payment_id: paymentId,
     }),
   });
 

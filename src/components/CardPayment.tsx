@@ -8,7 +8,7 @@ import { type Gift } from "../mocks";
 interface CardPaymentProps {
   cart: (Gift & { quantity: number })[];
   cartTotal: number;
-  onPaymentApproved: () => void;
+  onPaymentApproved: (paymentId: string) => void;
   onPaymentPending?: () => void;
 }
 
@@ -113,7 +113,7 @@ const CardPaymentComponent = ({
       }
 
       isSubmitting.current = false;
-      onPaymentApproved();
+      onPaymentApproved(String(result.id ?? ""));
     } catch (error) {
       const message = error instanceof Error ? error.message : "Não foi possível processar o pagamento.";
       setErrorMessage(message);

@@ -5,7 +5,7 @@ import { colors } from "../theme";
 interface PixPaymentProps {
   valor: number;
   descricao: string;
-  onPaymentConfirmed: () => void;
+  onPaymentConfirmed: (txid: string) => void;
   onCancel: () => void;
 }
 
@@ -161,7 +161,7 @@ export const PixPayment = ({ valor, descricao, onPaymentConfirmed, onCancel }: P
 
         if (data.paid) {
           setPaymentStatus("confirmed");
-          onPaymentConfirmedRef.current();
+          onPaymentConfirmedRef.current(txid);
 
           if (timeoutRef.current) clearTimeout(timeoutRef.current);
           if (intervalRef.current) clearInterval(intervalRef.current);

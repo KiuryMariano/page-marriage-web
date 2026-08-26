@@ -2,7 +2,13 @@
 /**
  * Script de teste de conexão com o banco
  * Execute: php api/test_connection.php
+ *
+ * CLI apenas — bloqueado via HTTP para não expor info do banco/servidor
  */
+if (PHP_SAPI !== 'cli') {
+    http_response_code(404);
+    exit;
+}
 
 require_once 'config/database.php';
 

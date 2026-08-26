@@ -3,19 +3,13 @@ import { useState, useEffect } from "react";
 const AUTH_STORAGE_KEY = "marriage_auth";
 const AUTH_TIMESTAMP_KEY = "marriage_auth_timestamp";
 
-// Credenciais hardcoded (conforme solicitado)
-const CREDENTIALS = {
-  username: "admin",
-  password: "leticiaekiury2027",
-};
-
 // Session timeout: 2 horas
 const SESSION_TIMEOUT = 2 * 60 * 60 * 1000;
 
 interface AuthState {
   isAuthenticated: boolean;
-  login: (username: string, password: string) => boolean;
-  logout: () => void;
+  login: (username: string, password: string) => Promise<boolean>;
+  logout: () => Promise<void>;
   checkSession: () => boolean;
 }
 
@@ -38,20 +32,46 @@ export function useAuth(): AuthState {
     }
   }, []);
 
-  const login = (username: string, password: string): boolean => {
-    if (username === CREDENTIALS.username && password === CREDENTIALS.password) {
-      setIsAuthenticated(true);
-      localStorage.setItem(AUTH_STORAGE_KEY, "true");
-      localStorage.setItem(AUTH_TIMESTAMP_KEY, Date.now().toString());
-      return true;
+  const login = async (username: string, password: string): Promise<boolean> => {
+    try {
+      const response = await fetch("/api/auth/login.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // Importante para cookies de sessão
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setIsAuthenticated(true);
+        localStorage.setItem(AUTH_STORAGE_KEY, "true");
+        localStorage.setItem(AUTH_TIMESTAMP_KEY, Date.now().toString());
+        return true;
+      }
+
+      return false;
+    } catch (error) {
+      console.error("Erro ao fazer login:", error);
+      return false;
     }
-    return false;
   };
 
-  const logout = () => {
-    setIsAuthenticated(false);
-    localStorage.removeItem(AUTH_STORAGE_KEY);
-    localStorage.removeItem(AUTH_TIMESTAMP_KEY);
+  const logout = async () => {
+    try {
+      await fetch("/api/auth/logout.php", {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
+    } finally {
+      setIsAuthenticated(false);
+      localStorage.removeItem(AUTH_STORAGE_KEY);
+      localStorage.removeItem(AUTH_TIMESTAMP_KEY);
+    }
   };
 
   const checkSession = (): boolean => {
@@ -74,28 +94,51 @@ export function useAuth(): AuthState {
 
 export function useAuthGuard(): boolean {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const storedAuth = localStorage.getItem(AUTH_STORAGE_KEY);
-    const timestamp = localStorage.getItem(AUTH_TIMESTAMP_KEY);
+    const verifyAuth = async () => {
+      try {
+        const response = await fetch("/api/auth/me.php", {
+          credentials: "include",
+        });
 
-    if (!storedAuth || !timestamp) {
-      window.location.href = "/";
-      return;
-    }
+        if (response.ok) {
+          const data = await response.json();
+          if (data.authenticated) {
+            setIsAuthenticated(true);
+            localStorage.setItem(AUTH_STORAGE_KEY, "true");
+            localStorage.setItem(AUTH_TIMESTAMP_KEY, Date.now().toString());
+          } else {
+            // Sessão inválida no servidor
+            console.error("[AUTH] me.php: sessão inválida no servidor — limpando e voltando ao home");
+            localStorage.removeItem(AUTH_STORAGE_KEY);
+            localStorage.removeItem(AUTH_TIMESTAMP_KEY);
+            window.location.href = "/";
+            return;
+          }
+        } else {
+          // Não autenticado
+          console.error(`[AUTH] me.php retornou HTTP ${response.status} — provável cookie de sessão ausente/bloqueado no navegador`);
+          window.location.href = "/";
+          return;
+        }
+      } catch (error) {
+        console.error("Erro ao verificar autenticação:", error);
+        window.location.href = "/";
+        return;
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    const now = Date.now();
-    const loginTime = parseInt(timestamp, 10);
-
-    if (now - loginTime >= SESSION_TIMEOUT) {
-      localStorage.removeItem(AUTH_STORAGE_KEY);
-      localStorage.removeItem(AUTH_TIMESTAMP_KEY);
-      window.location.href = "/";
-      return;
-    }
-
-    setIsAuthenticated(true);
+    verifyAuth();
   }, []);
+
+  // Não redirecionar se estiver carregando
+  if (isLoading) {
+    return false;
+  }
 
   return isAuthenticated;
 }

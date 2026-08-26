@@ -4,9 +4,10 @@
  * Deleta um presente (soft delete - define ativo = 0)
  */
 
-require_once '../config/database.php';
+require_once __DIR__ . '/../middleware/require-auth.php';
+requireAdmin();
 
-setCorsHeaders();
+require_once '../config/database.php';
 
 $database = new Database();
 $method = $_SERVER['REQUEST_METHOD'];

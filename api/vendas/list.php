@@ -2,12 +2,14 @@
 /**
  * GET /api/vendas/list.php
  * Lista vendas realizadas (endpoint para admin)
- * Em produção, deve adicionar autenticação
+ * Protegido por sessão administrativa — 401 sem login
  */
 
 require_once '../config/database.php';
+require_once __DIR__ . '/../middleware/require-auth.php';
 
-setCorsHeaders();
+setProtectedCors();
+requireAdmin();
 
 $database = new Database();
 $method = $_SERVER['REQUEST_METHOD'];

@@ -9,12 +9,46 @@
   RewriteRule . /index.html [L]
 </IfModule>
 
+# ============================================
+# Headers de Segurança - HSTS, CSP, X-Frame-Options, etc.
+# ============================================
+<IfModule mod_headers.c>
+  # HSTS - Força HTTPS por 1 ano
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+
+  # Content-Security-Policy - Proteção contra XSS
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://sdk.mercadopago.com https://secure.mlstatic.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: https://casamentokiuryeleticia.com.br; font-src 'self' data:; connect-src 'self' https://api.mercadopago.com https://api.woovi.com https://casamentokiuryeleticia.com.br; frame-src 'self' https://mercadopago.com.br; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self'; upgrade-insecure-requests"
+
+  # X-Content-Type-Options - Previne MIME-sniffing
+  Header always set X-Content-Type-Options "nosniff"
+
+  # X-Frame-Options - Proteção contra clickjacking
+  Header always set X-Frame-Options "DENY"
+
+  # Referrer-Policy - Controle de informações de referer
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # Permissions-Policy - Desabilita features sensíveis
+  Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=(self), interest-cohort=()"
+
+  # Remover headers que expõem tecnologia
+  Header unset X-Powered-By
+  Header unset Server
+
+  # X-XSS-Protection (legado, mas ainda útil para browsers antigos)
+  Header always set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# ============================================
 # Compressão
+# ============================================
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
 </IfModule>
 
+# ============================================
 # Cache
+# ============================================
 <IfModule mod_expires.c>
   ExpiresActive On
   ExpiresByType image/gif "access plus 1 year"
@@ -24,3 +58,18 @@
   ExpiresByType text/css "access plus 1 month"
   ExpiresByType application/javascript "access plus 1 month"
 </IfModule>
+
+# ============================================
+# Segurança de arquivos
+# ============================================
+# Impedir acesso a arquivos sensíveis
+<FilesMatch "\.(env|log|md|sql|bak|old|txt|~|phps|inc|conf|config)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Impedir listagem de diretórios
+Options -Indexes
+
+# Desabilitar assinatura do servidor
+ServerSignature Off

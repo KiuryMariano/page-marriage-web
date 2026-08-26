@@ -22,18 +22,21 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
     setError("");
     setIsLoading(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    try {
+      const success = await login(username, password);
 
-    const success = login(username, password);
-
-    if (success) {
-      onClose();
-      navigate("/admin");
-    } else {
-      setError("Usuário ou senha incorretos");
+      if (success) {
+        onClose();
+        navigate("/admin");
+      } else {
+        setError("Usuário ou senha incorretos");
+      }
+    } catch (error) {
+      console.error("Erro ao fazer login:", error);
+      setError("Erro ao fazer login. Tente novamente.");
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   const handleClose = () => {

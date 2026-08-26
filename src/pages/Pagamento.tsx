@@ -73,10 +73,11 @@ const Pagamento = () => {
     setShowPixPayment(false);
   }, []);
 
-  const handlePixConfirmed = useCallback(async () => {
+  const handlePixConfirmed = useCallback(async (txid: string) => {
     try {
-      // Registrar venda antes de navegar - isso aciona o trigger que decrementa as cotas
-      await createSale(cart, "pix");
+      // Registrar venda antes de navegar - o backend valida o PIX na Woovi
+      // antes de persistir (payment_id = txid da cobrança)
+      await createSale(cart, "pix", txid);
       navigate("/pagamento-sucesso");
     } catch (error) {
       console.error("Erro ao registrar venda:", error);
@@ -88,10 +89,11 @@ const Pagamento = () => {
     setShowCardPayment(false);
   }, []);
 
-  const handleCardApproved = useCallback(async () => {
+  const handleCardApproved = useCallback(async (paymentId: string) => {
     try {
-      // Registrar venda antes de navegar - isso aciona o trigger que decrementa as cotas
-      await createSale(cart, "cartao");
+      // Registrar venda antes de navegar - o backend valida o pagamento
+      // no Mercado Pago antes de persistir (payment_id = id do pagamento)
+      await createSale(cart, "cartao", paymentId);
       navigate("/pagamento-sucesso");
     } catch (error) {
       console.error("Erro ao registrar venda:", error);
