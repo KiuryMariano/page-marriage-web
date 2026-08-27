@@ -77,9 +77,5 @@ if (!$paid && !empty($charge['paidAt'])) {
 
 echo json_encode([
     'status' => $charge['status'] ?? 'unknown',
-    'paid' => $paid,
-    'config' => [
-        'verification_delay' => PIX_VERIFICATION_DELAY,
-        'verification_interval' => PIX_VERIFICATION_INTERVAL
-    ]
+    'paid' => $paid
 ]);
