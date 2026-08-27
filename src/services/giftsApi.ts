@@ -79,7 +79,18 @@ export async function fetchGiftStatus(id: number): Promise<{ success: boolean; d
 
 /**
  * Registra uma venda
+ * Lança SaleAlreadyRegisteredError quando a venda já existe (HTTP 409) —
+ * para o chamador tratar como sucesso (pagamento confirmado, venda gravada).
  */
+export class SaleAlreadyRegisteredError extends Error {
+  vendaId?: string;
+  constructor(vendaId?: string) {
+    super("Venda já registrada para este pagamento");
+    this.name = "SaleAlreadyRegisteredError";
+    this.vendaId = vendaId;
+  }
+}
+
 export async function createSale(
   items: Array<{ id: number; quantity: number }>,
   paymentMethod: "pix" | "cartao",
@@ -94,6 +105,17 @@ export async function createSale(
       payment_id: paymentId,
     }),
   });
+
+  if (response.status === 409) {
+    let vendaId: string | undefined;
+    try {
+      const body = await response.json();
+      vendaId = body?.venda_id ? String(body.venda_id) : undefined;
+    } catch {
+      // corpo sem JSON — segue com vendaId indefinido
+    }
+    throw new SaleAlreadyRegisteredError(vendaId);
+  }
 
   if (!response.ok) {
     throw new Error("Erro ao registrar venda");

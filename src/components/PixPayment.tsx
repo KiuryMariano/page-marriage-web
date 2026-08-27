@@ -5,6 +5,7 @@ import { colors } from "../theme";
 interface PixPaymentProps {
   valor: number;
   descricao: string;
+  cart: Array<{ id: number; price: number; quantity: number }>;
   onPaymentConfirmed: (txid: string) => void;
   onCancel: () => void;
 }
@@ -13,7 +14,7 @@ const formatPrice = (value: number) => {
   return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 };
 
-export const PixPayment = ({ valor, descricao, onPaymentConfirmed, onCancel }: PixPaymentProps) => {
+export const PixPayment = ({ valor, descricao, cart, onPaymentConfirmed, onCancel }: PixPaymentProps) => {
   const [qrCodeUrl, setQrCodeUrl] = useState<string>("");
   const [brCode, setBrCode] = useState<string>("");
   const [txid, setTxid] = useState<string>("");
@@ -57,6 +58,7 @@ export const PixPayment = ({ valor, descricao, onPaymentConfirmed, onCancel }: P
             valor: valor * 100,
             descricao,
             nome: 'Convidado',
+            cart: cart.map(({ id, price, quantity }) => ({ id, price, quantity })),
           }),
         });
 
@@ -94,7 +96,7 @@ export const PixPayment = ({ valor, descricao, onPaymentConfirmed, onCancel }: P
     };
 
     createPix();
-  }, [valor, descricao]);
+  }, [valor, descricao, cart]);
 
   // Copiar código com fallback para input+execCommand
   const copyToClipboard = async () => {

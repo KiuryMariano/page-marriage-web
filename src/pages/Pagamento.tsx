@@ -8,7 +8,38 @@ import { colors, gradients } from "../theme";
 import { useCartPersist } from "../hooks/useCartPersist";
 import { PixPayment } from "../components/PixPayment";
 import { CardPayment } from "../components/CardPayment";
-import { createSale } from "../services/giftsApi";
+import { createSale, SaleAlreadyRegisteredError } from "../services/giftsApi";
+
+/**
+ * Registra a venda e navega para a tela de sucesso.
+ * - 409 (venda já registrada para este pagamento): trata como sucesso —
+ *   o convidado pagou e a venda existe; repetir o erro só confundiria.
+ * - Pagamento confirmado no provedor mas registro falhou: navega mesmo
+ *   assim e registra no console para conferência manual dos noivos.
+ *   O dinheiro já foi pago — o convidado merece o agradecimento.
+ */
+const useSaleRegistration = (
+  createSaleFn: typeof createSale,
+  navigate: (path: string) => void,
+) => {
+  return useCallback(
+    async (items: Parameters<typeof createSale>[0], method: "pix" | "cartao", paymentId: string) => {
+      try {
+        await createSaleFn(items, method, paymentId);
+      } catch (error) {
+        if (error instanceof SaleAlreadyRegisteredError) {
+          // Venda já existia (retry/duplo clique) — segue para o sucesso
+          navigate("/pagamento-sucesso");
+          return;
+        }
+        console.error("Erro ao registrar venda:", error);
+        // Falha no registro não deve prender o convidado após pagamento confirmado
+      }
+      navigate("/pagamento-sucesso");
+    },
+    [createSaleFn, navigate],
+  );
+};
 
 const formatPrice = (value: number) => {
   return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -73,33 +104,21 @@ const Pagamento = () => {
     setShowPixPayment(false);
   }, []);
 
+  const registrarVenda = useSaleRegistration(createSale, navigate);
+
   const handlePixConfirmed = useCallback(async (txid: string) => {
-    try {
-      // Registrar venda antes de navegar - o backend valida o PIX na Woovi
-      // antes de persistir (payment_id = txid da cobrança)
-      await createSale(cart, "pix", txid);
-      navigate("/pagamento-sucesso");
-    } catch (error) {
-      console.error("Erro ao registrar venda:", error);
-      alert("Erro ao registrar a venda. Tente novamente ou contate os noivos.");
-    }
-  }, [cart, navigate]);
+    // O backend valida o PIX na Woovi antes de persistir (payment_id = txid)
+    await registrarVenda(cart, "pix", txid);
+  }, [cart, registrarVenda]);
 
   const handleCardCancel = useCallback(() => {
     setShowCardPayment(false);
   }, []);
 
   const handleCardApproved = useCallback(async (paymentId: string) => {
-    try {
-      // Registrar venda antes de navegar - o backend valida o pagamento
-      // no Mercado Pago antes de persistir (payment_id = id do pagamento)
-      await createSale(cart, "cartao", paymentId);
-      navigate("/pagamento-sucesso");
-    } catch (error) {
-      console.error("Erro ao registrar venda:", error);
-      alert("Erro ao registrar a venda. Tente novamente ou contate os noivos.");
-    }
-  }, [cart, navigate]);
+    // O backend valida o pagamento no Mercado Pago antes de persistir
+    await registrarVenda(cart, "cartao", paymentId);
+  }, [cart, registrarVenda]);
 
   const handleCardPending = useCallback(() => {
     navigate("/pagamento-pendente");
@@ -342,6 +361,7 @@ const Pagamento = () => {
               <PixPayment
                 valor={cartTotal}
                 descricao="Presente Casamento Letícia & Kiury"
+                cart={cart}
                 onPaymentConfirmed={handlePixConfirmed}
                 onCancel={handlePixCancel}
               />
