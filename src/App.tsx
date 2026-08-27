@@ -13,19 +13,9 @@ import ScrollToTop from './components/ScrollToTop';
 import './index.css';
 
 function App() {
-  // Recupera rota do sessionStorage (definido pelo 404.html)
-  const storedRedirect = sessionStorage.getItem('redirect');
-  const redirectPath = storedRedirect;
-  if (storedRedirect) {
-    sessionStorage.removeItem('redirect');
-  }
-
   return (
     <BrowserRouter>
       <ScrollToTop />
-      {redirectPath && redirectPath !== '/' && (
-        <Navigate to={redirectPath} replace />
-      )}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/presentes" element={<Presentes />} />

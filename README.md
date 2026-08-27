@@ -1,160 +1,239 @@
-# Site de casamento
+# 💍 Site de Casamento — Letícia & Kiury
 
-Aplicação web para apresentar o casal, confirmar presença, exibir a galeria e receber presentes em dinheiro. O checkout permite pagamento por **PIX**, com cobrança e consulta de status pela Woovi (antiga OpenPix), e por **cartão**, com redirecionamento seguro para o Mercado Pago.
+Site oficial do casamento Letícia & Kiury (`casamentokiuryeleticia.com.br`), hospedado na Hostinger.
 
-## Tecnologias
+---
 
-- React 19, TypeScript e Vite
-- Tailwind CSS
-- React Router
-- QR Code (`qrcode`)
-- APIs PHP com cURL para as integrações de pagamento
+## 1 · O Projeto
 
-## Executar localmente
+Aplicação web completa para o casamento: apresentação do casal, galeria de fotos, informações de hospedagem, confirmação de presença, lista de presentes com pagamento online e painel administrativo para os noivos gerenciarem tudo.
 
-Pré-requisitos: Node.js 20+ e npm. Para testar as APIs de pagamento localmente, é necessário também um servidor PHP com a extensão cURL habilitada.
+### Stack
 
-```bash
-npm install
-npm run dev
+- **Frontend:** React 19 + TypeScript + Vite, Tailwind CSS, React Router (SPA)
+- **Backend:** PHP puro rodando no Apache da própria Hostinger (sem framework)
+- **Banco:** MySQL da Hostinger (acessado via PDO)
+- **Pagamentos:** Woovi/OpenPix (PIX) e Mercado Pago Checkout Transparente (cartão)
+
+### Funcionalidades (páginas)
+
+| Rota | O que faz |
+|------|-----------|
+| `/` | Home — apresentação do casal, contagem regressiva e navegação |
+| `/galeria` | Galeria de fotos do casal |
+| `/hospedagem` | Sugestões de hotéis próximos com fotos e informações |
+| `/confirmar` | Confirmação de presença — abre mensagem pronta no WhatsApp dos noivos |
+| `/presentes` | Lista de presentes vinda do banco (com cotas e categorias), carrinho de compras |
+| `/pagamento` | Escolha do método: PIX ou cartão de crédito, com resumo do carrinho |
+| `/pagamento-sucesso` `/-pendente` `/-falha` | Telas de resultado do pagamento |
+| `/admin` | Painel administrativo protegido por login (área exclusiva dos noivos) |
+
+### Painel administrativo (`/admin`)
+
+- Login com usuário/senha validados **no servidor** (nunca no navegador)
+- Listar, criar, editar e desativar presentes
+- Definir preços, categorias e quantidade de cotas
+- Upload e remoção de imagens dos presentes (salvas em `public_html/imagens-presentes/`)
+- Vendas registradas ficam visíveis para os noivos
+
+A rota `/admin` também exige sessão válida: qualquer acesso sem login é redirecionado para a home pela verificação `useAuthGuard` → `/api/auth/me.php`.
+
+---
+
+## 2 · Banco de Dados (Hostinger MySQL)
+
+O banco roda no mesmo servidor da hospedagem (host `localhost` em produção), criado pelo hPanel em **Bancos de Dados → MySQL**.
+
+### Arquivo de conexão
+
+Todas as APIs PHP usam `api/config/database.php` (classe `Database`, PDO, charset `utf8mb4`). Este arquivo **contém credenciais reais e jamais vai ao git** — só existem no repositório os modelos `api/config/database.example.php` e `api/config/config.example.php`.
+
+A classe detecta o ambiente automaticamente:
+
+| Ambiente | Host | Como funciona |
+|----------|------|---------------|
+| Produção | `localhost:3306` | PHP e MySQL no mesmo servidor Hostinger |
+| Local (dev) | `srvXXX.hstgr.io:3306` | Acesso remoto — exige liberar seu IP no hPanel (**Conexão de banco de dados remota**) |
+
+Para ambiente local, o Vite também faz proxy de `/api` para o backend configurado em `vite.config.ts`.
+
+### Tabelas
+
+```
+┌─────────────────────┐
+│ presentes           │  Catálogo de presentes com cotas
+│  id, nome, preco,   │
+│  categoria,         │  categoria ENUM: eletros, casa, divertidos,
+│  imagem_url,        │                utensilios, vales
+│  cotas_totais,      │
+│  cotas_disponiveis, │  Decrementadas a cada venda
+│  cotas_vendidas,    │
+│  status_cotas,      │  disponivel | poucas_cotas | esgotado
+│  ativo              │  Presente desativado some da loja
+└─────────────────────┘
+          │ 1:N
+┌─────────────────────┐
+│ vendas              │  Um registro por item vendido
+│  presente_id (FK)   │
+│  quantidade,        │
+│  preco_unitario,    │  Preço congelado no momento da compra
+│  subtotal,          │
+│  metodo_pagamento,  │  pix | cartao
+│  payment_id,        │  txid Woovi ou id do pagamento MP
+│                     │  UNIQUE — impede cobrança dupla (anti-replay)
+│  created_at         │
+└─────────────────────┘
+
+┌─────────────────────┐
+│ admin_users         │  Administradores do painel
+│  username UNIQUE,   │
+│  password_hash      │  bcrypt (password_hash/password_verify)
+│  role, ativo,       │
+│  failed_attempts,   │  Bloqueio automático após falhas seguidas
+│  locked_until       │
+└─────────────────────┘
+┌─────────────────────┐
+│ admin_login_logs    │  Auditoria de todas as tentativas de login
+├─────────────────────┤
+│ admin_sessions      │  Controle de sessões administrativas
+└─────────────────────┘
 ```
 
-Comandos disponíveis:
+### Scripts SQL (`database/`)
 
-```bash
-npm run lint
-npm run build
-npm run preview
-```
+- `create_database.sql` — script único e consolidado de criação: todas as tabelas (incluindo `payment_id` em `vendas`), triggers, views e catálogo inicial de presentes. Executar uma única vez no phpMyAdmin de um banco novo.
+- `create_admin.php` — utilitário CLI para criar novos usuários administradores:
+  ```bash
+  php database/create_admin.php <usuario>            # perfil admin
+  php database/create_admin.php <usuario> --superadmin
+  ```
+  A senha é pedida oculta no terminal e validada (8+ caracteres, maiúscula, minúscula e número). Requer as credenciais de `api/config/database.php`.
 
-> O Vite encaminha chamadas para `/api` ao servidor configurado em `vite.config.ts`. Em produção, os arquivos da pasta `api/` devem estar publicados no mesmo domínio do frontend.
+### Autenticação dos administradores
 
-## Deploy na Hostinger
+- Login em `POST /api/auth/login.php`: valida contra `admin_users` e regenera o `session_id`
+- Senhas armazenadas como hash bcrypt (`password_hash`/`password_verify`)
+- Sessão PHP com cookie endurecido: `HttpOnly`, `SameSite=Lax`, `Secure` quando o request vem por HTTPS
+- Timeout de 2 horas de inatividade; bloqueio automático após falhas seguidas (`admin_users`)
+- Endpoints administrativos são protegidos pelo middleware `api/middleware/require-auth.php` (`setProtectedCors()` + `requireAdmin()`)
 
-A aplicação é estática (após build) e os PHPs rodam no próprio servidor Apache da Hostinger. Passo a passo:
+### Endpoints da API
 
-1. **Build do frontend:**
-   ```bash
-   npm run build
-   ```
-   Isso gera a pasta `dist/` com HTML, JS e CSS.
+Públicos (somente leitura):
+`GET /api/presentes/list.php` (opcional `?categoria=`) · `categorias.php` · `status.php?id=` · `get-single.php?id=`
 
-2. **Subir arquivos pelo Gerenciador de Arquivos da Hostinger:**
-   - Acesse `hPanel → Gerenciador de Arquivos`
-   - Entre na pasta `public_html/` (ou no domínio adicionado)
-   - Suba **todo o conteúdo de `dist/`** para dentro de `public_html/`
-   - Crie a pasta `api/` dentro de `public_html/` e suba os arquivos:
-     - `createPix.php`
-     - `checkPix.php`
-     - `processCardPayment.php`
-     - `config.php` (com credenciais reais — veja abaixo)
-     - `gifts_data.php`
-     - `.htaccess`
-   - **NÃO suba** `config.example.php` nem `version.php` (não são usados em produção)
+Protegidos (exigem sessão de admin):
+`POST /api/presentes/create.php` · `update.php` · `delete.php` · `upload-image.php` · `delete-image.php` · `GET /api/vendas/list.php`
 
-3. **Configurar `.env` antes do build** com a chave pública do Mercado Pago:
-   ```env
-   VITE_MERCADO_PAGO_PUBLIC_KEY=sua_chave_publica_producao
-   ```
+Autenticação:
+`POST /api/auth/login.php` · `POST /api/auth/logout.php` · `GET /api/auth/me.php`
 
-4. **HTTPS obrigatório** para o Brick do Mercado Pago funcionar. A Hostinger fornece SSL gratuito via Let's Encrypt (ative em `hPanel → SSL`).
+Pagamentos e vendas:
+`POST /api/createPix.php` · `GET /api/checkPix.php` · `POST /api/processCardPayment.php` · `POST /api/vendas/create.php`
 
-5. **Testar:** acesse `https://casamentokiuryeleticia.com.br/` e faça um fluxo completo de pagamento.
+---
 
-## Integrações de pagamento
+## 3 · Integrações de Pagamento
 
-As credenciais são utilizadas exclusivamente pelas APIs PHP. Elas nunca devem ser expostas no navegador, incluídas no bundle do Vite ou enviadas ao repositório.
+As credenciais dos provedores vivem **exclusivamente no servidor**, em `api/config/config.php` (Woovi + Mercado Pago). Nada de chave privada vai ao bundle JavaScript — a única chave pública exposta é `VITE_MERCADO_PAGO_PUBLIC_KEY`, injetada no build apenas para o formulário tokenizador do Mercado Pago funcionar.
 
 ### PIX — Woovi (antiga OpenPix)
 
-O fluxo PIX é implementado em três etapas:
+1. O frontend envia carrinho, valor e descrição para `POST /api/createPix.php`
+2. A API **valida os preços contra a fonte canônica server-side** (`api/gifts_data.php`) — o preço enviado pelo cliente nunca é confiado — e cria a cobrança em `https://api.woovi.com/api/v1/charge`, retornando o `brCode` (QR Code + copia-e-cola) e o `correlationID`
+3. Após ~10s, o frontend consulta `GET /api/checkPix.php?txid=...` a cada 4s (até 30 min)
+4. Com `status: COMPLETED`, o frontend chama `POST /api/vendas/create.php`; o backend **revalida a cobrança direto na API da Woovi** antes de gravar a venda, usando o txid como `payment_id`
 
-1. Ao escolher PIX, o frontend envia o carrinho, valor, descrição e nome para `POST /api/createPix.php`.
-2. A API valida os preços server-side (`api/gifts_data.php`), cria a cobrança na Woovi e retorna o código PIX (`brCode`) e o `correlationID`.
-3. Após 10 segundos, o frontend consulta `GET /api/checkPix.php?txid=...` a cada 4 segundos (máx. 30 min). Quando a Woovi retorna `status: COMPLETED`, o usuário é redirecionado para `/pagamento-sucesso`.
+### Cartão — Mercado Pago (Checkout Transparente)
 
-| Endpoint | Responsabilidade |
-| --- | --- |
-| `api/createPix.php` | Cria a cobrança via `https://api.woovi.com/api/v1/charge`. |
-| `api/checkPix.php` | Consulta a cobrança pelo `correlationID` e retorna o status. |
-| `api/gifts_data.php` | Fonte canônica de preços — anti-adulteração. |
+1. O Card Payment Brick (`@mercadopago/sdk-react`) coleta e **tokeniza** os dados do cartão no navegador — o site nunca vê o número completo
+2. O frontend envia token, parcelas, pagador e carrinho para `POST /api/processCardPayment.php`
+3. A API valida preços server-side, gera `Idempotency-Key` e cria o pagamento em `https://api.mercadopago.com/v1/payments` com o access token privado
+4. Resultado: `approved` → sucesso · `pending`/`in_process` → pendente · erro → mensagem tratada no modal (recusas, cartões inválidos etc.)
+5. No `approved`, o frontend registra a venda; o backend consulta o pagamento real em `/v1/payments/{id}` antes de persistir, guardando o id como `payment_id`
 
-### Cartão — Mercado Pago
+### Registro e integridade das vendas
 
-O pagamento por cartão utiliza o **Card Payment Brick** do Checkout Transparente. O formulário é exibido dentro do site, enquanto os campos sensíveis são tratados e tokenizados pelo Mercado Pago:
+`POST /api/vendas/create.php` é a única porta de entrada de vendas e aplica:
 
-1. O Brick coleta e tokeniza os dados do cartão no navegador.
-2. O frontend envia o token, o método de pagamento, as parcelas, o pagador e os itens do carrinho para `POST /api/processCardPayment.php`.
-3. A API valida os preços server-side, cria uma chave de idempotência e envia o pagamento para `https://api.mercadopago.com/v1/payments` com o token privado apenas no servidor.
-4. A resposta determina o fluxo: `approved` → `/pagamento-sucesso`, `pending`/`in_process` → `/pagamento-pendente`, outros erros → mensagem no modal.
+- Validação estrita de itens: quantidade inteira entre 1 e 10, estoque disponível, carrinho não vazio (`400`/`422`)
+- Verificação do pagamento junto ao provedor **antes** de gravar (`402` se não aprovado)
+- Anti-replay: `payment_id` único — a mesma cobrança não registra duas vendas (`409`)
+- Requisito de schema: rodar `database/update_add_payment_id.sql` no phpMyAdmin **antes** de subir esta versão da API
 
-| Endpoint | Responsabilidade |
-| --- | --- |
-| `api/processCardPayment.php` | Processa o token do Brick em `https://api.mercadopago.com/v1/payments`. |
+Existe também `api/vendas/webhook.php`, receptor de notificações de pagamento do Mercado Pago/Woovi — útil como confirmação assíncrona adicional caso os webhooks sejam configurados nos painéis dos provedores.
 
-## Configuração das credenciais
+---
 
-1. Copie `api/config.example.php` para `api/config.php` (apenas no servidor, NÃO no git).
-2. Preencha as chaves da Woovi, o token privado do Mercado Pago e a URL pública do site:
+## 4 · Estrutura na Hostinger (Gerenciador de Arquivos)
 
-```php
-<?php
+Tudo vive dentro de `public_html/` do domínio `casamentokiuryeleticia.com.br`:
 
-define('OPENPIX_API_KEY', 'SUA_CHAVE_PRIVADA_WOOVI');
-define('OPENPIX_APP_ID', 'SEU_APP_ID_WOOVI');
-define('MP_ACCESS_TOKEN', 'SEU_ACCESS_TOKEN_PRIVADO_MERCADO_PAGO');
-define('MP_PUBLIC_KEY', 'SUA_CHAVE_PUBLICA_MERCADO_PAGO');
-define('SITE_URL', 'https://casamentokiuryeleticia.com.br/');
-define('PIX_VERIFICATION_DELAY', 10);
-define('PIX_VERIFICATION_INTERVAL', 4);
+```
+public_html/
+├── index.html                 # SPA gerada pelo build (npm run build → dist/)
+├── assets/                    # JS/CSS/imagens com hash no nome
+├── .htaccess                  # Rewrite SPA + headers de segurança + cache
+│
+├── imagens-presentes/         # Imagens enviadas pelo painel admin
+│   └── .htaccess              # Cache longo (1 ano, immutable)
+│
+└── api/
+    ├── .htaccess              # Bloqueia listagem de diretórios
+    ├── gifts_data.php         # Preços canônicos (anti-adulteração)
+    ├── createPix.php          # Cria cobrança PIX na Woovi
+    ├── checkPix.php           # Consulta status da cobrança
+    ├── processCardPayment.php # Processa pagamento de cartão no MP
+    │
+    ├── config/
+    │   ├── config.php         # ⚠️ Chaves Woovi/Mercado Pago (nunca versionado)
+    │   └── database.php       # ⚠️ Credenciais MySQL reais (nunca versionado)
+    │
+    ├── middleware/
+    │   └── require-auth.php   # setProtectedCors() + requireAdmin()
+    │
+    ├── auth/
+    │   ├── login.php          # Login (valida bcrypt, regenera session id)
+    │   ├── logout.php         # Destrói a sessão
+    │   └── me.php             # Verifica sessão ativa
+    │
+    ├── presentes/
+    │   ├── list.php           # Público: lista/filtra presentes
+    │   ├── categorias.php     # Público: estatísticas por categoria
+    │   ├── status.php         # Público: cotas de um presente
+    │   ├── get-single.php     # Público: detalhe de um presente
+    │   ├── create.php         # 🔒 Admin: cria presente
+    │   ├── update.php         # 🔒 Admin: edita presente
+    │   ├── delete.php         # 🔒 Admin: desativa/remove presente
+    │   ├── upload-image.php   # 🔒 Admin: upload de imagem
+    │   └── delete-image.php   # 🔒 Admin: remove imagem
+    │
+    └── vendas/
+        ├── create.php         # Registra venda (valida pagamento no provedor)
+        ├── list.php           # 🔒 Admin: lista vendas realizadas
+        └── webhook.php        # Receiver de webhooks MP/Woovi
 ```
 
-A `MP_PUBLIC_KEY` do PHP é apenas documentativa; o frontend usa a env var `VITE_MERCADO_PAGO_PUBLIC_KEY` no build.
+> 🔒 = protegido por sessão de administrador. Os arquivos `*.example.php` e suítes de teste existem só no repositório de desenvolvimento — não precisam (nem devem) ir ao servidor.
 
-`api/config.php` está no `.gitignore`. Use credenciais de teste durante o desenvolvimento e credenciais de produção **somente** no servidor.
+### Deploy em resumo
 
-### 🔑 Rotação de chaves (IMPORTANTE)
+1. `npm run build` → sobe todo o conteúdo de `dist/` para `public_html/`
+2. Sobrepor a pasta `api/` completa
+3. Conferir que `api/config/config.php` e `api/config/database.php` contêm as credenciais reais no servidor
+4. Rodar migrações SQL pendentes no phpMyAdmin (ex.: `update_add_payment_id.sql`)
+5. HTTPS obrigatório (SSL gratuito Let's Encrypt pelo hPanel) — exigido pelo Brick do Mercado Pago, clipboard API e cookies seguros
 
-Caso `config.php` com credenciais reais já tenha sido commitado no git (mesmo que removido depois), o histórico ainda contém as chaves. Para garantir segurança:
+### Papel dos `.htaccess`
 
-1. **Painel Woovi:** gere nova API Key em `Configurações → API`. Revogue a antiga.
-2. **Painel Mercado Pago:** gere novo Access Token em `Suas integrações → Dados de acesso`. Revogue o anterior.
-3. **Atualize `api/config.php` no servidor** com as novas credenciais.
-4. **Rebuild e redeploy** do frontend se a `VITE_MERCADO_PAGO_PUBLIC_KEY` também tiver sido rotacionada.
+- **Raiz:** rewrite de todas as rotas para `index.html` (SPA Router), headers de segurança (HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy), compressão deflate, cache de estáticos, bloqueio de arquivos sensíveis (`.md`, `.sql`, `.env`, `.log`…) e `Options -Indexes`
+- **`api/.htaccess`:** bloqueia listagem de diretórios na pasta da API
+- **`imagens-presentes/.htaccess`:** cache imutável de 1 ano para as imagens dos presentes
 
-> Como `config.php` está no `.gitignore`, o arquivo local nunca deve ser commitado. Se em algum momento ele foi, siga os passos acima para rotacionar tudo.
+### CORS
 
-## Estrutura relevante
+Allowlist rígido: apenas `https://casamentokiuryeleticia.com.br` e `http://localhost:5173` (desenvolvimento). Origens desconhecidas não recebem headers CORS; endpoints autenticados usam o helper `setProtectedCors()` com `OPTIONS → 204`.
 
-```text
-src/
-  components/
-    CardPayment.tsx       # Formulário Card Payment Brick
-    PixPayment.tsx        # QR Code e acompanhamento PIX
-  pages/
-    Pagamento.tsx         # Seleção da forma de pagamento
-    PagamentoSucesso.tsx  # Após pagamento aprovado
-    PagamentoPendente.tsx # Status pendente (análise)
-    PagamentoFalha.tsx    # Reservada para falhas (via webhook futuro)
-api/
-  createPix.php           # Criação da cobrança Woovi
-  checkPix.php            # Consulta de status Woovi
-  processCardPayment.php  # Processamento transparente do cartão
-  gifts_data.php          # Preços canônicos (anti-adulteração)
-  config.example.php      # Modelo de configurações privadas
-  .htaccess               # Bloqueia PHPs sensíveis (Apache 2.4)
-```
+---
 
-## Segurança e operação
-
-- ✅ CORS restrito a `https://casamentokiuryeleticia.com.br` e `http://localhost:5173` (dev).
-- ✅ `.htaccess` bloqueia todos os PHPs por padrão, liberando apenas os 3 endpoints públicos.
-- ✅ Preços validados server-side contra `gifts_data.php` — não confia no `price` enviado pelo cliente.
-- ✅ Respostas de erro sanitizadas (não vazam `mp_response` completo nem substring da Woovi).
-- ✅ cURLs com `CURLOPT_TIMEOUT` (15-30s) para evitar requisições penduradas.
-- ✅ Logs de debug gateados por `import.meta.env.DEV` (não aparecem em produção).
-- ✅ Limpeza do carrinho centralizada em `PagamentoSucesso`.
-- ✅ Polling do PIX usa `isMountedRef` para evitar `setState` após desmontar.
-- ✅ Idempotency-Key enviado ao Mercado Pago em cada request de cartão.
-- ⚠️ **HTTPS obrigatório** em produção (clipboard API, Brick do MP, cookies seguros).
-- ⚠️ Valide webhooks no servidor para confirmar pagamentos de forma confiável; a consulta periódica do frontend melhora a experiência do usuário, mas não substitui uma confirmação de backend.
+*Desenvolvido pelo noivo Kiury Mariano durante 2026.* 💙
