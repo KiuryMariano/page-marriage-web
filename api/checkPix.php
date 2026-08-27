@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php';
+require_once __DIR__ . '/config/config.php';
 
 $allowed_origins = ['https://casamentokiuryeleticia.com.br', 'http://localhost:5173'];
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
@@ -30,7 +30,7 @@ $url = 'https://api.woovi.com/api/v1/charge/' . urlencode($txid);
 $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
-    'Authorization: ' . OPENPIX_API_KEY,
+    'Authorization: ' . WOOVI_APP_ID,
     'Content-Type: application/json'
 ]);
 curl_setopt($ch, CURLOPT_TIMEOUT, 15);

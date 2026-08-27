@@ -8,6 +8,7 @@
  */
 
 require_once '../config/database.php';
+require_once '../config/config.php';
 
 // Logging de webhooks para debug
 error_log('[WEBHOOK] Requisição recebida: ' . $_SERVER['REQUEST_METHOD']);

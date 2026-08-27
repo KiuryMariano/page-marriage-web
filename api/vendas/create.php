@@ -6,6 +6,7 @@
  */
 
 require_once '../config/database.php';
+require_once '../config/config.php';
 
 setCorsHeaders();
 
@@ -70,7 +71,7 @@ if ($method === 'POST') {
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($ch, CURLOPT_TIMEOUT, 15);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                    'Authorization: ' . OPENPIX_API_KEY
+                    'Authorization: ' . WOOVI_APP_ID
                 ]);
             }
 

@@ -2,7 +2,7 @@
 // API para criar cobrança PIX com Woovi (antiga OpenPix)
 // Documentação: https://developers.woovi.com/api-redoc
 
-require_once 'config.php';
+require_once __DIR__ . '/config/config.php';
 
 // CORS estrito: apenas domínios permitidos
 $allowed_origins = ['https://casamentokiuryeleticia.com.br', 'http://localhost:5173'];
@@ -98,7 +98,7 @@ curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
-    'Authorization: ' . OPENPIX_API_KEY,
+    'Authorization: ' . WOOVI_APP_ID,
     'Content-Type: application/json'
 ]);
 curl_setopt($ch, CURLOPT_TIMEOUT, 20);
