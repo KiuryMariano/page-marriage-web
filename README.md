@@ -89,8 +89,7 @@ Para ambiente local, o Vite também faz proxy de `/api` para o backend configura
 │  username UNIQUE,   │
 │  password_hash      │  bcrypt (password_hash/password_verify)
 │  role, ativo,       │
-│  failed_attempts,   │  Bloqueio automático após falhas seguidas
-│  locked_until       │
+│  last_login         │
 └─────────────────────┘
 ┌─────────────────────┐
 │ admin_login_logs    │  Auditoria de todas as tentativas de login
@@ -114,8 +113,9 @@ Para ambiente local, o Vite também faz proxy de `/api` para o backend configura
 - Login em `POST /api/auth/login.php`: valida contra `admin_users` e regenera o `session_id`
 - Senhas armazenadas como hash bcrypt (`password_hash`/`password_verify`)
 - Sessão PHP com cookie endurecido: `HttpOnly`, `SameSite=Lax`, `Secure` quando o request vem por HTTPS
-- Timeout de 2 horas de inatividade; bloqueio automático após falhas seguidas (`admin_users`)
+- Timeout de 2 horas de inatividade
 - Endpoints administrativos são protegidos pelo middleware `api/middleware/require-auth.php` (`setProtectedCors()` + `requireAdmin()`)
+- Política de senha do `create_admin.php`: mínimo 8 caracteres com maiúscula, minúscula e número — **use uma senha longa e única**; este é o principal mecanismo de proteção do painel (não há lockout automático)
 
 ### Endpoints da API
 
@@ -140,7 +140,7 @@ As credenciais dos provedores vivem **exclusivamente no servidor**, em `api/conf
 ### PIX — Woovi (antiga OpenPix)
 
 1. O frontend envia carrinho, valor e descrição para `POST /api/createPix.php`
-2. A API **valida os preços contra a fonte canônica server-side** (`api/gifts_data.php`) — o preço enviado pelo cliente nunca é confiado — e cria a cobrança em `https://api.woovi.com/api/v1/charge`, retornando o `brCode` (QR Code + copia-e-cola) e o `correlationID`
+2. A API **valida os preços contra a fonte canônica server-side** (tabela `presentes` no banco — a mesma do painel admin e da loja) — o preço enviado pelo cliente nunca é confiado — e cria a cobrança em `https://api.woovi.com/api/v1/charge`, retornando o `brCode` (QR Code + copia-e-cola) e o `correlationID`
 3. Após ~10s, o frontend consulta `GET /api/checkPix.php?txid=...` a cada 4s (até 30 min)
 4. Com `status: COMPLETED`, o frontend chama `POST /api/vendas/create.php`; o backend **revalida a cobrança direto na API da Woovi** antes de gravar a venda, usando o txid como `payment_id`
 
@@ -158,8 +158,8 @@ As credenciais dos provedores vivem **exclusivamente no servidor**, em `api/conf
 
 - Validação estrita de itens: quantidade inteira entre 1 e 10, estoque disponível, carrinho não vazio (`400`/`422`)
 - Verificação do pagamento junto ao provedor **antes** de gravar (`402` se não aprovado)
+- Conferência do valor pago no provedor contra o total dos itens com preços do banco (`422` se divergir)
 - Anti-replay: `payment_id` único — a mesma cobrança não registra duas vendas (`409`)
-- Requisito de schema: rodar `database/update_add_payment_id.sql` no phpMyAdmin **antes** de subir esta versão da API
 
 Existe também `api/vendas/webhook.php`, receptor de notificações de pagamento do Mercado Pago/Woovi — útil como confirmação assíncrona adicional caso os webhooks sejam configurados nos painéis dos provedores.
 
@@ -180,10 +180,9 @@ public_html/
 │
 └── api/
     ├── .htaccess              # Bloqueia listagem de diretórios
-    ├── gifts_data.php         # Preços canônicos (anti-adulteração)
-    ├── createPix.php          # Cria cobrança PIX na Woovi
+    ├── createPix.php          # Cria cobrança PIX na Woovi (valida preços no banco)
     ├── checkPix.php           # Consulta status da cobrança
-    ├── processCardPayment.php # Processa pagamento de cartão no MP
+    ├── processCardPayment.php # Processa pagamento de cartão no MP (valida preços no banco)
     │
     ├── config/
     │   ├── config.php         # ⚠️ Chaves Woovi/Mercado Pago (nunca versionado)
@@ -221,8 +220,7 @@ public_html/
 1. `npm run build` → sobe todo o conteúdo de `dist/` para `public_html/`
 2. Sobrepor a pasta `api/` completa
 3. Conferir que `api/config/config.php` e `api/config/database.php` contêm as credenciais reais no servidor
-4. Rodar migrações SQL pendentes no phpMyAdmin (ex.: `update_add_payment_id.sql`)
-5. HTTPS obrigatório (SSL gratuito Let's Encrypt pelo hPanel) — exigido pelo Brick do Mercado Pago, clipboard API e cookies seguros
+4. HTTPS obrigatório (SSL gratuito Let's Encrypt pelo hPanel) — exigido pelo Brick do Mercado Pago, clipboard API e cookies seguros
 
 ### Papel dos `.htaccess`
 

@@ -47,10 +47,11 @@ if ($method === 'DELETE') {
             'message' => 'Presente desativado com sucesso'
         ]);
     } catch (Exception $e) {
+        error_log('[PRESENTES_DELETE] ' . $e->getMessage());
         http_response_code(500);
         echo json_encode([
             'success' => false,
-            'error' => 'Erro ao desativar presente: ' . $e->getMessage()
+            'error' => 'Erro ao desativar presente'
         ]);
     }
 } else {

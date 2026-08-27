@@ -70,7 +70,6 @@ CREATE TABLE IF NOT EXISTS vendas (
 -- 3. TABELA: admin_users
 --     Administradores do painel /admin.
 --     Senhas em bcrypt (password_hash / password_verify).
---     login_attempts + locked_until = bloqueio após falhas seguidas.
 -- ============================================================
 CREATE TABLE IF NOT EXISTS admin_users (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -186,7 +185,7 @@ GROUP BY categoria;
 
 -- ============================================================
 -- 8. INSERT: catálogo inicial de presentes
---     Preços devem permanecer sincronizados com api/gifts_data.php
+--     O banco é a fonte única de preços (loja, admin e APIs de pagamento).
 -- ============================================================
 INSERT INTO presentes (nome, preco, categoria, cotas_totais, cotas_disponiveis, ativo) VALUES
 -- Eletros (7 itens)

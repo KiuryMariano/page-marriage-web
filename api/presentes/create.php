@@ -94,10 +94,11 @@ if ($method === 'POST') {
             'id' => $id
         ]);
     } catch (Exception $e) {
+        error_log('[PRESENTES_CREATE] ' . $e->getMessage());
         http_response_code(500);
         echo json_encode([
             'success' => false,
-            'error' => 'Erro ao criar presente: ' . $e->getMessage()
+            'error' => 'Erro ao criar presente'
         ]);
     }
 } else {
