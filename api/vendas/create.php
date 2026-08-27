@@ -56,7 +56,7 @@ if ($method === 'POST') {
     if (!function_exists('validarPagamentoNoProvedor')) {
         /**
          * Consulta o status do pagamento direto na API do provedor.
-         * Retorna [bool $aprovado, ?string $erro].
+         * Retorna [bool $aprovado, ?string $erro, float $valorPago].
          */
         function validarPagamentoNoProvedor(string $metodo, string $paymentId): array {
             if ($metodo === 'cartao') {
@@ -80,28 +80,42 @@ if ($method === 'POST') {
             curl_close($ch);
 
             if ($response === false || $httpCode !== 200) {
-                return [false, 'Falha ao consultar pagamento no provedor'];
+                return [false, 'Falha ao consultar pagamento no provedor', 0.0];
             }
 
             $dados = json_decode($response, true);
             if (!is_array($dados)) {
-                return [false, 'Resposta inválida do provedor'];
+                return [false, 'Resposta inválida do provedor', 0.0];
             }
 
             if ($metodo === 'cartao') {
                 $aprovado = (($dados['status'] ?? '') === 'approved');
-            } else {
-                $status = strtoupper((string) ($dados['status'] ?? ''));
-                $aprovado = in_array($status, ['PAID', 'COMPLETED', 'CONFIRMED'], true)
-                    || ($dados['paid'] ?? false) === true
-                    || !empty($dados['paidAt']);
+                // Valor pago em moeda (transaction_amount) para conferência
+                $valorPago = isset($dados['transaction_amount']) ? (float) $dados['transaction_amount'] : 0.0;
+                return [$aprovado, $aprovado ? null : 'Pagamento não aprovado no provedor', $valorPago];
             }
 
-            return [$aprovado, $aprovado ? null : 'Pagamento não aprovado no provedor'];
+            // PIX (Woovi): a cobrança pode vir na raiz ou aninhada (charge/charges[0])
+            $charge = $dados;
+            if (isset($dados['charge']) && is_array($dados['charge'])) {
+                $charge = $dados['charge'];
+            } elseif (isset($dados['charges']) && is_array($dados['charges']) && count($dados['charges']) > 0) {
+                $charge = $dados['charges'][0];
+            }
+
+            $status = strtoupper((string) ($charge['status'] ?? ''));
+            $aprovado = in_array($status, ['PAID', 'COMPLETED', 'CONFIRMED'], true)
+                || ($charge['paid'] ?? false) === true
+                || !empty($charge['paidAt']);
+
+            // Woovi retorna valor em centavos
+            $valorPago = isset($charge['value']) ? ((float) $charge['value'] / 100) : 0.0;
+
+            return [$aprovado, $aprovado ? null : 'Pagamento não aprovado no provedor', $valorPago];
         }
     }
 
-    [$pagamento_aprovado, $erro_validacao] = validarPagamentoNoProvedor($metodo_pagamento, $payment_id);
+    [$pagamento_aprovado, $erro_validacao, $valor_pago] = validarPagamentoNoProvedor($metodo_pagamento, $payment_id);
 
     if (!$pagamento_aprovado) {
         error_log('[VENDAS_CREATE] Pagamento não validado (' . $metodo_pagamento . ' / ' . $payment_id . '): ' . ($erro_validacao ?? '?'));
@@ -109,6 +123,51 @@ if ($method === 'POST') {
         echo json_encode([
             'success' => false,
             'error' => $erro_validacao ?? 'Pagamento não confirmado'
+        ]);
+        exit;
+    }
+
+    // Pré-calcular o total esperado dos itens com preços do banco
+    // (fonte única de verdade) para conferir com o valor pago no provedor
+    $total_esperado = 0.0;
+    foreach ($data['itens'] as $item) {
+        $presenteId = (int) ($item['id'] ?? 0);
+        $quantidade = (int) ($item['quantity'] ?? 0);
+
+        if ($presenteId <= 0 || $quantidade <= 0) {
+            http_response_code(422);
+            echo json_encode(['success' => false, 'error' => 'Item inválido no carrinho']);
+            exit;
+        }
+
+        try {
+            $presente_preco = $database->fetchOne(
+                "SELECT preco FROM presentes WHERE id = ? AND ativo = 1",
+                [$presenteId]
+            );
+        } catch (Exception $e) {
+            error_log('[VENDAS_CREATE] Erro ao consultar presente: ' . $e->getMessage());
+            http_response_code(500);
+            echo json_encode(['success' => false, 'error' => 'Erro interno ao validar itens']);
+            exit;
+        }
+
+        if (!$presente_preco) {
+            http_response_code(422);
+            echo json_encode(['success' => false, 'error' => "Presente {$presenteId} não encontrado"]);
+            exit;
+        }
+
+        $total_esperado += (float) $presente_preco['preco'] * $quantidade;
+    }
+    $total_esperado = round($total_esperado, 2);
+
+    if (abs($total_esperado - $valor_pago) > 0.01) {
+        error_log('[VENDAS_CREATE] Valor pago difere do esperado (pago: ' . $valor_pago . ', esperado: ' . $total_esperado . ', payment: ' . $payment_id . ')');
+        http_response_code(422);
+        echo json_encode([
+            'success' => false,
+            'error' => 'Valor pago não corresponde aos itens do carrinho'
         ]);
         exit;
     }
@@ -205,7 +264,19 @@ if ($method === 'POST') {
             'metodo_pagamento' => $metodo_pagamento
         ]);
 
+    } catch (PDOException $e) {
+        // Erro de banco: log completo, mensagem genérica ao cliente
+        if (isset($pdo) && $pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        error_log('[VENDAS_DB_ERROR] ' . $e->getMessage());
+        http_response_code(500);
+        echo json_encode([
+            'error' => 'Erro interno ao registrar a venda',
+            'success' => false
+        ]);
     } catch (Exception $e) {
+        // Erros de regra de negócio (RuntimeException): mensagem segura de validação
         if (isset($pdo) && $pdo->inTransaction()) {
             $pdo->rollBack();
         }

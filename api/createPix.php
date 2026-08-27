@@ -3,6 +3,7 @@
 // Documentação: https://developers.woovi.com/api-redoc
 
 require_once __DIR__ . '/config/config.php';
+require_once __DIR__ . '/config/database.php';
 
 // CORS estrito: apenas domínios permitidos
 $allowed_origins = ['https://casamentokiuryeleticia.com.br', 'http://localhost:5173'];
@@ -30,8 +31,21 @@ $descricao = isset($input['descricao']) ? substr(trim((string) $input['descricao
 $nome = isset($input['nome']) ? substr(trim((string) $input['nome']), 0, 100) : 'Convidado';
 $cart = $input['cart'] ?? [];
 
-// Source of truth de preços
-$canonicalPrices = require __DIR__ . '/gifts_data.php';
+// Source of truth de preços: tabela presentes no banco
+// (mesma fonte do painel admin e da loja — não pode dessincronizar)
+try {
+    $database = new Database();
+    $rows = $database->fetchAll("SELECT id, preco FROM presentes WHERE ativo = 1");
+    $canonicalPrices = [];
+    foreach ($rows as $row) {
+        $canonicalPrices[(int) $row['id']] = (float) $row['preco'];
+    }
+} catch (Exception $e) {
+    error_log('[CREATE_PIX] Erro ao carregar preços do banco: ' . $e->getMessage());
+    http_response_code(500);
+    echo json_encode(['error' => 'Erro interno. Tente novamente.']);
+    exit;
+}
 
 // Calcular valor server-side a partir do carrinho (anti-adulteração)
 $amountReais = 0.0;

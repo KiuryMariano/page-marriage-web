@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/config/config.php';
+require_once __DIR__ . '/config/database.php';
 
 $allowed_origins = ['https://casamentokiuryeleticia.com.br', 'http://localhost:5173'];
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
@@ -77,8 +78,21 @@ cardPaymentLog('3. Calculando valor total', [
     'items_count' => count($items),
 ]);
 
-// Validar preços server-side contra fonte canônica (gifts_data.php)
-$canonicalPrices = require __DIR__ . '/gifts_data.php';
+// Validar preços server-side contra fonte canônica: tabela presentes no banco
+// (mesma fonte do painel admin e da loja — não pode dessincronizar)
+try {
+    $database = new Database();
+    $rows = $database->fetchAll("SELECT id, preco FROM presentes WHERE ativo = 1");
+    $canonicalPrices = [];
+    foreach ($rows as $row) {
+        $canonicalPrices[(int) $row['id']] = (float) $row['preco'];
+    }
+} catch (Exception $e) {
+    cardPaymentLog('❌ Erro ao carregar preços do banco', ['error' => $e->getMessage()]);
+    http_response_code(500);
+    echo json_encode(['message' => 'Erro interno. Tente novamente.']);
+    exit;
+}
 
 foreach ($items as $index => $item) {
     $itemId = (int) ($item['id'] ?? 0);
