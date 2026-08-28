@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import wallpaperWebpFull from "../assets/wallpapers/wallpaper_2.webp";
-import wallpaperWebpTablet from "../assets/wallpapers/wallpaper_2_tablet.webp";
-import wallpaperWebpMobile from "../assets/wallpapers/wallpaper_2_mobile.webp";
+import wallpaperWebpFull from "../assets/wallpapers/wallpaper_4.webp";
+import wallpaperWebpTablet from "../assets/wallpapers/wallpaper_4_tablet.webp";
+import wallpaperWebpMobile from "../assets/wallpapers/wallpaper_4_mobile.webp";
 import backgroundMoney from "../assets/backgrounds/background_money.webp";
 import backgroundMoneyMobile from "../assets/backgrounds/background_money_mobile.webp";
 import { colors, gradients } from "../theme";
@@ -574,9 +574,9 @@ const HospedagemBeleza = () => {
             <img
               src={wallpaperWebpFull}
               alt="Letícia e Kiury"
-              srcSet={`${wallpaperWebpMobile} 800w, ${wallpaperWebpTablet} 1400w, ${wallpaperWebpFull} 6182w`}
+              srcSet={`${wallpaperWebpMobile} 800w, ${wallpaperWebpTablet} 1400w, ${wallpaperWebpFull} 1707w`}
               sizes="100vw"
-              className="w-full h-full object-cover object-center"
+              className="w-full h-full object-cover object-[10%_90%] scale-110 origin-[100%_80%]"
               fetchPriority="high"
               loading="eager"
               decoding="sync"

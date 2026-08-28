@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import wallpaperWebpFull from "../assets/wallpapers/wallpaper_2.webp";
-import wallpaperWebpTablet from "../assets/wallpapers/wallpaper_2_tablet.webp";
-import wallpaperWebpMobile from "../assets/wallpapers/wallpaper_2_mobile.webp";
+import wallpaperWebpFull from "../assets/wallpapers/wallpaper_3.webp";
+import wallpaperWebpTablet from "../assets/wallpapers/wallpaper_3_tablet.webp";
+import wallpaperWebpMobile from "../assets/wallpapers/wallpaper_3_mobile.webp";
 import background from "../assets/backgrounds/background.webp";
 import backgroundMobile from "../assets/backgrounds/background_mobile.webp";
 import { colors } from "../theme";
@@ -320,9 +320,9 @@ const Galeria = () => {
             <img
               src={wallpaperWebpFull}
               alt="Letícia e Kiury"
-              srcSet={`${wallpaperWebpMobile} 800w, ${wallpaperWebpTablet} 1400w, ${wallpaperWebpFull} 6182w`}
+              srcSet={`${wallpaperWebpMobile} 800w, ${wallpaperWebpTablet} 1400w, ${wallpaperWebpFull} 2560w`}
               sizes="100vw"
-              className="w-full h-full object-cover object-center"
+              className="w-full h-full object-cover object-[60%] scale-110 origin-[100%_70%]"
               fetchPriority="high"
               loading="eager"
               decoding="sync"

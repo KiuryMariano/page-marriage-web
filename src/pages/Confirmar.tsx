@@ -1,9 +1,9 @@
 import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import wallpaperWebpFull from "../assets/wallpapers/wallpaper_2.webp";
-import wallpaperWebpTablet from "../assets/wallpapers/wallpaper_2_tablet.webp";
-import wallpaperWebpMobile from "../assets/wallpapers/wallpaper_2_mobile.webp";
+import wallpaperWebpFull from "../assets/wallpapers/wallpaper_6.webp";
+import wallpaperWebpTablet from "../assets/wallpapers/wallpaper_6_tablet.webp";
+import wallpaperWebpMobile from "../assets/wallpapers/wallpaper_6_mobile.webp";
 import background from "../assets/backgrounds/background.webp";
 import backgroundMobile from "../assets/backgrounds/background_mobile.webp";
 import { colors } from "../theme";
@@ -54,7 +54,7 @@ const Confirmar = () => {
             <img
               src={wallpaperWebpFull}
               alt="Letícia e Kiury"
-              srcSet={`${wallpaperWebpMobile} 800w, ${wallpaperWebpTablet} 1400w, ${wallpaperWebpFull} 6182w`}
+              srcSet={`${wallpaperWebpMobile} 800w, ${wallpaperWebpTablet} 1400w, ${wallpaperWebpFull} 1707w`}
               sizes="100vw"
               className="w-full h-full object-cover object-center"
               fetchPriority="high"
