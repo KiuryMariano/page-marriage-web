@@ -6,7 +6,7 @@ Site oficial do casamento Letícia & Kiury (`casamentokiuryeleticia.com.br`), ho
 
 ## 1 · O Projeto
 
-Aplicação web completa para o casamento: apresentação do casal, galeria de fotos, informações de hospedagem, confirmação de presença, lista de presentes com pagamento online e painel administrativo para os noivos gerenciarem tudo.
+Aplicação web completa para o casamento: apresentação do casal, galeria de fotos, hospedagem e beleza (hotéis e profissionais parceiros), confirmação de presença, lista de presentes com pagamento online e painel administrativo para os noivos gerenciarem tudo.
 
 ### Stack
 
@@ -21,7 +21,7 @@ Aplicação web completa para o casamento: apresentação do casal, galeria de f
 |------|-----------|
 | `/` | Home — apresentação do casal, contagem regressiva e navegação |
 | `/galeria` | Galeria de fotos do casal |
-| `/hospedagem` | Sugestões de hotéis próximos com fotos e informações |
+| `/hospedagem-e-beleza` | Hotéis parceiros e profissionais de beleza (salões, maquiadoras, unhas) — abas por categoria |
 | `/confirmar` | Confirmação de presença — abre mensagem pronta no WhatsApp dos noivos |
 | `/presentes` | Lista de presentes vinda do banco (com cotas e categorias), carrinho de compras |
 | `/pagamento` | Escolha do método: PIX ou cartão de crédito, com resumo do carrinho |

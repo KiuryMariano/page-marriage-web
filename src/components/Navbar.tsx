@@ -64,8 +64,8 @@ const Navbar = () => {
       ),
     },
     {
-      name: "Hospedagem",
-      path: "/hospedagem",
+      name: "Hospedagem & Beleza",
+      path: "/hospedagem-e-beleza",
       icon: (
         <svg
           className="w-6 h-6"
@@ -115,7 +115,7 @@ const Navbar = () => {
             </Link>
 
             {/* Desktop Menu - Centralizado */}
-            <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 space-x-8">
+            <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 space-x-6 lg:space-x-8 whitespace-nowrap">
               {menuItems.map((item) => {
                 const isActive = location.pathname === item.path;
                 return (
@@ -157,7 +157,7 @@ const Navbar = () => {
                     {item.icon}
                   </div>
                 </div>
-                <span className="text-[10px] mt-0.5 font-medium uppercase tracking-wide">
+                <span className="text-[10px] mt-0.5 font-medium uppercase tracking-wide text-center leading-tight w-full">
                   {item.name}
                 </span>
               </Link>

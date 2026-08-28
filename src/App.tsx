@@ -3,7 +3,7 @@ import Home from './pages/Home';
 import Presentes from './pages/Presentes';
 import Galeria from './pages/Galeria';
 import Confirmar from './pages/Confirmar';
-import Hospedagem from './pages/Hospedagem';
+import HospedagemBeleza from './pages/HospedagemBeleza';
 import Pagamento from './pages/Pagamento';
 import PagamentoSucesso from './pages/PagamentoSucesso';
 import PagamentoFalha from './pages/PagamentoFalha';
@@ -20,7 +20,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/presentes" element={<Presentes />} />
         <Route path="/galeria" element={<Galeria />} />
-        <Route path="/hospedagem" element={<Hospedagem />} />
+        <Route path="/hospedagem-e-beleza" element={<HospedagemBeleza />} />
         <Route path="/confirmar" element={<Confirmar />} />
         <Route path="/pagamento" element={<Pagamento />} />
         <Route path="/pagamento-sucesso" element={<PagamentoSucesso />} />
