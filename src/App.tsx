@@ -4,6 +4,7 @@ import Presentes from './pages/Presentes';
 import Galeria from './pages/Galeria';
 import Confirmar from './pages/Confirmar';
 import HospedagemBeleza from './pages/HospedagemBeleza';
+import Convite from './pages/Convite';
 import Pagamento from './pages/Pagamento';
 import PagamentoSucesso from './pages/PagamentoSucesso';
 import PagamentoFalha from './pages/PagamentoFalha';
@@ -27,6 +28,7 @@ function App() {
         <Route path="/pagamento-falha" element={<PagamentoFalha />} />
         <Route path="/pagamento-pendente" element={<PagamentoPendente />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/convite" element={<Convite />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
